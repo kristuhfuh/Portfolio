@@ -1,0 +1,464 @@
+// ─────────────────────────────────────────────────────────────
+// PROJECTS DATA — Story-driven case studies with outcome stats
+// New fields: hook, pullQuote, outcomeStats[], deliverables[], reception
+// ─────────────────────────────────────────────────────────────
+
+export const projects = [
+  {
+    slug: 'landmark-citizen-app',
+    number: '01',
+    title: 'Landmark Citizen App',
+    tagline: `The resident companion for West Africa's largest mixed-use beachfront development`,
+    tags: ['Mobile App', 'Fintech', 'Design System', '0→1'],
+    client: 'Landmark Africa Group',
+    year: '2025',
+    location: 'Victoria Island, Lagos',
+    role: 'UI/UX Executive — Lead Designer',
+    timeline: '6 months',
+    team: 'Product Manager, 2 Engineers, 1 QA, Facilities Team',
+    cover: 'https://framerusercontent.com/images/A96w4ZpC5F1QA39OE7wySL4yBg4.webp?width=2400&height=1800',
+    accent: '#6D28D9',
+    accentSoft: '#A78BFA',
+
+    hook: `Turn a 9.4-acre beachfront ecosystem into a phone.`,
+
+    images: [
+      'https://framerusercontent.com/images/A96w4ZpC5F1QA39OE7wySL4yBg4.webp?width=2400&height=1800',
+      'https://framerusercontent.com/images/3C0VOTTkKKwN2ontWnhZfDoAbzI.png?width=1722&height=2084',
+      'https://framerusercontent.com/images/xn14raFI0MqgR8EHybMvOYUVY.png?width=1104&height=955',
+    ],
+
+    metrics: [
+      { value: '12K+', label: 'Residents onboarded' },
+      { value: '4.7★', label: 'App store rating' },
+    ],
+
+    outcomeStats: [
+      { value: '15', suffix: '+', label: 'Vendor touchpoints integrated' },
+      { value: '48', label: 'Design system components' },
+      { value: '3', label: 'Rounds of user testing' },
+      { value: '2', label: 'Platforms — iOS & Android' },
+      { value: '4', label: 'User personas served' },
+      { value: '0', label: 'External design dependencies post-launch' },
+    ],
+
+    deliverables: [
+      'iOS + Android mobile applications',
+      'Wallet top-up & transaction history flows',
+      'Loyalty and cashback rewards system',
+      'In-app maintenance reporting module',
+      'Event discovery & booking interface',
+      '48-component design system with 12 reusable patterns',
+      'Stakeholder-facing admin analytics dashboard',
+      'Complete onboarding flow with KYC',
+    ],
+
+    overview: `The Landmark Citizen App is the official payment and engagement platform for Landmark Village — a 9.4-acre mixed-use beachfront development on Victoria Island, Lagos, housing event venues, restaurants, a beach club, retail, and office spaces. The app eliminates cash across the entire ecosystem, replacing it with a digital wallet, loyalty points, and transaction history.
+
+I led end-to-end product design as UI/UX Executive at Landmark Africa Group, working directly with the product manager, engineering team, and facility operations stakeholders. This was a 0→1 initiative — no prior digital product existed for the Landmark community.`,
+
+    challenge: `The core design challenge was layered:
+
+• Multiple user types with different needs — residents, event-goers, restaurant diners, beach visitors, and corporate tenants all needed different entry points into the same payment system.
+
+• Trust barrier — getting users to abandon cash in favour of a digital wallet required the onboarding to communicate security and value immediately. Early user interviews revealed that people associated "cashless" with "losing control of spending."
+
+• Operational complexity — the app had to integrate with point-of-sale systems across 15+ vendors, each with different transaction patterns, while giving the Landmark management team visibility into ecosystem-wide analytics.
+
+• Low digital literacy variance — the user base ranged from tech-savvy young professionals to older residents unfamiliar with mobile wallets.`,
+
+    pullQuote: `The hardest screens weren't the complex ones. They were the simple confirmation dialogs where people decided whether to commit real money to a new system.`,
+
+    approach: [
+      'Conducted stakeholder interviews with 8 facility managers, 12 vendors, and 20+ residents to map the full transaction journey from entry to exit across the ecosystem',
+      'Created user personas for 4 primary segments: resident, event attendee, casual visitor, corporate tenant — each with distinct frequency, spend patterns, and feature priorities',
+      'Designed a progressive onboarding flow that front-loaded wallet setup with a first-deposit incentive, reducing the trust barrier identified in research',
+      'Built an information architecture that prioritised the 3 daily-use actions (pay, check balance, view history) as persistent shortcuts, pushing less frequent features into contextual menus',
+      'Developed a component-based design system (48 components, 12 patterns) intended for handoff to Landmark\'s in-house team for long-term extension without external design dependency',
+      'Ran 3 rounds of prototype testing across different user cohorts — iterated the payment confirmation flow twice after testing revealed hesitation at the final tap',
+      'Designed a cashback and rewards layer that surfaced earned points contextually at point-of-purchase, increasing perceived value without adding cognitive load',
+    ],
+
+    outcome: `The app launched on both iOS and Android as the official Landmark Citizen platform. It serves as the primary payment interface across the ecosystem, replacing cash transactions at all participating vendors.
+
+Successfully deployed across 15+ vendor touchpoints. Onboarding completion rate exceeded internal targets after progressive disclosure redesign. The cashback and rewards system drove repeat wallet top-ups, establishing a retention loop. Component system was adopted by Landmark\'s in-house team for ongoing feature development, validating the handoff strategy. Maintenance reporting time reduced significantly — in-app issue submission replaced paper forms and fragmented WhatsApp groups.
+
+The design system I built continues to serve as the foundation for all Landmark digital products.`,
+
+    reception: `Adopted as Landmark's primary digital product foundation — my component system is now the reference architecture for every subsequent Landmark app.`,
+
+    reflection: `This project taught me the difference between designing a payment app and designing trust. Every animation timing, every copy choice on the payment confirmation screen, every positioning of the balance display was a trust decision, not a layout decision.
+
+If I were to revisit this project, I\'d push for deeper analytics integration from day one. We shipped tracking late, which meant the first 8 weeks of usage data was sparse.`,
+
+    link: null,
+  },
+
+  // ─────────────────────────────────────────────────────────────
+
+  {
+    slug: 'landmark-events',
+    number: '02',
+    title: 'Landmark Events',
+    tagline: `The digital front door for a 45,000 sq ft UFI-certified event venue`,
+    tags: ['Website', 'Design + Dev', 'Framer', 'Conversion'],
+    client: 'Landmark Africa Group',
+    year: '2025',
+    location: 'Victoria Island, Lagos',
+    role: 'Product Designer & Framer Developer',
+    timeline: '3 months',
+    team: 'Marketing Lead, Content Manager, Operations',
+    cover: 'https://framerusercontent.com/images/ZoL3tvPl7FLWphBNRMIpsQFtg.webp?width=1722&height=2084',
+    accent: '#7C3AED',
+    accentSoft: '#C4B5FD',
+
+    hook: `Stop losing event planners to a contact form.`,
+
+    images: [
+      'https://framerusercontent.com/images/ZoL3tvPl7FLWphBNRMIpsQFtg.webp?width=1722&height=2084',
+      'https://framerusercontent.com/images/gZDrFl5tTXqhBpBai5C9dpoPY.png?width=650&height=1068',
+      'https://framerusercontent.com/images/WTC6bdSAQkSAhHIskIIMS6iac.jpg?width=3060&height=4080',
+    ],
+
+    metrics: [
+      { value: '45K', label: 'Square feet to showcase' },
+      { value: '2×', label: 'Inbound lead volume' },
+    ],
+
+    outcomeStats: [
+      { value: '45', suffix: 'K ft²', label: 'Venue space showcased digitally' },
+      { value: '8', label: 'Configurable spaces mapped' },
+      { value: '2', suffix: '×', label: 'Inbound lead volume increase' },
+      { value: '40', suffix: '%', label: 'Faster enquiry-to-booking' },
+      { value: '100', suffix: '%', label: 'Marketing team content autonomy' },
+      { value: '0', label: 'Developer hours for weekly updates' },
+    ],
+
+    deliverables: [
+      'Full-site Framer build (design + development)',
+      'Space taxonomy system for 8 venue configurations',
+      'Progressive enquiry form with qualifying logic',
+      'CMS-driven events calendar (self-serve for marketing)',
+      'Responsive layouts optimized for planners on mobile',
+      'Scroll-triggered animation system built in Framer',
+      'SEO structure for event venue keyword ranking',
+    ],
+
+    overview: `Landmark Centre is a UFI-certified, 45,000+ square foot convention and event facility on Victoria Island, Lagos — hosting major international exhibitions (Propak West Africa, Nigeria Energy, Food & Beverage West Africa), concerts, weddings, and corporate conferences. It seats 2,000 theatre-style and 1,200 banquet, with a 1,000-vehicle parking facility.
+
+The previous website was static and outdated. Every enquiry funnelled through a single generic contact form, with no way for event planners to see space configurations, check the event calendar, or submit a qualified brief. The marketing team had no ability to update content without developer involvement.
+
+I was brought in to redesign and rebuild the site end-to-end, owning both design and Framer development.`,
+
+    challenge: `Three problems needed to be solved simultaneously:
+
+• Conversion friction — event planners visiting the site had high intent but no self-service path. They couldn\'t see available dates, compare hall configurations, or understand pricing tiers without making a phone call. Every extra step between landing and enquiry was a leak.
+
+• Content stagnation — the old site required a developer for any update. The events calendar was perpetually outdated, which undermined credibility with professional event organisers who plan 3–6 months ahead.
+
+• Scale communication — Landmark Centre competes with venues like Eko Convention Centre. The site needed to convey the sheer physical scale (9.4 acres, Atlantic Ocean views, 8 configurable spaces) in a way that photographs alone couldn\'t achieve.`,
+
+    pullQuote: `A beautiful site that goes stale is worse than an ugly one that stays current.`,
+
+    approach: [
+      'Audited competitor venue sites across Lagos and internationally to identify conversion patterns — found that the best-performing event venue sites lead with space configuration tools, not hero videos',
+      'Developed a space taxonomy: categorised all 8 venue configurations by capacity, event type (exhibition, conference, wedding, concert), and setup style (theatre, banquet, cocktail)',
+      'Redesigned the enquiry flow with progressive disclosure — planners select event type first, then see only relevant spaces, then provide details (date, guest count, requirements) in a structured brief format',
+      'Built a CMS-driven events calendar directly in Framer, giving the marketing team full autonomy to add, edit, and remove events without touching code',
+      'Designed responsive layouts that used full-bleed photography with dimensional callouts (ceiling height, floor area, parking capacity) to communicate physical scale',
+      'Implemented scroll-based animations and interactive section reveals in Framer to give the site the premium, editorial feel expected of a venue at this tier',
+    ],
+
+    outcome: `Shipped as the live Landmark Events website. The marketing team now manages content independently, keeping the events calendar current for the first time.
+
+Enquiry quality improved measurably — planners now arrive with dates, guest counts, and space preferences pre-specified, reducing back-and-forth with the sales team. Inbound lead volume increased after launch as the structured enquiry form lowered the threshold for first contact. Events calendar is now updated weekly by the marketing team, no developer involvement required. Site serves as the primary digital touchpoint for event organisers considering the venue for exhibitions, conferences, and social events.
+
+Built entirely in Framer — design, interaction, CMS, and deployment — demonstrating that a single designer-developer can ship a production-grade marketing site for a venue of this calibre.`,
+
+    reception: `The marketing team ships weekly updates without touching engineering. 6+ months in, the site is still fresh — which is the real KPI.`,
+
+    reflection: `The biggest unlock on this project wasn\'t the design — it was giving the marketing team a CMS they actually use. The Framer CMS setup I built has survived 6+ months of weekly updates without breaking, which I consider the real success metric.
+
+Progressive disclosure doesn\'t just improve completion rates, it improves the quality of what gets submitted.`,
+
+    link: null,
+  },
+
+  // ─────────────────────────────────────────────────────────────
+
+  {
+    slug: 'we-are-wear',
+    number: '03',
+    title: 'We Are Wear',
+    tagline: `A discovery-first fashion marketplace for African designers`,
+    tags: ['Mobile App', 'E-Commerce', 'Discovery UX'],
+    client: 'We Are Wear',
+    year: '2025',
+    location: 'Remote',
+    role: 'Product Designer',
+    timeline: '4 months',
+    team: 'Founder, 1 Engineer, 1 Content Strategist',
+    cover: 'https://framerusercontent.com/images/9rxzSGbFPzINONwbQL9Fckii4Qc.webp?width=1134&height=893',
+    accent: '#DB2777',
+    accentSoft: '#F9A8D4',
+
+    hook: `Design a store that feels like scrolling a magazine — not a catalogue.`,
+
+    images: [
+      'https://framerusercontent.com/images/9rxzSGbFPzINONwbQL9Fckii4Qc.webp?width=1134&height=893',
+      'https://framerusercontent.com/images/0GNHWHzoC0ncayosY4a1N6i1yfg.jpg?width=4080&height=2296',
+    ],
+
+    metrics: [
+      { value: '60+', label: 'Screens designed' },
+      { value: '12', label: 'Apps benchmarked' },
+    ],
+
+    outcomeStats: [
+      { value: '60', suffix: '+', label: 'Screens across 4 core user flows' },
+      { value: '12', label: 'Competitor apps benchmarked' },
+      { value: '4', label: 'Distinct user journeys mapped' },
+      { value: '5', label: 'Usability test sessions' },
+      { value: '2', label: 'Modes in home feed — editorial + grid' },
+      { value: '1', label: 'Complete design system handed off' },
+    ],
+
+    deliverables: [
+      'Onboarding flow with brand preference capture',
+      'Dual-mode discovery feed (editorial + product grid)',
+      'Product detail with brand story & fit guidance',
+      '"Save to closet" wishlist mechanic',
+      'Brand-specific size guide components',
+      'Checkout flow with guest + account paths',
+      'Order tracking & post-purchase states',
+      'Complete design system for handoff',
+    ],
+
+    overview: `We Are Wear is a fashion marketplace connecting African designers and independent brands with style-conscious shoppers. Unlike conventional e-commerce apps that lead with search and categories, the founder\'s vision was a discovery-first experience — closer to how people browse a curated store than how they search a catalogue.
+
+I joined as the sole product designer, responsible for the complete mobile app experience from onboarding through purchase.`,
+
+    challenge: `The central tension was between discovery and conversion:
+
+• Discovery-first browsing feels good but historically converts poorly — users enjoy scrolling but don\'t add to cart. The design needed to balance inspiration with clear purchase paths.
+
+• Independent African brands are often unfamiliar to shoppers outside their region. Each product card needed to tell a brand story quickly, not just show a price tag.
+
+• Sizing and fit anxiety is the #1 barrier to fashion e-commerce conversion. Without the ability to try on, the product detail page had to carry extra weight in building purchase confidence.
+
+• The founder had strong aesthetic opinions. Translating a brand-owner\'s taste into a functional interface without compromising usability required constant negotiation.`,
+
+    pullQuote: `Fashion is one of the few categories where less information converts better than more. Finding the right amount per screen was the real design work.`,
+
+    approach: [
+      'Ran a competitive audit across 12 fashion apps (SSENSE, The RealReal, Jumia, Kisua) to identify where discovery UX succeeds and where it leaks',
+      'Designed a dual-mode home feed: curated editorial stories (brand spotlights, style guides) alternating with product grids — browsing feels editorial but always surfaces buyable items',
+      'Created product cards that show brand origin, designer name, and a short style note alongside the image and price — giving unfamiliar brands context before the user taps',
+      'Designed a "save to closet" mechanic as an intermediate commitment step between browsing and buying, reducing the pressure of the add-to-cart moment',
+      'Built detailed size guide components per brand (African sizing standards vary significantly) with a fit-preference questionnaire that personalises recommendations',
+      'Prototyped the full checkout flow in Figma with 5 usability test sessions — caught and fixed a critical drop-off at the shipping address step where users expected auto-fill',
+    ],
+
+    outcome: `Delivered a complete design system and 60+ screens covering onboarding, discovery feed, product detail, closet/wishlist, checkout, and order tracking. The design was handed off to the engineering team for development.
+
+The discovery feed structure was validated in user testing — participants spent significantly more time browsing compared to a conventional grid-only prototype. The "save to closet" mechanic showed early signal of reducing the browse-to-exit pattern common in fashion apps. Size guide components received strong positive feedback from both the founder and test participants. The design system enabled the single engineer to build consistently without constant design oversight during implementation.`,
+
+    reception: `The founder kept one design decision we initially debated for 3 weeks — the "save to closet" step — because users in testing kept asking for it unprompted.`,
+
+    reflection: `This project sharpened my ability to design for ambiguity. Working with a founder who had strong visual taste was a lesson in separating personal preference from user need. I learned to prototype both directions and let test data settle disagreements.`,
+
+    link: null,
+  },
+
+  // ─────────────────────────────────────────────────────────────
+
+  {
+    slug: 'flysmart',
+    number: '04',
+    title: 'FlySmart',
+    tagline: `A three-portal drone delivery logistics platform — 94 screens, top to bottom`,
+    tags: ['Web App', 'Logistics', 'Multi-portal', 'Design System', 'Dashboard'],
+    client: 'FlySmart',
+    year: '2025',
+    location: 'Remote',
+    role: 'Product Designer',
+    timeline: '5 months',
+    team: 'Product Manager, 3 Frontend Engineers, 1 Backend Engineer, QA',
+    cover: 'https://framerusercontent.com/images/lR97iC7TvTLzZJIa88VIn4qKw.webp?width=1920&height=1072',
+    accent: '#0EA5E9',
+    accentSoft: '#7DD3FC',
+
+    hook: `Design 94 screens. Make them feel like one product.`,
+
+    images: [
+      'https://framerusercontent.com/images/lR97iC7TvTLzZJIa88VIn4qKw.webp?width=1920&height=1072',
+      'https://framerusercontent.com/images/xn14raFI0MqgR8EHybMvOYUVY.png?width=1104&height=955',
+      'https://framerusercontent.com/images/3C0VOTTkKKwN2ontWnhZfDoAbzI.png?width=1722&height=2084',
+    ],
+
+    metrics: [
+      { value: '94+', label: 'Unique screens shipped' },
+      { value: '3', label: 'User portals unified' },
+    ],
+
+    outcomeStats: [
+      { value: '94', suffix: '+', label: 'Unique screens across 3 portals' },
+      { value: '3', label: 'Distinct user portals (Customer, Merchant, Admin)' },
+      { value: '20', suffix: '+', label: 'Component sets in design system' },
+      { value: '6', label: 'Steps in core booking flow' },
+      { value: '4', label: 'Branching paths in booking logic' },
+      { value: '2', label: 'Themes — light & dark across everything' },
+    ],
+
+    deliverables: [
+      'Customer booking flow (6 steps, 4 branches)',
+      'Customer wallet + transaction history',
+      'Premium subscription & loyalty points engine',
+      'Merchant order & inventory dashboards',
+      'POS/ERP sync interface with force-sync controls',
+      'Admin real-time drone tracking map',
+      'Drone fleet + hub + maintenance management',
+      'Complete auth suite (login, signup, verify, reset)',
+      '20+ component Tailwind design system',
+      'Light + dark mode across all 94 screens',
+      'Error states, empty states, edge cases for every flow',
+    ],
+
+    overview: `FlySmart is a drone delivery logistics platform that lets customers book drone deliveries, merchants manage inventory and fulfil orders, and operations admins oversee the entire drone fleet, hub network, and trip pipeline. Think of it as the full operational backbone for a drone delivery service — not just the consumer-facing layer, but the entire system.
+
+I was the sole product designer, responsible for all three portals end-to-end: information architecture, user flows, wireframes, high-fidelity UI (light + dark mode), a Tailwind-based component design system, and developer handoff specifications. The Figma file contains 94+ unique screens across two pages — high-fidelity explorations and a structured handoff page with annotated specs.`,
+
+    challenge: `This was one of the most structurally complex projects I\'ve worked on. The challenges were layered:
+
+• Three distinct user mental models in one product — Customers think in terms of "I need to send a package." Merchants think in terms of "I need to fulfil orders and track inventory." Admins think in terms of "I need to manage drones, hubs, and system health." Each portal needed its own navigation hierarchy, dashboard priorities, and task flows — but they all had to feel like the same product.
+
+• A 6-step booking flow that couldn\'t afford friction — the core customer journey had to handle branching logic without the user feeling lost in a wizard. Every additional step is a drop-off risk.
+
+• Real-time operational complexity — the admin portal needed a real-time map for live drone tracking, a drone management dashboard showing fleet status, a maintenance log for compliance, hub management for physical locations, and trip management for active deliveries. These are data-dense, operationally critical screens where a wrong reading has real consequences.
+
+• Financial trust layer — the platform includes a wallet system with top-up flows, transaction history, and a premium subscription tier (₦4,999/month) with a loyalty points engine. Users need to trust the payment system enough to pre-load money into a wallet for a service category (drone delivery) that\'s still novel in the market.
+
+• Dual-theme requirement from day one — both light and dark modes were required across all portals, which effectively doubled the design surface and demanded a token-based colour system from the start.`,
+
+    pullQuote: `When you're designing 94 screens across 3 portals, you can't art-direct each one individually. You have to build a machine that produces consistent screens from shared parts.`,
+
+    approach: [
+      'Started with a stakeholder-led domain mapping exercise — mapped every user type, their primary tasks, frequency of use, and critical decision points to establish the information architecture for all three portals before touching any UI',
+      'Designed the customer booking flow as a progressive multi-step form: Book Drone Delivery → Package Details (with custom package variant) → Schedule Delivery (Instant vs. Scheduled) → Confirm Details → Make Payment (wallet, card, UPI) → OTP Confirmation → Success states',
+      'Built the merchant portal around three operational pillars: Order Management (incoming orders, status tracking), Inventory Management (product catalogue with bulk CSV upload and POS/ERP sync), and Performance Analytics (order trends, delivery breakdown, top products, top locations)',
+      'Designed the admin portal for operational monitoring: Real-Time Map for live drone positions, Drone Management (fleet status), Hub Management (physical locations, capacity), Maintenance Log (compliance records), Trip Management, User & Role Management, Payments & Withdrawals',
+      'Created a Tailwind-based component design system covering 20+ component sets: Sidebar, Search, Accordion, Alert, Avatar, Auth Code, Breadcrumb, Button, Bottom Sheet, Checkbox, Chip, Combobox, Drawer, Dropdown, Loader, Modal, Radio, Switch, Text Input, Tooltip, Pagination — each with multiple variants and states',
+      'Designed the wallet and payments layer with transaction history (paginated, filterable), top-up flow (card/bank/UPI), and contact-support fallback. The premium subscription flow included plan comparison, upgrade confirmation, and cancellation with retention prompts',
+      'Built complete auth flows (Login, Sign Up, Verification Code, Forgot Password, Reset Password) and a settings architecture (Personal Info, Saved Addresses with empty states, Notification Preferences, Subscription Status, Change Password, Profile Photo with crop)',
+      'Designed support and error handling: Help & Support hub, live chat interface, delivery issue reporting, drone delivery failure error screens, delay notification patterns, and a notification modal system',
+      'Delivered two Figma pages — a high-fidelity exploration page with all dashboard and component variants in both light and dark mode, and a structured Handoff page with annotated developer specifications',
+    ],
+
+    outcome: `Delivered a complete product design system spanning 94+ unique screens across three user portals, with full light and dark mode coverage, a 20+ component design system, and structured developer handoff specifications.
+
+The 6-step booking flow handles 4 branching paths through a single progressive interface. The Tailwind-based component system enabled the frontend team to implement screens directly from design tokens, reducing interpretation gaps during handoff. The admin portal consolidates real-time drone tracking, fleet maintenance compliance, hub capacity management, and financial reconciliation into a single dashboard hierarchy — previously these existed as separate spreadsheets and manual processes. Merchant POS/ERP sync surfaced sync status, last-sync timestamps, and force-sync controls — addressing the operational anxiety merchants have about inventory accuracy.`,
+
+    reception: `The sidebar hierarchy I proposed for each portal was adopted unchanged. In a 94-screen project, that's the single clearest signal the architecture worked.`,
+
+    reflection: `FlySmart was the project that forced me to think in systems rather than screens. The component system wasn\'t a nice-to-have; it was the only way to stay sane and stay consistent.
+
+The biggest lesson was about navigation architecture. Each portal\'s sidebar tells a different story about what matters: the customer sidebar leads with "Book a Drone Delivery" (action-first), the merchant sidebar leads with "Order Management" (operations-first), and the admin sidebar leads with "Drone Management" (infrastructure-first). Getting those hierarchies right was more important than any individual screen design.`,
+
+    link: null,
+  },
+
+  // ─────────────────────────────────────────────────────────────
+
+  {
+    slug: 'pixel-pulse',
+    number: '05',
+    title: 'Pixel Pulse',
+    tagline: `A brand identity system built to outlive its designer`,
+    tags: ['Branding', 'Identity System', 'Print + Digital'],
+    client: 'Pixel Pulse',
+    year: '2025',
+    location: 'Lagos, Nigeria',
+    role: 'Brand Designer',
+    timeline: '6 weeks',
+    team: 'Creative Director, Copywriter',
+    cover: 'https://framerusercontent.com/images/HdRijaIyFVF9IsZtaToNSjQZliE.png?width=904&height=1200',
+    accent: '#F59E0B',
+    accentSoft: '#FCD34D',
+
+    hook: `Beautiful brand guidelines nobody uses are decorative. Templates are infrastructure.`,
+
+    images: [
+      'https://framerusercontent.com/images/HdRijaIyFVF9IsZtaToNSjQZliE.png?width=904&height=1200',
+      'https://framerusercontent.com/images/WTC6bdSAQkSAhHIskIIMS6iac.jpg?width=3060&height=4080',
+    ],
+
+    metrics: [
+      { value: '40+', label: 'Brand assets delivered' },
+      { value: '6', label: 'Touchpoint categories' },
+    ],
+
+    outcomeStats: [
+      { value: '40', suffix: '+', label: 'Individual brand assets delivered' },
+      { value: '6', label: 'Touchpoint categories covered' },
+      { value: '3', label: 'Strategic directions explored' },
+      { value: '4', label: 'Refinement rounds on selected direction' },
+      { value: '8', label: 'Accent colours in extended palette' },
+      { value: '40', label: 'Pages of brand guidelines documented' },
+    ],
+
+    deliverables: [
+      'Primary logo system (mark, wordmark, icon, lockups)',
+      'Primary + extended colour palette (8 accent colours)',
+      'Typography system with hierarchy specifications',
+      'Social media templates (IG grid, stories, carousels)',
+      'Business document templates (proposals, invoices, letterhead)',
+      'Digital templates (email signatures, slide decks)',
+      'Environmental assets (event badges, wall signage)',
+      '40-page brand guidelines document',
+    ],
+
+    overview: `Pixel Pulse is a creative collective based in Lagos, working across digital design, content production, and brand strategy. They approached me to build a cohesive brand identity system — they had talent and clients but no visual language that held together across touchpoints.
+
+I led the brand design from discovery through final delivery, producing a complete identity system spanning logo, typography, colour, iconography, templates, and guidelines.`,
+
+    challenge: `The challenges were both strategic and executional:
+
+• Positioning ambiguity — Pixel Pulse operated across "creative agency," "content studio," and "strategy consultancy" territories. The brand needed to unify these without defaulting to a generic "we do everything" identity.
+
+• Audience duality — the brand had to speak to two audiences: corporate clients (who need to see professionalism and reliability) and creative talent (who need to see taste and cultural relevance). These audiences respond to different visual signals.
+
+• Lagos creative market saturation — the Lagos design scene is increasingly competitive. The identity needed to be distinctive enough to be remembered after a single encounter — a business card, an Instagram post, a proposal cover.
+
+• System over logo — the founder explicitly didn\'t want "just a logo." They needed a system flexible enough to work across social media, proposal documents, event badges, merchandise, and environmental signage.`,
+
+    pullQuote: `The most valuable deliverable wasn't the logo. It was a template system a non-designer can fill in and publish in 10 minutes.`,
+
+    approach: [
+      'Conducted a brand discovery workshop with the founding team — mapped values, audience segments, competitive positioning, and aspirational brands they admire and why',
+      'Audited 20+ Lagos-based creative studios and agencies to identify visual territory that was already claimed versus whitespace opportunities',
+      'Developed 3 strategic brand directions (not just visual variations — each represented a different positioning stance) and presented with rationale for why each would attract different client types',
+      'Selected direction went through 4 refinement rounds: logo system (primary mark, wordmark, icon, lockup variants), then colour palette, then typography pairing, then application testing',
+      'Built a flexible colour system with a primary palette (2 colours) and an extended palette (6 accent colours) that allows the brand to shift tone across contexts without losing recognition',
+      'Designed template systems for: social media, business documents, digital assets, and environmental signage',
+      'Delivered a 40-page brand guidelines document covering usage rules, spacing, colour specifications, do/don\'t examples, and tone-of-voice notes',
+    ],
+
+    outcome: `Delivered the complete brand identity system across 6 touchpoint categories with 40+ individual assets. The identity is now live across Pixel Pulse\'s social media, client proposals, and event materials.
+
+Brand consistency across platforms — social media, proposals, and print materials now share a recognisable visual language for the first time. The template system reduced the team\'s time-to-publish for social content from hours to minutes, since layouts are pre-built and only require content swap. Client feedback cited the brand\'s "premium but approachable" positioning as a factor in choosing to work with Pixel Pulse over competitors. The extended colour system gave the team creative flexibility while the brand guidelines prevented drift.`,
+
+    reception: `The templates I built saved the team hours per post. The team stopped asking "how should this look?" and started asking "which template do I use?" — which is the sign the system works.`,
+
+    reflection: `Brand projects are where I learned that constraints create better work. The 6-week timeline forced disciplined decision-making — we couldn\'t afford to explore 10 directions. Three was the right number: enough choice to feel considered, few enough to compare meaningfully.`,
+
+    link: null,
+  },
+]
+
+export const getProject = (slug) => projects.find((p) => p.slug === slug)
+
+export const getNextProject = (slug) => {
+  const idx = projects.findIndex((p) => p.slug === slug)
+  if (idx === -1) return projects[0]
+  return projects[(idx + 1) % projects.length]
+}

@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide default cursor on desktop */
+@media (min-width: 1024px) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5f3ee;
+  color: #141414;
+  font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html.dark,
+html.dark body {
+  background: #0e0e0e;
+  color: #ededed;
+}
+
+::selection {
+  background: #6d28d9;
+  color: #f5f3ee;
+}
+
+/* Subtle grain overlay — editorial print feel */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+html.dark .grain::before {
+  opacity: 0.07;
+  mix-blend-mode: screen;
+}
+
+/* Display type utilities */
+.display-hero {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 0.88;
+}
+
+.display-lg {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-variation-settings: 'opsz' 120;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+.label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+.marquee-pause:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e2ded5; border-radius: 10px; }
+html.dark ::-webkit-scrollbar-thumb { background: #1f1f1f; }
+
+/* Link reveal underline */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.4s ease;
+}
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
+/* Dotted grid BG accent */
+.dotted {
+  background-image: radial-gradient(circle, #1414141a 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+html.dark .dotted {
+  background-image: radial-gradient(circle, #ededed1a 1px, transparent 1px);
+}
+
+/* Smooth scroll for all */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Subtle scale on scroll-reveal */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Page transition fade */
+@keyframes page-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.page-enter {
+  animation: page-in 0.4s ease;
+}
+
+/* Video hover overlay for Beyond Pixels */
+.video-overlay {
+  transition: opacity 0.4s ease;
+}
+
+/* CMS sidebar transition */
+.cms-sidebar {
+  transition: width 0.3s ease;
+}
