@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../lib/auth.jsx'
+import CustomCursor from '../components/CustomCursor.jsx'
 
 const fade = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }
 
@@ -48,6 +49,7 @@ export default function AdminLogin() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-cream px-6 dark:bg-dark-bg">
+      <CustomCursor />
       <div className="grain pointer-events-none fixed inset-0" />
       <motion.div
         initial="hidden" animate="show" variants={fade}
