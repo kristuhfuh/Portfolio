@@ -1,12 +1,8 @@
 import { useState, useRef } from 'react';
 
-/**
- * Lets the admin upload an image and click to set the focal point (crop focus).
- * Stores { x, y } as percentages. Renders the image with objectPosition.
- */
 export default function ImageFocalPoint({ label, imageValue, focusValue, onImageChange, onFocusChange }) {
   const [uploadMethod, setUploadMethod] = useState('url');
-  const [urlInput, setUrlInput] = useState(imageValue || '');
+  const [urlInput, setUrlInput] = useState('');
   const [dragging, setDragging] = useState(false);
   const containerRef = useRef(null);
 
@@ -15,13 +11,19 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const localUrl = URL.createObjectURL(file);
-    onImageChange(localUrl);
-    setUrlInput(localUrl);
+    onImageChange(URL.createObjectURL(file));
   };
 
   const handleUrlSubmit = () => {
     if (urlInput.trim()) onImageChange(urlInput.trim());
+  };
+
+  const handleDriveSubmit = () => {
+    if (!urlInput.trim()) return;
+    let url = urlInput.trim();
+    const match = url.match(/\/file\/d\/([^/]+)/);
+    if (match) url = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    onImageChange(url);
   };
 
   const getFocusFromEvent = (e) => {
@@ -31,29 +33,36 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
     onFocusChange({ x, y });
   };
 
+  const methods = [
+    { id: 'url', label: 'URL Link' },
+    { id: 'drive', label: 'Google Drive' },
+    { id: 'file', label: 'Upload File' },
+  ];
+
   return (
     <div className="space-y-3">
       <label className="label mb-1.5 block text-muted dark:text-dark-muted">{label}</label>
 
       {/* Method tabs */}
       <div className="flex gap-1 rounded-lg border border-line p-1 dark:border-dark-line w-fit">
-        {['url', 'file'].map(m => (
+        {methods.map(m => (
           <button
-            key={m}
+            key={m.id}
             type="button"
-            onClick={() => setUploadMethod(m)}
+            onClick={() => { setUploadMethod(m.id); setUrlInput(''); }}
             className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-              uploadMethod === m
+              uploadMethod === m.id
                 ? 'bg-accent text-cream'
                 : 'text-muted hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink'
             }`}
           >
-            {m === 'url' ? 'URL' : 'Upload File'}
+            {m.label}
           </button>
         ))}
       </div>
 
-      {uploadMethod === 'url' ? (
+      {/* URL */}
+      {uploadMethod === 'url' && (
         <div className="flex gap-2">
           <input
             type="url"
@@ -63,15 +72,38 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
             placeholder="https://example.com/image.jpg"
             className="flex-1 rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink"
           />
-          <button
-            type="button"
-            onClick={handleUrlSubmit}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90"
-          >
+          <button type="button" onClick={handleUrlSubmit}
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">
             Set
           </button>
         </div>
-      ) : (
+      )}
+
+      {/* Google Drive */}
+      {uploadMethod === 'drive' && (
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={urlInput}
+              onChange={e => setUrlInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleDriveSubmit()}
+              placeholder="https://drive.google.com/file/d/..."
+              className="flex-1 rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink"
+            />
+            <button type="button" onClick={handleDriveSubmit}
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">
+              Set
+            </button>
+          </div>
+          <p className="text-xs text-muted dark:text-dark-muted">
+            Paste a Google Drive share link. Make sure the file is set to "Anyone with the link".
+          </p>
+        </div>
+      )}
+
+      {/* File upload */}
+      {uploadMethod === 'file' && (
         <input
           type="file"
           accept="image/*"
@@ -80,12 +112,12 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
         />
       )}
 
+      {/* Image preview + focal point picker */}
       {imageValue && (
         <div className="space-y-2">
           <p className="text-xs text-muted dark:text-dark-muted">
-            Click on the image to set the crop focus point. Current: {focus.x}% {focus.y}%
+            Click or drag on the image to set the crop focus. Current: {focus.x}% {focus.y}%
           </p>
-          {/* Interactive focal point picker */}
           <div
             ref={containerRef}
             className="relative aspect-[3/4] w-48 overflow-hidden rounded-xl border-2 border-accent cursor-crosshair select-none"
@@ -101,7 +133,6 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
               className="w-full h-full object-cover pointer-events-none"
               style={{ objectPosition: `${focus.x}% ${focus.y}%` }}
             />
-            {/* Focal point crosshair */}
             <div
               className="absolute pointer-events-none"
               style={{ left: `${focus.x}%`, top: `${focus.y}%`, transform: 'translate(-50%, -50%)' }}
@@ -113,6 +144,10 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
               </div>
             </div>
           </div>
+          <button type="button" onClick={() => onImageChange('')}
+            className="text-xs text-red-500 hover:underline">
+            Remove image
+          </button>
         </div>
       )}
     </div>

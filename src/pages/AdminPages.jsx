@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels } from '../lib/cms.js'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
+import RichTextField from '../components/RichTextField.jsx'
 
 const inputCls = 'w-full rounded-lg border border-line bg-cream px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink'
 const textareaCls = inputCls + ' min-h-[120px] resize-y'
@@ -66,7 +67,7 @@ export default function AdminPages() {
             <textarea className={textareaCls} value={hero.headline} onChange={e => setHero({ ...hero, headline: e.target.value })} />
           </Field>
           <Field label="Subtitle">
-            <textarea className={textareaCls} value={hero.subtitle} onChange={e => setHero({ ...hero, subtitle: e.target.value })} />
+            <RichTextField value={hero.subtitle} onChange={v => setHero({ ...hero, subtitle: v })} placeholder="Hero subtitle…" minHeight={100} />
           </Field>
           <Field label="Focus"><input className={inputCls} value={hero.focus} onChange={e => setHero({ ...hero, focus: e.target.value })} /></Field>
           <Field label="Open To"><input className={inputCls} value={hero.openTo} onChange={e => setHero({ ...hero, openTo: e.target.value })} /></Field>
@@ -99,9 +100,11 @@ export default function AdminPages() {
 
         {/* About */}
         <Section title="About Section">
-          <Field label="Heading"><input className={inputCls} value={about.heading} onChange={e => setAbout({ ...about, heading: e.target.value })} /></Field>
-          <Field label="Bio (use \n\n for paragraphs)">
-            <textarea className={textareaCls + ' !min-h-[200px]'} value={about.bio} onChange={e => setAbout({ ...about, bio: e.target.value })} />
+          <Field label="Heading">
+            <RichTextField value={about.heading} onChange={v => setAbout({ ...about, heading: v })} placeholder="Section heading…" singleLine />
+          </Field>
+          <Field label="Bio">
+            <RichTextField value={about.bio} onChange={v => setAbout({ ...about, bio: v })} placeholder="Your bio…" minHeight={200} />
           </Field>
           <Field label="Photo URL"><input className={inputCls} value={about.photo} onChange={e => setAbout({ ...about, photo: e.target.value })} /></Field>
           {about.photo && <img src={about.photo} alt="preview" className="h-40 w-32 rounded-xl object-cover" />}
@@ -134,8 +137,12 @@ export default function AdminPages() {
 
         {/* Contact */}
         <Section title="Contact Section">
-          <Field label="Heading"><textarea className={textareaCls} value={contact.heading} onChange={e => setContact({ ...contact, heading: e.target.value })} /></Field>
-          <Field label="Description"><textarea className={textareaCls} value={contact.description} onChange={e => setContact({ ...contact, description: e.target.value })} /></Field>
+          <Field label="Heading">
+            <RichTextField value={contact.heading} onChange={v => setContact({ ...contact, heading: v })} placeholder="Contact heading…" minHeight={80} />
+          </Field>
+          <Field label="Description">
+            <RichTextField value={contact.description} onChange={v => setContact({ ...contact, description: v })} placeholder="Contact description…" minHeight={100} />
+          </Field>
           <Field label="Email"><input className={inputCls} value={contact.email} onChange={e => setContact({ ...contact, email: e.target.value })} /></Field>
           <Field label="LinkedIn URL"><input className={inputCls} value={contact.linkedin} onChange={e => setContact({ ...contact, linkedin: e.target.value })} /></Field>
           <Field label="Twitter URL"><input className={inputCls} value={contact.twitter} onChange={e => setContact({ ...contact, twitter: e.target.value })} /></Field>

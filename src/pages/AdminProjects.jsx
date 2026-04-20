@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { getProjects, saveProject, deleteProject, getProjectBySlug, toggleProjectVisibility } from '../lib/cms.js'
+import RichTextField from '../components/RichTextField.jsx'
 
 // ─── Projects List ───
 export function AdminProjects() {
@@ -231,7 +232,9 @@ export function AdminProjectEdit() {
               <Field label="Slug"><input className={inputCls} value={project.slug} onChange={e => update('slug', e.target.value)} placeholder="auto-generated" /></Field>
             </div>
 
-            <Field label="Tagline"><input className={inputCls} value={project.tagline} onChange={e => update('tagline', e.target.value)} /></Field>
+            <Field label="Tagline">
+              <RichTextField value={project.tagline} onChange={v => update('tagline', v)} placeholder="Short project description…" singleLine />
+            </Field>
 
             <div className="grid gap-6 md:grid-cols-3">
               <Field label="Number"><input className={inputCls} value={project.number} onChange={e => update('number', e.target.value)} placeholder="01" /></Field>
@@ -264,13 +267,13 @@ export function AdminProjectEdit() {
 
             <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Story Elements</h2>
             <Field label="Hook (big opening statement — one line, dramatic)">
-              <input className={inputCls} value={project.hook || ''} onChange={e => update('hook', e.target.value)} placeholder="e.g. Design 94 screens. Make them feel like one product." />
+              <RichTextField value={project.hook || ''} onChange={v => update('hook', v)} placeholder="e.g. Design 94 screens. Make them feel like one product." singleLine />
             </Field>
             <Field label="Pull Quote (mid-story editorial callout)">
-              <textarea className={textareaCls} value={project.pullQuote || ''} onChange={e => update('pullQuote', e.target.value)} placeholder="The lesson you want readers to walk away with." />
+              <RichTextField value={project.pullQuote || ''} onChange={v => update('pullQuote', v)} placeholder="The lesson you want readers to walk away with." minHeight={100} />
             </Field>
             <Field label="Reception (short quote about how the work was received)">
-              <textarea className={textareaCls} value={project.reception || ''} onChange={e => update('reception', e.target.value)} placeholder="e.g. Adopted unchanged — in a project this size, that's the clearest signal the architecture worked." />
+              <RichTextField value={project.reception || ''} onChange={v => update('reception', v)} placeholder="e.g. Adopted unchanged — in a project this size, that's the clearest signal the architecture worked." minHeight={100} />
             </Field>
 
             <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Outcome Stats (By the Numbers grid)</h2>
@@ -346,11 +349,21 @@ export function AdminProjectEdit() {
             </div>
 
             <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Narrative Sections</h2>
-            <Field label="Overview"><textarea className={textareaCls + ' !min-h-[200px]'} value={project.overview} onChange={e => update('overview', e.target.value)} /></Field>
-            <Field label="Challenge"><textarea className={textareaCls + ' !min-h-[200px]'} value={project.challenge} onChange={e => update('challenge', e.target.value)} /></Field>
-            <Field label="Approach (separate steps with ---  on its own line)"><textarea className={textareaCls + ' !min-h-[200px]'} value={approachStr} onChange={e => setApproachStr(e.target.value)} /></Field>
-            <Field label="Outcome"><textarea className={textareaCls + ' !min-h-[200px]'} value={project.outcome} onChange={e => update('outcome', e.target.value)} /></Field>
-            <Field label="Reflection"><textarea className={textareaCls + ' !min-h-[160px]'} value={project.reflection || ''} onChange={e => update('reflection', e.target.value)} /></Field>
+            <Field label="Overview">
+              <RichTextField value={project.overview} onChange={v => update('overview', v)} placeholder="Project overview…" minHeight={200} />
+            </Field>
+            <Field label="Challenge">
+              <RichTextField value={project.challenge} onChange={v => update('challenge', v)} placeholder="The design challenge…" minHeight={200} />
+            </Field>
+            <Field label="Approach (separate steps with --- on its own line)">
+              <textarea className={textareaCls + ' !min-h-[200px]'} value={approachStr} onChange={e => setApproachStr(e.target.value)} />
+            </Field>
+            <Field label="Outcome">
+              <RichTextField value={project.outcome} onChange={v => update('outcome', v)} placeholder="What was achieved…" minHeight={200} />
+            </Field>
+            <Field label="Reflection">
+              <RichTextField value={project.reflection || ''} onChange={v => update('reflection', v)} placeholder="What you learned…" minHeight={160} />
+            </Field>
           </div>
 
           <div className="mt-6 flex justify-end">
