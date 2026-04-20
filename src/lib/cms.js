@@ -82,6 +82,10 @@ const defaultPages = {
     subtitle: 'Product Designer turning complex ideas into interfaces people actually finish using. Four years across real estate, fintech, events, and consumer apps — with a specialty in Framer for production-ready prototypes and web.',
     focus: 'Product design · Framer development',
     openTo: 'Full-time · Contract · Select freelance',
+    topImage: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&h=1200&fit=crop',
+    topImageFocus: { x: 50, y: 50 },
+    bottomImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=1200&fit=crop',
+    bottomImageFocus: { x: 50, y: 50 },
   },
   about: {
     heading: 'The Design Poet — with a straight job.',

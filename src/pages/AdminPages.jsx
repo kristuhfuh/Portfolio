@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels } from '../lib/cms.js'
+import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 
 const inputCls = 'w-full rounded-lg border border-line bg-cream px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink'
 const textareaCls = inputCls + ' min-h-[120px] resize-y'
@@ -69,6 +70,27 @@ export default function AdminPages() {
           </Field>
           <Field label="Focus"><input className={inputCls} value={hero.focus} onChange={e => setHero({ ...hero, focus: e.target.value })} /></Field>
           <Field label="Open To"><input className={inputCls} value={hero.openTo} onChange={e => setHero({ ...hero, openTo: e.target.value })} /></Field>
+
+          <div className="pt-2 border-t border-line dark:border-dark-line">
+            <p className="label mb-4 text-muted dark:text-dark-muted">Hero Image Reveal — click image to set crop focus</p>
+            <div className="grid gap-6 md:grid-cols-2">
+              <ImageFocalPoint
+                label="Top Image (shown by default)"
+                imageValue={hero.topImage}
+                focusValue={hero.topImageFocus}
+                onImageChange={v => setHero({ ...hero, topImage: v })}
+                onFocusChange={v => setHero({ ...hero, topImageFocus: v })}
+              />
+              <ImageFocalPoint
+                label="Bottom Image (revealed on hover)"
+                imageValue={hero.bottomImage}
+                focusValue={hero.bottomImageFocus}
+                onImageChange={v => setHero({ ...hero, bottomImage: v })}
+                onFocusChange={v => setHero({ ...hero, bottomImageFocus: v })}
+              />
+            </div>
+          </div>
+
           <button onClick={() => save('hero', hero)}
             className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'hero' ? 'bg-emerald-500' : 'bg-accent'}`}>
             {saved === 'hero' ? '✓ Saved' : 'Save Hero'}
