@@ -188,27 +188,91 @@ function Reception({ quote, accent }) {
   )
 }
 
-// ─── Image gallery with thumbnail nav ───
-function ImageGallery({ images, title, accent }) {
+const THUMB_THRESHOLD = 5
+
+// Normalize images — handles both old string[] and new {url,caption}[] formats
+function normalizeImages(images) {
+  if (!images) return []
+  return images.map(img => typeof img === 'string' ? { url: img, caption: '' } : img)
+}
+
+// ─── Image gallery with thumbnail nav, arrows, and caption pill ───
+function ImageGallery({ images: rawImages, title, accent }) {
+  const images = normalizeImages(rawImages)
   const [activeIdx, setActiveIdx] = useState(0)
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowLeft') setActiveIdx(i => Math.max(0, i - 1))
+      if (e.key === 'ArrowRight') setActiveIdx(i => Math.min(images.length - 1, i + 1))
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [images.length])
+
   if (!images || images.length === 0) return null
+
+  const showArrows = images.length > 1
+  const showThumbs = images.length <= THUMB_THRESHOLD
+  const active = images[activeIdx]
+
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
       <div className="label mb-8 flex items-center gap-2 text-muted dark:text-dark-muted">
         <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
         Visual work
       </div>
-      <motion.div
-        key={activeIdx}
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mb-6 overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
-      >
-        <img src={images[activeIdx]} alt={`${title} — visual ${activeIdx + 1}`}
-          className="h-auto max-h-[75vh] w-full object-contain" />
-      </motion.div>
-      {images.length > 1 && (
+
+      {/* Main image */}
+      <div className="relative mb-6">
+        <motion.div
+          key={activeIdx}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
+        >
+          <img src={active.url} alt={`${title} — visual ${activeIdx + 1}`}
+            className="h-auto max-h-[75vh] w-full object-contain" />
+
+          {/* Caption pill */}
+          {active.caption && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute bottom-4 left-4 rounded-full bg-black/60 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
+            >
+              {active.caption}
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Left / Right arrows */}
+        {showArrows && (
+          <>
+            <button
+              onClick={() => setActiveIdx(i => Math.max(0, i - 1))}
+              disabled={activeIdx === 0}
+              className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20"
+              aria-label="Previous image"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button
+              onClick={() => setActiveIdx(i => Math.min(images.length - 1, i + 1))}
+              disabled={activeIdx === images.length - 1}
+              className="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20"
+              aria-label="Next image"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Thumbnails (≤ threshold) or counter + dots (> threshold) */}
+      {showThumbs && images.length > 1 && (
         <div className="flex gap-3">
           {images.map((img, i) => (
             <button key={i} onClick={() => setActiveIdx(i)}
@@ -217,9 +281,28 @@ function ImageGallery({ images, title, accent }) {
               }`}
               style={i === activeIdx ? { borderColor: accent } : {}}
             >
-              <img src={img} alt="" className="h-full w-full object-cover" />
+              <img src={img.url} alt="" className="h-full w-full object-cover" />
             </button>
           ))}
+        </div>
+      )}
+
+      {!showThumbs && (
+        <div className="flex items-center justify-center gap-4">
+          <div className="flex gap-1.5">
+            {images.map((_, i) => (
+              <button key={i} onClick={() => setActiveIdx(i)}
+                className="h-1.5 rounded-full transition-all"
+                style={{
+                  width: i === activeIdx ? 24 : 6,
+                  background: i === activeIdx ? accent : '#d1d5db',
+                }}
+              />
+            ))}
+          </div>
+          <span className="label text-xs text-muted dark:text-dark-muted">
+            {activeIdx + 1} / {images.length}
+          </span>
         </div>
       )}
     </section>

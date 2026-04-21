@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { getProjects, saveProject, deleteProject, getProjectBySlug, toggleProjectVisibility } from '../lib/cms.js'
 import RichTextField from '../components/RichTextField.jsx'
+import GalleryImageManager from '../components/GalleryImageManager.jsx'
+import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 
 // ─── Projects List ───
 export function AdminProjects() {
@@ -121,7 +123,7 @@ export function AdminProjectEdit() {
   const isNew = slug === 'new'
   const [project, setProject] = useState(emptyProject)
   const [tagsStr, setTagsStr] = useState('')
-  const [imagesStr, setImagesStr] = useState('')
+  const [galleryImages, setGalleryImages] = useState([])
   const [approachStr, setApproachStr] = useState('')
   const [deliverablesStr, setDeliverablesStr] = useState('')
   const [saved, setSaved] = useState(false)
@@ -135,7 +137,9 @@ export function AdminProjectEdit() {
       if (p) {
         setProject({ ...emptyProject, ...p })
         setTagsStr(p.tags?.join(', ') || '')
-        setImagesStr(p.images?.join('\n') || '')
+        setGalleryImages((p.images || []).map(img =>
+          typeof img === 'string' ? { url: img, caption: '' } : img
+        ))
         setApproachStr(p.approach?.join('\n---\n') || '')
         setDeliverablesStr(p.deliverables?.join('\n') || '')
       }
@@ -192,7 +196,7 @@ export function AdminProjectEdit() {
       slug: project.slug || project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       number: project.number || String(getProjects().length + 1).padStart(2, '0'),
       tags: tagsStr.split(',').map(t => t.trim()).filter(Boolean),
-      images: imagesStr.split('\n').map(u => u.trim()).filter(Boolean),
+      images: galleryImages,
       approach: approachStr.split('\n---\n').map(s => s.trim()).filter(Boolean),
       deliverables: deliverablesStr.split('\n').map(s => s.trim()).filter(Boolean),
     }
@@ -251,9 +255,19 @@ export function AdminProjectEdit() {
               <Field label="Tags (comma-separated)"><input className={inputCls} value={tagsStr} onChange={e => setTagsStr(e.target.value)} placeholder="Mobile App, Design System" /></Field>
             </div>
 
-            <Field label="Cover Image URL"><input className={inputCls} value={project.cover} onChange={e => update('cover', e.target.value)} placeholder="https://..." /></Field>
+            <Field label="Cover Image">
+              <ImageFocalPoint
+                label=""
+                imageValue={project.cover}
+                focusValue={project.coverFocus}
+                onImageChange={v => update('cover', v)}
+                onFocusChange={v => update('coverFocus', v)}
+              />
+            </Field>
 
-            <Field label="Gallery Images (one URL per line)"><textarea className={textareaCls} value={imagesStr} onChange={e => setImagesStr(e.target.value)} placeholder="https://...\nhttps://..." /></Field>
+            <Field label="Gallery Images">
+              <GalleryImageManager images={galleryImages} onChange={setGalleryImages} />
+            </Field>
 
             <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Metrics</h2>
             <div className="grid gap-6 md:grid-cols-2">
