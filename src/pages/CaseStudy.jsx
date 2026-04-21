@@ -201,7 +201,14 @@ function ImageGallery({ images: rawImages, title, accent }) {
   const images = normalizeImages(rawImages)
   const [activeIdx, setActiveIdx] = useState(0)
   const [paused, setPaused] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const [direction, setDirection] = useState(1)
+  const videoRef = useRef(null)
+
+  const active = images[activeIdx]
+  const isVideo = active?.type === 'video'
+  // Images: 5 s normal, 12 s on hover. Videos advance on onEnded instead.
+  const imageInterval = hovered ? 12000 : 5000
 
   const go = (next) => {
     setDirection(next > activeIdx ? 1 : -1)
@@ -210,21 +217,19 @@ function ImageGallery({ images: rawImages, title, accent }) {
 
   const prev = () => { if (activeIdx > 0) { setPaused(true); go(activeIdx - 1) } }
   const next = () => { setPaused(true); go((activeIdx + 1) % images.length) }
+  const advance = () => { setDirection(1); setActiveIdx(i => (i + 1) % images.length) }
 
-  // Auto-advance every 3 s, wraps around, pauses on manual interaction
+  // Image-only timer — skipped when current slide is a video
   useEffect(() => {
-    if (paused || images.length <= 1) return
-    const t = setInterval(() => {
-      setDirection(1)
-      setActiveIdx(i => (i + 1) % images.length)
-    }, 3000)
+    if (paused || isVideo || images.length <= 1) return
+    const t = setInterval(advance, imageInterval)
     return () => clearInterval(t)
-  }, [paused, images.length])
+  }, [paused, isVideo, images.length, imageInterval, activeIdx])
 
-  // Resume auto-play 6 s after last manual interaction
+  // Resume 8 s after last manual interaction
   useEffect(() => {
     if (!paused) return
-    const t = setTimeout(() => setPaused(false), 6000)
+    const t = setTimeout(() => setPaused(false), 8000)
     return () => clearTimeout(t)
   }, [paused, activeIdx])
 
@@ -241,7 +246,6 @@ function ImageGallery({ images: rawImages, title, accent }) {
   if (!images || images.length === 0) return null
 
   const showThumbs = images.length <= THUMB_THRESHOLD
-  const active = images[activeIdx]
 
   const variants = {
     enter: (d) => ({ opacity: 0, x: d > 0 ? 60 : -60, scale: 0.97 }),
@@ -269,8 +273,12 @@ function ImageGallery({ images: rawImages, title, accent }) {
       </div>
 
       {/* Main slide */}
-      <div className="relative mb-6 overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
-        style={{ minHeight: 320 }}>
+      <div
+        className="relative mb-6 overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
+        style={{ minHeight: 320 }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
         <AnimatePresence custom={direction} mode="popLayout">
           <motion.div
             key={activeIdx}
@@ -283,7 +291,16 @@ function ImageGallery({ images: rawImages, title, accent }) {
             className="w-full"
           >
             {active.type === 'video' ? (
-              <video src={active.url} controls className="h-auto max-h-[75vh] w-full" />
+              <video
+                ref={videoRef}
+                key={active.url}
+                src={active.url}
+                controls
+                autoPlay
+                playsInline
+                className="h-auto max-h-[75vh] w-full bg-black"
+                onEnded={() => { if (!paused) advance() }}
+              />
             ) : (
               <img src={active.url} alt={`${title} — visual ${activeIdx + 1}`}
                 className="h-auto max-h-[75vh] w-full object-contain" />
@@ -307,8 +324,8 @@ function ImageGallery({ images: rawImages, title, accent }) {
           )}
         </AnimatePresence>
 
-        {/* Progress bar */}
-        {images.length > 1 && !paused && (
+        {/* Progress bar — images only */}
+        {images.length > 1 && !paused && !isVideo && (
           <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/20">
             <motion.div
               key={`${activeIdx}-progress`}
@@ -316,7 +333,7 @@ function ImageGallery({ images: rawImages, title, accent }) {
               style={{ background: accent }}
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
-              transition={{ duration: 3, ease: 'linear' }}
+              transition={{ duration: imageInterval / 1000, ease: 'linear' }}
             />
           </div>
         )}

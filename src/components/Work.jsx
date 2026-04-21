@@ -8,16 +8,20 @@ function getSlides(project) {
   return [project.cover, ...gallery].filter(Boolean)
 }
 
-function SlideshowPreview({ project }) {
+function SlideshowPreview({ project, hovered }) {
   const slides = getSlides(project)
   const [idx, setIdx] = useState(0)
+  const interval = hovered ? 12000 : 5000
 
   useEffect(() => {
     setIdx(0)
+  }, [project.slug])
+
+  useEffect(() => {
     if (slides.length <= 1) return
-    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 3000)
+    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), interval)
     return () => clearInterval(t)
-  }, [project.slug, slides.length])
+  }, [slides.length, interval])
 
   return (
     <>
@@ -176,7 +180,7 @@ export default function Work() {
               className="pointer-events-none fixed right-10 top-1/2 z-40 hidden h-[340px] w-[260px] -translate-y-1/2 overflow-hidden rounded-2xl border-2 shadow-2xl lg:block"
               style={{ borderColor: hovered.accent }}
             >
-              <SlideshowPreview project={hovered} />
+              <SlideshowPreview project={hovered} hovered={true} />
             </motion.div>
           )}
         </div>
