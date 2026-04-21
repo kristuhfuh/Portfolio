@@ -1,7 +1,55 @@
 import { Link } from 'react-router-dom'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useState, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useRef, useEffect } from 'react'
 import { getProjects } from '../lib/cms.js'
+
+function getSlides(project) {
+  const gallery = (project.images || []).map(img => typeof img === 'string' ? img : img?.url).filter(Boolean)
+  return [project.cover, ...gallery].filter(Boolean)
+}
+
+function SlideshowPreview({ project }) {
+  const slides = getSlides(project)
+  const [idx, setIdx] = useState(0)
+
+  useEffect(() => {
+    setIdx(0)
+    if (slides.length <= 1) return
+    const t = setInterval(() => setIdx(i => (i + 1) % slides.length), 3000)
+    return () => clearInterval(t)
+  }, [project.slug, slides.length])
+
+  return (
+    <>
+      <AnimatePresence mode="sync">
+        <motion.img
+          key={slides[idx]}
+          src={slides[idx]}
+          alt={project.title}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </AnimatePresence>
+
+      {/* Dot indicators */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-14 left-0 right-0 flex justify-center gap-1 z-10">
+          {slides.map((_, i) => (
+            <div key={i} className="h-1 rounded-full transition-all duration-300"
+              style={{ width: i === idx ? 16 : 4, background: i === idx ? '#fff' : 'rgba(255,255,255,0.4)' }} />
+          ))}
+        </div>
+      )}
+
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-4 pb-4 pt-10">
+        <div className="font-display text-xl italic text-cream">{project.title}</div>
+      </div>
+    </>
+  )
+}
 
 function ProjectRow({ project, index, onHover }) {
   const { slug, number, title, tagline, tags, year, metrics, accent = '#6D28D9' } = project
@@ -128,10 +176,7 @@ export default function Work() {
               className="pointer-events-none fixed right-10 top-1/2 z-40 hidden h-[340px] w-[260px] -translate-y-1/2 overflow-hidden rounded-2xl border-2 shadow-2xl lg:block"
               style={{ borderColor: hovered.accent }}
             >
-              <img src={hovered.cover} alt={hovered.title} className="h-full w-full object-cover" />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-4 pb-4 pt-10">
-                <div className="font-display text-xl italic text-cream">{hovered.title}</div>
-              </div>
+              <SlideshowPreview project={hovered} />
             </motion.div>
           )}
         </div>
