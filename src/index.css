@@ -119,6 +119,9 @@ html.dark ::-webkit-scrollbar-thumb { background: #1f1f1f; }
   background-size: 100% 1px;
 }
 
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
 /* Rich text editor content styles */
 .rich-editor:focus { cursor: text; }
 .rich-editor b, .rich-editor strong { font-weight: 700; }

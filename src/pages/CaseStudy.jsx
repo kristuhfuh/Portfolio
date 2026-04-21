@@ -196,30 +196,29 @@ function normalizeImages(images) {
   return images.map(img => typeof img === 'string' ? { url: img, caption: '' } : img)
 }
 
-// ─── Image gallery — auto-slideshow with smooth transitions ───
+// ─── Image gallery — auto-slideshow + Apple-style thumbnail strip ───
 function ImageGallery({ images: rawImages, title, accent }) {
   const images = normalizeImages(rawImages)
   const [activeIdx, setActiveIdx] = useState(0)
   const [paused, setPaused] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [direction, setDirection] = useState(1)
-  const videoRef = useRef(null)
+  const thumbsRef = useRef(null)
+  const activeThumbRef = useRef(null)
 
   const active = images[activeIdx]
   const isVideo = active?.type === 'video'
-  // Images: 5 s normal, 12 s on hover. Videos advance on onEnded instead.
   const imageInterval = hovered ? 12000 : 5000
 
   const go = (next) => {
     setDirection(next > activeIdx ? 1 : -1)
     setActiveIdx(next)
   }
-
-  const prev = () => { if (activeIdx > 0) { setPaused(true); go(activeIdx - 1) } }
+  const prev = () => { setPaused(true); go(Math.max(0, activeIdx - 1)) }
   const next = () => { setPaused(true); go((activeIdx + 1) % images.length) }
   const advance = () => { setDirection(1); setActiveIdx(i => (i + 1) % images.length) }
 
-  // Image-only timer — skipped when current slide is a video
+  // Image timer — skipped for video slides
   useEffect(() => {
     if (paused || isVideo || images.length <= 1) return
     const t = setInterval(advance, imageInterval)
@@ -243,39 +242,45 @@ function ImageGallery({ images: rawImages, title, accent }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [activeIdx])
 
+  // Auto-scroll active thumbnail into view
+  useEffect(() => {
+    activeThumbRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+  }, [activeIdx])
+
   if (!images || images.length === 0) return null
 
-  const showThumbs = images.length <= THUMB_THRESHOLD
-
   const variants = {
-    enter: (d) => ({ opacity: 0, x: d > 0 ? 60 : -60, scale: 0.97 }),
+    enter: (d) => ({ opacity: 0, x: d > 0 ? 80 : -80, scale: 0.96 }),
     center: { opacity: 1, x: 0, scale: 1 },
-    exit:  (d) => ({ opacity: 0, x: d > 0 ? -60 : 60, scale: 0.97 }),
+    exit:  (d) => ({ opacity: 0, x: d > 0 ? -80 : 80, scale: 0.96 }),
   }
 
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
-      <div className="label mb-8 flex items-center justify-between">
+      {/* Header */}
+      <div className="label mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2 text-muted dark:text-dark-muted">
           <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
           Visual work
+          {images.length > 1 && (
+            <span className="text-muted/50 dark:text-dark-muted/50">{activeIdx + 1} / {images.length}</span>
+          )}
         </div>
         {images.length > 1 && (
           <button onClick={() => setPaused(p => !p)}
             className="label flex items-center gap-1.5 text-xs text-muted transition hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink">
-            {paused ? (
-              <><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume</>
-            ) : (
-              <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause</>
-            )}
+            {paused
+              ? <><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume</>
+              : <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause</>
+            }
           </button>
         )}
       </div>
 
-      {/* Main slide */}
+      {/* Main viewer */}
       <div
-        className="relative mb-6 overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
-        style={{ minHeight: 320 }}
+        className="relative mb-4 overflow-hidden rounded-3xl border border-line bg-black/5 dark:border-dark-line dark:bg-white/[0.02]"
+        style={{ minHeight: 340 }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -287,23 +292,26 @@ function ImageGallery({ images: rawImages, title, accent }) {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
             className="w-full"
           >
-            {active.type === 'video' ? (
+            {isVideo ? (
               <video
-                ref={videoRef}
                 key={active.url}
                 src={active.url}
                 controls
                 autoPlay
+                muted
                 playsInline
                 className="h-auto max-h-[75vh] w-full bg-black"
                 onEnded={() => { if (!paused) advance() }}
               />
             ) : (
-              <img src={active.url} alt={`${title} — visual ${activeIdx + 1}`}
-                className="h-auto max-h-[75vh] w-full object-contain" />
+              <img
+                src={active.url}
+                alt={`${title} — visual ${activeIdx + 1}`}
+                className="h-auto max-h-[75vh] w-full object-contain"
+              />
             )}
           </motion.div>
         </AnimatePresence>
@@ -316,7 +324,7 @@ function ImageGallery({ images: rawImages, title, accent }) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
+              transition={{ duration: 0.3, delay: 0.15 }}
               className="absolute bottom-4 left-4 z-10 rounded-full bg-black/60 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
             >
               {active.caption}
@@ -326,13 +334,13 @@ function ImageGallery({ images: rawImages, title, accent }) {
 
         {/* Progress bar — images only */}
         {images.length > 1 && !paused && !isVideo && (
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/20">
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10">
             <motion.div
-              key={`${activeIdx}-progress`}
-              className="h-full"
+              key={`bar-${activeIdx}`}
+              className="h-full origin-left"
               style={{ background: accent }}
-              initial={{ width: '0%' }}
-              animate={{ width: '100%' }}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
               transition={{ duration: imageInterval / 1000, ease: 'linear' }}
             />
           </div>
@@ -342,33 +350,42 @@ function ImageGallery({ images: rawImages, title, accent }) {
         {images.length > 1 && (
           <>
             <button onClick={prev} disabled={activeIdx === 0}
-              className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20"
-              aria-label="Previous">
+              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
             <button onClick={next}
-              className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70"
-              aria-label="Next">
+              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
             </button>
           </>
         )}
       </div>
 
-      {/* Thumbnails ≤ threshold */}
-      {showThumbs && images.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-1">
+      {/* Apple-style thumbnail strip */}
+      {images.length > 1 && (
+        <div
+          ref={thumbsRef}
+          className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+          style={{ scrollbarWidth: 'none' }}
+        >
           {images.map((img, i) => (
-            <button key={i} onClick={() => { setPaused(true); go(i) }}
-              className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-300 md:h-24 md:w-36 ${
-                i === activeIdx ? 'scale-105 opacity-100' : 'border-line opacity-50 hover:opacity-80 dark:border-dark-line'
-              }`}
-              style={i === activeIdx ? { borderColor: accent } : {}}>
+            <button
+              key={i}
+              ref={i === activeIdx ? activeThumbRef : null}
+              onClick={() => { setPaused(true); go(i) }}
+              className="relative shrink-0 overflow-hidden rounded-xl transition-all duration-300 focus:outline-none"
+              style={{
+                width: 80, height: 60,
+                border: `2px solid ${i === activeIdx ? accent : 'transparent'}`,
+                opacity: i === activeIdx ? 1 : 0.45,
+                transform: i === activeIdx ? 'scale(1.06)' : 'scale(1)',
+              }}
+            >
               {img.type === 'video' ? (
                 <>
-                  <video src={img.url} className="h-full w-full object-cover" muted />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <video src={img.url} className="h-full w-full object-cover" muted playsInline />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                   </div>
                 </>
               ) : (
@@ -376,20 +393,6 @@ function ImageGallery({ images: rawImages, title, accent }) {
               )}
             </button>
           ))}
-        </div>
-      )}
-
-      {/* Dot nav > threshold */}
-      {!showThumbs && images.length > 1 && (
-        <div className="flex items-center justify-center gap-4">
-          <div className="flex gap-1.5">
-            {images.map((_, i) => (
-              <button key={i} onClick={() => { setPaused(true); go(i) }}
-                className="h-1.5 rounded-full transition-all duration-300"
-                style={{ width: i === activeIdx ? 24 : 6, background: i === activeIdx ? accent : '#d1d5db' }} />
-            ))}
-          </div>
-          <span className="label text-xs text-muted dark:text-dark-muted">{activeIdx + 1} / {images.length}</span>
         </div>
       )}
     </section>

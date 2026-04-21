@@ -24,18 +24,20 @@ export default function GalleryImageManager({ images = [], onChange }) {
     setMethod(null);
   };
 
-  // Multiple files from picker or drag
+  // Multiple files from picker or drag — use MIME type, not URL, for type detection
   const handleFiles = (files) => {
-    const urls = Array.from(files)
+    const items = Array.from(files)
       .filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'))
-      .map(f => URL.createObjectURL(f));
-    addItems(urls);
+      .map(f => ({ url: URL.createObjectURL(f), caption: '', type: f.type.startsWith('video/') ? 'video' : 'image' }));
+    if (!items.length) return;
+    onChange([...images, ...items]);
+    setMethod(null);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setDraggingOver(false);
-    handleFiles(e.dataTransfer.files);
+    if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
   };
 
   // URL/Drive: support multiple lines
