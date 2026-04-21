@@ -1,5 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useEffect, useState, useRef } from 'react'
 import { getProjectBySlug as getProject, getProjects } from '../lib/cms.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
@@ -196,126 +196,183 @@ function normalizeImages(images) {
   return images.map(img => typeof img === 'string' ? { url: img, caption: '' } : img)
 }
 
-// ─── Image gallery with thumbnail nav, arrows, and caption pill ───
+// ─── Image gallery — auto-slideshow with smooth transitions ───
 function ImageGallery({ images: rawImages, title, accent }) {
   const images = normalizeImages(rawImages)
   const [activeIdx, setActiveIdx] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const [direction, setDirection] = useState(1)
 
+  const go = (next) => {
+    setDirection(next > activeIdx ? 1 : -1)
+    setActiveIdx(next)
+  }
+
+  const prev = () => { if (activeIdx > 0) { setPaused(true); go(activeIdx - 1) } }
+  const next = () => { setPaused(true); go((activeIdx + 1) % images.length) }
+
+  // Auto-advance every 3 s, wraps around, pauses on manual interaction
+  useEffect(() => {
+    if (paused || images.length <= 1) return
+    const t = setInterval(() => {
+      setDirection(1)
+      setActiveIdx(i => (i + 1) % images.length)
+    }, 3000)
+    return () => clearInterval(t)
+  }, [paused, images.length])
+
+  // Resume auto-play 6 s after last manual interaction
+  useEffect(() => {
+    if (!paused) return
+    const t = setTimeout(() => setPaused(false), 6000)
+    return () => clearTimeout(t)
+  }, [paused, activeIdx])
+
+  // Keyboard nav
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'ArrowLeft') setActiveIdx(i => Math.max(0, i - 1))
-      if (e.key === 'ArrowRight') setActiveIdx(i => Math.min(images.length - 1, i + 1))
+      if (e.key === 'ArrowLeft') prev()
+      if (e.key === 'ArrowRight') next()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [images.length])
+  }, [activeIdx])
 
   if (!images || images.length === 0) return null
 
-  const showArrows = images.length > 1
   const showThumbs = images.length <= THUMB_THRESHOLD
   const active = images[activeIdx]
 
+  const variants = {
+    enter: (d) => ({ opacity: 0, x: d > 0 ? 60 : -60, scale: 0.97 }),
+    center: { opacity: 1, x: 0, scale: 1 },
+    exit:  (d) => ({ opacity: 0, x: d > 0 ? -60 : 60, scale: 0.97 }),
+  }
+
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
-      <div className="label mb-8 flex items-center gap-2 text-muted dark:text-dark-muted">
-        <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
-        Visual work
+      <div className="label mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-muted dark:text-dark-muted">
+          <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+          Visual work
+        </div>
+        {images.length > 1 && (
+          <button onClick={() => setPaused(p => !p)}
+            className="label flex items-center gap-1.5 text-xs text-muted transition hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink">
+            {paused ? (
+              <><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume</>
+            ) : (
+              <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause</>
+            )}
+          </button>
+        )}
       </div>
 
-      {/* Main image */}
-      <div className="relative mb-6">
-        <motion.div
-          key={activeIdx}
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
-        >
-          {active.type === 'video' ? (
-            <video src={active.url} controls className="h-auto max-h-[75vh] w-full" />
-          ) : (
-            <img src={active.url} alt={`${title} — visual ${activeIdx + 1}`}
-              className="h-auto max-h-[75vh] w-full object-contain" />
-          )}
+      {/* Main slide */}
+      <div className="relative mb-6 overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
+        style={{ minHeight: 320 }}>
+        <AnimatePresence custom={direction} mode="popLayout">
+          <motion.div
+            key={activeIdx}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+            className="w-full"
+          >
+            {active.type === 'video' ? (
+              <video src={active.url} controls className="h-auto max-h-[75vh] w-full" />
+            ) : (
+              <img src={active.url} alt={`${title} — visual ${activeIdx + 1}`}
+                className="h-auto max-h-[75vh] w-full object-contain" />
+            )}
+          </motion.div>
+        </AnimatePresence>
 
-          {/* Caption pill */}
+        {/* Caption pill */}
+        <AnimatePresence>
           {active.caption && (
             <motion.div
-              initial={{ opacity: 0, y: 6 }}
+              key={active.caption}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute bottom-4 left-4 rounded-full bg-black/60 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
+              exit={{ opacity: 0, y: 4 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="absolute bottom-4 left-4 z-10 rounded-full bg-black/60 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
             >
               {active.caption}
             </motion.div>
           )}
-        </motion.div>
+        </AnimatePresence>
 
-        {/* Left / Right arrows */}
-        {showArrows && (
+        {/* Progress bar */}
+        {images.length > 1 && !paused && (
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white/20">
+            <motion.div
+              key={`${activeIdx}-progress`}
+              className="h-full"
+              style={{ background: accent }}
+              initial={{ width: '0%' }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 3, ease: 'linear' }}
+            />
+          </div>
+        )}
+
+        {/* Arrows */}
+        {images.length > 1 && (
           <>
-            <button
-              onClick={() => setActiveIdx(i => Math.max(0, i - 1))}
-              disabled={activeIdx === 0}
-              className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20"
-              aria-label="Previous image"
-            >
+            <button onClick={prev} disabled={activeIdx === 0}
+              className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20"
+              aria-label="Previous">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <button
-              onClick={() => setActiveIdx(i => Math.min(images.length - 1, i + 1))}
-              disabled={activeIdx === images.length - 1}
-              className="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20"
-              aria-label="Next image"
-            >
+            <button onClick={next}
+              className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70"
+              aria-label="Next">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
             </button>
           </>
         )}
       </div>
 
-      {/* Thumbnails (≤ threshold) or counter + dots (> threshold) */}
+      {/* Thumbnails ≤ threshold */}
       {showThumbs && images.length > 1 && (
-        <div className="flex gap-3">
+        <div className="flex gap-3 overflow-x-auto pb-1">
           {images.map((img, i) => (
-            <button key={i} onClick={() => setActiveIdx(i)}
-              className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border-2 transition-all md:h-24 md:w-36 ${
-                i === activeIdx ? 'opacity-100' : 'border-line opacity-50 hover:opacity-80 dark:border-dark-line'
+            <button key={i} onClick={() => { setPaused(true); go(i) }}
+              className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-300 md:h-24 md:w-36 ${
+                i === activeIdx ? 'scale-105 opacity-100' : 'border-line opacity-50 hover:opacity-80 dark:border-dark-line'
               }`}
-              style={i === activeIdx ? { borderColor: accent } : {}}
-            >
+              style={i === activeIdx ? { borderColor: accent } : {}}>
               {img.type === 'video' ? (
-              <>
-                <video src={img.url} className="h-full w-full object-cover" muted />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                </div>
-              </>
-            ) : (
-              <img src={img.url} alt="" className="h-full w-full object-cover" />
-            )}
+                <>
+                  <video src={img.url} className="h-full w-full object-cover" muted />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </div>
+                </>
+              ) : (
+                <img src={img.url} alt="" className="h-full w-full object-cover" />
+              )}
             </button>
           ))}
         </div>
       )}
 
-      {!showThumbs && (
+      {/* Dot nav > threshold */}
+      {!showThumbs && images.length > 1 && (
         <div className="flex items-center justify-center gap-4">
           <div className="flex gap-1.5">
             {images.map((_, i) => (
-              <button key={i} onClick={() => setActiveIdx(i)}
-                className="h-1.5 rounded-full transition-all"
-                style={{
-                  width: i === activeIdx ? 24 : 6,
-                  background: i === activeIdx ? accent : '#d1d5db',
-                }}
-              />
+              <button key={i} onClick={() => { setPaused(true); go(i) }}
+                className="h-1.5 rounded-full transition-all duration-300"
+                style={{ width: i === activeIdx ? 24 : 6, background: i === activeIdx ? accent : '#d1d5db' }} />
             ))}
           </div>
-          <span className="label text-xs text-muted dark:text-dark-muted">
-            {activeIdx + 1} / {images.length}
-          </span>
+          <span className="label text-xs text-muted dark:text-dark-muted">{activeIdx + 1} / {images.length}</span>
         </div>
       )}
     </section>
