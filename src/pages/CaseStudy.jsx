@@ -300,9 +300,8 @@ function ImageGallery({ images: rawImages, title, accent }) {
                 key={active.url}
                 src={active.url}
                 controls
-                autoPlay
-                muted
                 playsInline
+                preload="metadata"
                 className="h-auto max-h-[75vh] w-full bg-black"
                 onEnded={() => { if (!paused) advance() }}
               />
