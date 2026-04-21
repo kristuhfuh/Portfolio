@@ -232,8 +232,12 @@ function ImageGallery({ images: rawImages, title, accent }) {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="relative overflow-hidden rounded-3xl border border-line bg-white/30 dark:border-dark-line dark:bg-white/[0.02]"
         >
-          <img src={active.url} alt={`${title} — visual ${activeIdx + 1}`}
-            className="h-auto max-h-[75vh] w-full object-contain" />
+          {active.type === 'video' ? (
+            <video src={active.url} controls className="h-auto max-h-[75vh] w-full" />
+          ) : (
+            <img src={active.url} alt={`${title} — visual ${activeIdx + 1}`}
+              className="h-auto max-h-[75vh] w-full object-contain" />
+          )}
 
           {/* Caption pill */}
           {active.caption && (
@@ -276,12 +280,21 @@ function ImageGallery({ images: rawImages, title, accent }) {
         <div className="flex gap-3">
           {images.map((img, i) => (
             <button key={i} onClick={() => setActiveIdx(i)}
-              className={`relative h-20 w-28 overflow-hidden rounded-xl border-2 transition-all md:h-24 md:w-36 ${
+              className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border-2 transition-all md:h-24 md:w-36 ${
                 i === activeIdx ? 'opacity-100' : 'border-line opacity-50 hover:opacity-80 dark:border-dark-line'
               }`}
               style={i === activeIdx ? { borderColor: accent } : {}}
             >
+              {img.type === 'video' ? (
+              <>
+                <video src={img.url} className="h-full w-full object-cover" muted />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+              </>
+            ) : (
               <img src={img.url} alt="" className="h-full w-full object-cover" />
+            )}
             </button>
           ))}
         </div>
