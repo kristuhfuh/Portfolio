@@ -205,6 +205,7 @@ function ImageGallery({ images: rawImages, title, accent }) {
   const [direction, setDirection] = useState(1)
   const thumbsRef = useRef(null)
   const activeThumbRef = useRef(null)
+  const didMountRef = useRef(false)
 
   const active = images[activeIdx]
   const isVideo = active?.type === 'video'
@@ -242,8 +243,9 @@ function ImageGallery({ images: rawImages, title, accent }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [activeIdx])
 
-  // Auto-scroll active thumbnail into view
+  // Auto-scroll active thumbnail into view (skip on initial mount)
   useEffect(() => {
+    if (!didMountRef.current) { didMountRef.current = true; return }
     activeThumbRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
   }, [activeIdx])
 
