@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 
 function convertDrive(raw) {
   const match = raw.match(/\/file\/d\/([^/?#]+)/);
-  return match ? `https://lh3.googleusercontent.com/d/${match[1]}` : raw;
+  return match ? `https://drive.google.com/thumbnail?id=${match[1]}&sz=w2000` : raw;
 }
 
 function isVideoUrl(url) {
@@ -31,7 +31,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
   };
 
   const handleAdd = () => {
-    const lines = input.split('\n').map(l => l.trim()).filter(Boolean);
+    const lines = input.split(/[\r\n]+/).map(l => l.trim()).filter(Boolean);
     if (!lines.length) return;
     addFromUrls(method === 'drive' ? lines.map(convertDrive) : lines);
   };
