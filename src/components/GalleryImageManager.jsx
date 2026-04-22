@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 
 function convertDrive(raw) {
-  const match = raw.match(/\/file\/d\/([^/]+)/);
+  const match = raw.match(/\/file\/d\/([^/?#]+)/);
   return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : raw;
 }
 
@@ -145,11 +145,11 @@ export default function GalleryImageManager({ images = [], onChange }) {
             <p className="text-xs font-medium text-ink dark:text-dark-ink">Add from Google Drive</p>
             <button type="button" onClick={() => setMethod(null)} className="text-xs text-muted hover:text-ink dark:text-dark-muted">← Back</button>
           </div>
-          <textarea value={input} onChange={e => setInput(e.target.value)} rows={4} autoFocus
-            placeholder={"https://drive.google.com/file/d/ABC123/view"}
+          <textarea value={input} onChange={e => setInput(e.target.value)} rows={6} autoFocus
+            placeholder={"https://drive.google.com/file/d/ABC123/view\nhttps://drive.google.com/file/d/DEF456/view\nhttps://drive.google.com/file/d/GHI789/view"}
             className={inputCls + ' resize-none'} />
           <div className="flex items-center justify-between">
-            <p className="text-[11px] text-muted dark:text-dark-muted">One link per line. Set to "Anyone with the link".</p>
+            <p className="text-[11px] text-muted dark:text-dark-muted">Paste one link per line — each link becomes one image. Set files to "Anyone with the link".</p>
             <button type="button" onClick={handleAdd} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">Add All</button>
           </div>
         </div>
