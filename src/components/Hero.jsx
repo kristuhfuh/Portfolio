@@ -2,6 +2,13 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import AvailabilityBadge from './AvailabilityBadge.jsx'
 import HeroImageBox from './HeroImageBox.jsx'
+import { getPageContent } from '../lib/cms.js'
+
+function cvDownloadUrl(raw) {
+  if (!raw) return null
+  const match = raw.match(/\/file\/d\/([^/?#]+)/)
+  return match ? `https://drive.google.com/uc?export=download&id=${match[1]}` : raw
+}
 
 const fade = {
   hidden: { opacity: 0, y: 24 },
@@ -45,6 +52,8 @@ export default function Hero() {
   const bgY = useTransform(scrollYProgress, [0, 1], [0, 180])
   const textY = useTransform(scrollYProgress, [0, 1], [0, -60])
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
+  const heroContent = getPageContent('hero')
+  const cvUrl = cvDownloadUrl(heroContent.cvUrl)
 
   return (
     <section ref={ref} className="relative overflow-hidden pb-24 pt-40 md:pb-40 md:pt-48">
@@ -105,11 +114,13 @@ export default function Hero() {
                 <div className="label text-muted dark:text-dark-muted">Open to</div>
                 <div className="mt-1 text-ink dark:text-dark-ink">Full-time · Contract · Select freelance</div>
               </div>
-              <a href="/resume.pdf"
-                className="label mt-2 inline-flex w-fit items-center gap-2 text-ink dark:text-dark-ink">
-                <span className="link-underline">Download CV</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v14M5 10l7 7 7-7" /></svg>
-              </a>
+              {cvUrl && (
+                <a href={cvUrl} target="_blank" rel="noopener noreferrer" download
+                  className="label mt-2 inline-flex w-fit items-center gap-2 text-ink dark:text-dark-ink">
+                  <span className="link-underline">Download CV</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v14M5 10l7 7 7-7" /></svg>
+                </a>
+              )}
             </motion.div>
           </div>
         </motion.div>

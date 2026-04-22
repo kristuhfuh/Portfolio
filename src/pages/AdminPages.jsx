@@ -71,6 +71,11 @@ export default function AdminPages() {
           </Field>
           <Field label="Focus"><input className={inputCls} value={hero.focus} onChange={e => setHero({ ...hero, focus: e.target.value })} /></Field>
           <Field label="Open To"><input className={inputCls} value={hero.openTo} onChange={e => setHero({ ...hero, openTo: e.target.value })} /></Field>
+          <Field label="CV / Resume URL">
+            <input className={inputCls} value={hero.cvUrl || ''} onChange={e => setHero({ ...hero, cvUrl: e.target.value })}
+              placeholder="Paste a Google Drive or direct link to your CV PDF" />
+            <p className="mt-1.5 text-[11px] text-muted dark:text-dark-muted">For Google Drive: share the file → "Anyone with the link" → paste the link here.</p>
+          </Field>
 
           <div className="pt-2 border-t border-line dark:border-dark-line">
             <p className="label mb-4 text-muted dark:text-dark-muted">Hero Image Reveal — click image to set crop focus</p>
