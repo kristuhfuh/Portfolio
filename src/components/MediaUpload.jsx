@@ -43,9 +43,9 @@ export default function MediaUpload({ value, onChange, label = 'Media', accept =
       let driveUrl = urlInput.trim();
       
       // Convert "https://drive.google.com/file/d/FILE_ID/view" to direct link
-      const driveMatch = driveUrl.match(/\/file\/d\/([^\/]+)/);
+      const driveMatch = driveUrl.match(/\/file\/d\/([^/?#]+)/);
       if (driveMatch) {
-        driveUrl = `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
+        driveUrl = `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
       }
       
       onChange(driveUrl);

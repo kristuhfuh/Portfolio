@@ -21,8 +21,8 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
   const handleDriveSubmit = () => {
     if (!urlInput.trim()) return;
     let url = urlInput.trim();
-    const match = url.match(/\/file\/d\/([^/]+)/);
-    if (match) url = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    const match = url.match(/\/file\/d\/([^/?#]+)/);
+    if (match) url = `https://lh3.googleusercontent.com/d/${match[1]}`;
     onImageChange(url);
   };
 

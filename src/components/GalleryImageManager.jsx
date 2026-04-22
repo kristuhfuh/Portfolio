@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 
 function convertDrive(raw) {
   const match = raw.match(/\/file\/d\/([^/?#]+)/);
-  return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : raw;
+  return match ? `https://lh3.googleusercontent.com/d/${match[1]}` : raw;
 }
 
 function isVideoUrl(url) {
