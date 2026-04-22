@@ -9,6 +9,26 @@ function isVideoUrl(url) {
   return /\.(mp4|webm|mov|ogg)(\?|$)/i.test(url);
 }
 
+// Extract all URLs from pasted text regardless of separator (newline, comma, space)
+function extractUrls(text) {
+  return (text.match(/https?:\/\/[^\s,]+/g) || [])
+    .map(u => u.replace(/[,;.]+$/, '').trim())
+    .filter(Boolean);
+}
+
+// Guess a human-readable name from the raw URL before conversion
+function guessName(raw, idx, baseCount) {
+  const driveMatch = raw.match(/\/file\/d\/([^/?#]+)/);
+  if (driveMatch) return `Image ${baseCount + idx + 1}`;
+  try {
+    const parts = new URL(raw).pathname.split('/').filter(Boolean);
+    const last = decodeURIComponent(parts[parts.length - 1] || '');
+    const name = last.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+    if (name.length > 2 && !/^[a-f0-9-]{20,}$/i.test(name)) return name;
+  } catch {}
+  return `Image ${baseCount + idx + 1}`;
+}
+
 export default function GalleryImageManager({ images = [], onChange }) {
   const [method, setMethod] = useState(null);
   const [input, setInput] = useState('');
@@ -25,15 +45,18 @@ export default function GalleryImageManager({ images = [], onChange }) {
     if (items.length) { onChange([...images, ...items]); setMethod(null); }
   };
 
-  const addFromUrls = (urls) => {
-    const items = urls.map(url => ({ url, caption: '', type: isVideoUrl(url) ? 'video' : 'image' }));
+  const addFromUrls = (items) => {
     if (items.length) { onChange([...images, ...items]); setInput(''); setMethod(null); }
   };
 
   const handleAdd = () => {
-    const lines = input.split(/[\r\n]+/).map(l => l.trim()).filter(Boolean);
-    if (!lines.length) return;
-    addFromUrls(method === 'drive' ? lines.map(convertDrive) : lines);
+    const rawUrls = extractUrls(input);
+    if (!rawUrls.length) return;
+    const items = rawUrls.map((raw, i) => {
+      const url = method === 'drive' ? convertDrive(raw) : raw;
+      return { url, caption: guessName(raw, i, images.length), type: isVideoUrl(url) ? 'video' : 'image' };
+    });
+    addFromUrls(items);
   };
 
   // ── Item ops ──────────────────────────────────────────────────
@@ -203,7 +226,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
               {/* Caption + controls */}
               <div className="flex flex-1 flex-col gap-2" onMouseDown={e => e.stopPropagation()}>
                 <input type="text" value={item.caption || ''} onChange={e => updateCaption(i, e.target.value)}
-                  placeholder="Caption (shown as pill on image)…"
+                  placeholder="Image name / caption…"
                   className="w-full rounded-lg border border-line bg-cream px-3 py-1.5 text-xs text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink cursor-text" />
                 <div className="flex gap-1.5 items-center">
                   <span className={`rounded-md px-2 py-1 text-[10px] font-medium ${
