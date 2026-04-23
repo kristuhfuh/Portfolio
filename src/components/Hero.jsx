@@ -11,10 +11,10 @@ function cvDownloadUrl(raw) {
 }
 
 const fade = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 16 },
   show: (i = 0) => ({
     opacity: 1, y: 0,
-    transition: { duration: 0.9, delay: 0.08 * i, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.55, delay: 0.07 * i, ease: [0.23, 1, 0.32, 1] },
   }),
 }
 
@@ -32,10 +32,10 @@ function RotatingWord() {
       <AnimatePresence mode="wait">
         <motion.span
           key={rotatingWords[index]}
-          initial={{ opacity: 0, y: 20, rotateX: -90 }}
+          initial={{ opacity: 0, y: 12, rotateX: -70 }}
           animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          exit={{ opacity: 0, y: -20, rotateX: 90 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          exit={{ opacity: 0, y: -12, rotateX: 70 }}
+          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
           className="inline-block italic text-accent"
           style={{ transformOrigin: 'center center' }}
         >
@@ -103,8 +103,10 @@ export default function Hero() {
           <div className="md:col-span-5 lg:col-span-5 lg:col-start-8 flex flex-col gap-8 items-start">
             <HeroImageBox />
 
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+            <motion.div
+              initial={{ opacity: 0, transform: 'translateX(20px)' }}
+              animate={{ opacity: 1, transform: 'translateX(0px)' }}
+              transition={{ duration: 0.55, delay: 0.22, ease: [0.23, 1, 0.32, 1] }}
               className="flex flex-col gap-4 border-l border-line pl-6 dark:border-dark-line w-full">
               <div>
                 <div className="label text-muted dark:text-dark-muted">Focus</div>
@@ -116,7 +118,7 @@ export default function Hero() {
               </div>
               {cvUrl && (
                 <a href={cvUrl} target="_blank" rel="noopener noreferrer" download
-                  className="label mt-2 inline-flex w-fit items-center gap-2 text-ink dark:text-dark-ink">
+                  className="label mt-2 inline-flex w-fit items-center gap-2 text-ink transition-transform duration-150 active:scale-[0.95] dark:text-dark-ink">
                   <span className="link-underline">Download CV</span>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v14M5 10l7 7 7-7" /></svg>
                 </a>
@@ -133,8 +135,8 @@ export default function Hero() {
           className="mt-20 flex items-center gap-3 text-muted dark:text-dark-muted"
         >
           <motion.span
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            animate={{ y: [0, 5, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
             className="inline-block"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 5v14M5 12l7 7 7-7" /></svg>

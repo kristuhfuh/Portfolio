@@ -9,7 +9,7 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label="Toggle theme"
-      className="group flex h-9 w-9 items-center justify-center rounded-full border border-line transition-colors hover:bg-ink hover:text-cream dark:border-dark-line dark:hover:bg-cream dark:hover:text-ink"
+      className="group flex h-9 w-9 items-center justify-center rounded-full border border-line transition-[colors,transform] duration-150 hover:bg-ink hover:text-cream active:scale-[0.92] dark:border-dark-line dark:hover:bg-cream dark:hover:text-ink"
     >
       {theme === 'light' ? (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
@@ -27,8 +27,8 @@ export default function Nav() {
   // Scroll progress tracking
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+    stiffness: 200,
+    damping: 40,
     restDelta: 0.001
   })
 
@@ -65,7 +65,7 @@ export default function Nav() {
           <ThemeToggle />
           <a
             href="mailto:hello@kristuhfuh.com"
-            className="label hidden rounded-full bg-ink px-4 py-2.5 text-cream transition-colors hover:bg-accent dark:bg-cream dark:text-ink dark:hover:bg-accent dark:hover:text-cream md:inline-flex"
+            className="label hidden rounded-full bg-ink px-4 py-2.5 text-cream transition-[background-color,transform] duration-150 hover:bg-accent active:scale-[0.95] dark:bg-cream dark:text-ink dark:hover:bg-accent dark:hover:text-cream md:inline-flex"
           >
             Let's Talk
           </a>

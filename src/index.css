@@ -20,6 +20,11 @@ body {
 
 :root {
   color-scheme: light;
+
+  /* Custom easing curves — stronger than CSS builtins */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 html,
@@ -113,10 +118,12 @@ html.dark ::-webkit-scrollbar-thumb { background: #1f1f1f; }
   background-size: 0% 1px;
   background-position: 0 100%;
   background-repeat: no-repeat;
-  transition: background-size 0.4s ease;
+  transition: background-size 0.25s var(--ease-out);
 }
-.link-underline:hover {
-  background-size: 100% 1px;
+@media (hover: hover) and (pointer: fine) {
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
 }
 
 /* Hide scrollbar utility */
@@ -176,10 +183,31 @@ html {
 
 /* Video hover overlay for Beyond Pixels */
 .video-overlay {
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s var(--ease-out);
 }
 
 /* CMS sidebar transition */
 .cms-sidebar {
-  transition: width 0.3s ease;
+  transition: width 0.3s var(--ease-out);
+}
+
+/* Button press feedback — apply to any pressable element */
+.btn-press {
+  transition: transform 160ms var(--ease-out);
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* prefers-reduced-motion — remove position-based animations, keep opacity */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-float {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

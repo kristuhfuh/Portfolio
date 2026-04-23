@@ -60,21 +60,21 @@ function ProjectRow({ project, index, onHover }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
-      transition={{ duration: 0.7, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.5, delay: index * 0.05, ease: [0.23, 1, 0.32, 1] }}
       onMouseEnter={() => onHover(project)}
       onMouseLeave={() => onHover(null)}
     >
       <Link to={`/work/${slug}`}
-        className="group relative block border-b border-line py-10 transition-colors dark:border-dark-line md:py-14"
+        className="group relative block border-b border-line py-10 transition-[background-color,transform] duration-150 active:scale-[0.995] dark:border-dark-line md:py-14"
       >
         {/* Hover background sweep */}
         <motion.div
           initial={{ scaleX: 0 }}
           whileHover={{ scaleX: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
           className="pointer-events-none absolute inset-0 origin-left opacity-[0.04]"
           style={{ background: accent }}
         />
@@ -83,7 +83,7 @@ function ProjectRow({ project, index, onHover }) {
           {/* Number + accent dot */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2">
-              <span className="inline-block h-1.5 w-1.5 rounded-full transition-all duration-500 group-hover:scale-150"
+              <span className="inline-block h-1.5 w-1.5 rounded-full transition-transform duration-200 group-hover:scale-[1.6]"
                 style={{ background: accent }} />
               <span className="label text-muted dark:text-dark-muted tabular-nums">{number}</span>
             </div>
@@ -91,7 +91,7 @@ function ProjectRow({ project, index, onHover }) {
 
           {/* Title block */}
           <div className="col-span-10 md:col-span-5">
-            <h3 className="display-lg text-[2rem] text-ink transition-transform duration-500 group-hover:translate-x-2 dark:text-dark-ink md:text-[3rem]">
+            <h3 className="display-lg text-[2rem] text-ink transition-transform duration-200 [@media(hover:hover)]:group-hover:translate-x-2 dark:text-dark-ink md:text-[3rem]">
               {title}
             </h3>
             <p className="mt-2 max-w-md text-muted dark:text-dark-muted">{tagline}</p>
@@ -110,7 +110,7 @@ function ProjectRow({ project, index, onHover }) {
           <div className="col-span-7 mt-6 flex gap-10 md:col-span-5 md:mt-0">
             {metrics.map((m, i) => (
               <div key={i} className="flex flex-col">
-                <span className="font-display text-3xl leading-none tracking-tightest text-ink transition-colors duration-500 group-hover:text-[var(--accent)] dark:text-dark-ink md:text-5xl"
+                <span className="font-display text-3xl leading-none tracking-tightest text-ink transition-colors duration-200 group-hover:text-[var(--accent)] dark:text-dark-ink md:text-5xl"
                   style={{ '--accent': accent }}
                 >
                   {m.value}
@@ -173,10 +173,10 @@ export default function Work() {
           {/* Floating hover preview on desktop */}
           {hovered && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.93 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, scale: 0.93 }}
+              transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
               className="pointer-events-none fixed right-10 top-1/2 z-40 hidden h-[340px] w-[260px] -translate-y-1/2 overflow-hidden rounded-2xl border-2 shadow-2xl lg:block"
               style={{ borderColor: hovered.accent }}
             >

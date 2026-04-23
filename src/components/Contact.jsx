@@ -27,7 +27,7 @@ export default function Contact() {
     }, 600)
   }
 
-  const inputCls = 'w-full rounded-lg border border-cream/10 bg-cream/5 px-4 py-3 text-sm text-cream outline-none placeholder:text-cream/30 transition-colors focus:border-accentSoft dark:border-ink/10 dark:bg-ink/5 dark:text-ink dark:placeholder:text-ink/30 dark:focus:border-accent'
+  const inputCls = 'w-full rounded-lg border border-cream/10 bg-cream/5 px-4 py-3 text-sm text-cream outline-none placeholder:text-cream/30 transition-[border-color,box-shadow] duration-150 focus:border-accentSoft focus:shadow-[0_0_0_3px_rgba(167,139,250,0.15)] dark:border-ink/10 dark:bg-ink/5 dark:text-ink dark:placeholder:text-ink/30 dark:focus:border-accent dark:focus:shadow-[0_0_0_3px_rgba(109,40,217,0.15)]'
 
   return (
     <section id="contact" className="relative overflow-hidden border-t border-line bg-ink text-cream dark:border-dark-line dark:bg-cream dark:text-ink">
@@ -38,10 +38,10 @@ export default function Contact() {
         <div className="label mb-6 text-cream/60 dark:text-ink/60">✦ Contact</div>
 
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.55, ease: [0.23, 1, 0.32, 1] }}
           className="display-hero text-[clamp(3rem,10vw,9rem)]"
         >
           {`Let's build`}
@@ -69,12 +69,15 @@ export default function Contact() {
                 onChange={e => setForm({ ...form, message: e.target.value })} required />
 
               <button type="submit" disabled={status === 'sending'}
-                className={`label inline-flex items-center gap-3 rounded-full px-6 py-4 text-cream transition-all ${
-                  status === 'sent' ? 'bg-emerald-500' : 'bg-accent hover:scale-[1.02]'
+                className={`label inline-flex items-center gap-3 rounded-full px-6 py-4 text-cream transition-[background-color,transform,filter] duration-150 active:scale-[0.97] disabled:opacity-70 ${
+                  status === 'sent' ? 'bg-emerald-500' : 'bg-accent'
                 }`}>
+                {status === 'sending' && (
+                  <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-cream/30 border-t-cream animate-spin" />
+                )}
                 {status === 'sending' ? 'Sending...' : status === 'sent' ? '✓ Message Sent!' : 'Send Message'}
                 {status !== 'sent' && status !== 'sending' && (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="transition-transform duration-150 group-hover:translate-x-0.5"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
                 )}
               </button>
             </form>
@@ -89,11 +92,11 @@ export default function Contact() {
                 return (
                   <li key={l.label} className="border-b border-cream/10 dark:border-ink/10">
                     <a href={href} target="_blank" rel="noreferrer"
-                      className="group flex items-center justify-between py-5 transition-colors hover:text-accentSoft">
+                      className="group flex items-center justify-between py-5 transition-[color,transform] duration-150 hover:text-accentSoft active:scale-[0.98]">
                       <span className="label">{l.label}</span>
                       <span className="flex items-center gap-4 font-display text-xl tracking-tighter2 md:text-2xl">
                         <span className="max-w-[200px] truncate md:max-w-none">{value}</span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 transition-transform group-hover:-rotate-45"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 transition-transform duration-150 group-hover:-rotate-45"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
                       </span>
                     </a>
                   </li>
