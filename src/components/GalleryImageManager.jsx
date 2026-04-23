@@ -35,6 +35,8 @@ export default function GalleryImageManager({ images = [], onChange }) {
   const [dropHighlight, setDropHighlight] = useState(false);
   const [dragIdx, setDragIdx] = useState(null);
   const [dragOverIdx, setDragOverIdx] = useState(null);
+  const [editingUrlIdx, setEditingUrlIdx] = useState(null);
+  const [editingUrlValue, setEditingUrlValue] = useState('');
   const fileRef = useRef(null);
 
   // ── Add helpers ──────────────────────────────────────────────
@@ -63,6 +65,18 @@ export default function GalleryImageManager({ images = [], onChange }) {
   const updateCaption = (i, caption) =>
     onChange(images.map((img, idx) => idx === i ? { ...img, caption } : img));
   const remove = (i) => onChange(images.filter((_, idx) => idx !== i));
+
+  const startEditUrl = (i) => {
+    setEditingUrlIdx(i);
+    setEditingUrlValue(images[i].url || '');
+  };
+  const commitEditUrl = (i) => {
+    const raw = editingUrlValue.trim();
+    if (!raw) { setEditingUrlIdx(null); return; }
+    const url = normalizeDriveUrl(raw);
+    onChange(images.map((img, idx) => idx === i ? { ...img, url, type: isVideoUrl(url) ? 'video' : 'image' } : img));
+    setEditingUrlIdx(null);
+  };
 
   // ── Drag-to-upload (files from OS) ────────────────────────────
   const onZoneDragOver = (e) => {
@@ -228,6 +242,34 @@ export default function GalleryImageManager({ images = [], onChange }) {
                 <input type="text" value={item.caption || ''} onChange={e => updateCaption(i, e.target.value)}
                   placeholder="Image name / caption…"
                   className="w-full rounded-lg border border-line bg-cream px-3 py-1.5 text-xs text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink cursor-text" />
+
+                {/* Inline URL editor */}
+                {editingUrlIdx === i ? (
+                  <div className="flex gap-1.5">
+                    <input
+                      type="text"
+                      autoFocus
+                      value={editingUrlValue}
+                      onChange={e => setEditingUrlValue(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') commitEditUrl(i); if (e.key === 'Escape') setEditingUrlIdx(null); }}
+                      placeholder="Paste new Drive link or URL…"
+                      className="min-w-0 flex-1 rounded-lg border border-accent bg-cream px-2 py-1 text-[11px] text-ink outline-none dark:bg-dark-bg dark:text-dark-ink"
+                    />
+                    <button type="button" onClick={() => commitEditUrl(i)}
+                      className="rounded-md bg-accent px-2 py-1 text-[10px] font-medium text-cream">
+                      Save
+                    </button>
+                    <button type="button" onClick={() => setEditingUrlIdx(null)}
+                      className="rounded-md border border-line px-2 py-1 text-[10px] text-muted dark:border-dark-line">
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <p className="truncate text-[10px] text-muted dark:text-dark-muted cursor-default select-all" title={item.url}>
+                    {item.url}
+                  </p>
+                )}
+
                 <div className="flex gap-1.5 items-center">
                   <span className={`rounded-md px-2 py-1 text-[10px] font-medium ${
                     item.type === 'video'
@@ -237,6 +279,10 @@ export default function GalleryImageManager({ images = [], onChange }) {
                     {item.type === 'video' ? '▶ Video' : '⬜ Image'}
                   </span>
                   <span className="flex-1" />
+                  <button type="button" onClick={() => startEditUrl(i)}
+                    className="rounded-md border border-line px-2 py-1 text-[10px] text-ink hover:border-accent hover:text-accent dark:border-dark-line dark:text-dark-ink">
+                    Edit URL
+                  </button>
                   <button type="button" onClick={() => remove(i)}
                     className="rounded-md border border-line px-2 py-1 text-[10px] text-red-500 hover:bg-red-50 dark:border-dark-line dark:hover:bg-red-900/20">
                     Remove

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { getProjects, saveProject, deleteProject, getProjectBySlug, toggleProjectVisibility } from '../lib/cms.js'
+import { getProjects, saveProject, deleteProject, getProjectBySlug, toggleProjectVisibility, normalizeDriveUrl } from '../lib/cms.js'
 import RichTextField from '../components/RichTextField.jsx'
 import GalleryImageManager from '../components/GalleryImageManager.jsx'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
@@ -43,7 +43,7 @@ export function AdminProjects() {
             className={`flex items-center gap-4 rounded-2xl border border-line bg-white/60 p-4 backdrop-blur dark:border-dark-line dark:bg-white/[0.03] ${p.hidden ? 'opacity-50' : ''}`}
           >
             <div className="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-line dark:bg-dark-line">
-              {p.cover && <img src={p.cover} alt="" className="h-full w-full object-cover" />}
+              {p.cover && <img src={normalizeDriveUrl(p.cover)} alt="" className="h-full w-full object-cover" />}
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-3">

@@ -38,13 +38,30 @@ const VERSION_KEY = 'cms_schema_version'
 
 export function getProjects() {
   const currentVersion = get(VERSION_KEY, null)
+  const saved = get(PROJECTS_KEY, null)
+
   if (currentVersion !== SCHEMA_VERSION) {
-    // Schema bumped — reseed from static data so new fields (hook, outcomeStats, deliverables, reception, pullQuote) populate
+    if (saved && saved.length) {
+      // Schema bumped but user has saved edits — merge instead of wiping.
+      // User data wins; static fills in any new fields that don't exist yet.
+      const merged = saved.map(savedP => {
+        const staticP = staticProjects.find(p => p.slug === savedP.slug)
+        return staticP ? { ...staticP, ...savedP } : savedP
+      })
+      // Append any brand-new static projects the user hasn't seen
+      staticProjects.forEach(sp => {
+        if (!merged.find(p => p.slug === sp.slug)) merged.push(sp)
+      })
+      set(PROJECTS_KEY, merged)
+      set(VERSION_KEY, SCHEMA_VERSION)
+      return merged
+    }
+    // No existing saves — seed fresh from static
     set(PROJECTS_KEY, staticProjects)
     set(VERSION_KEY, SCHEMA_VERSION)
     return staticProjects
   }
-  const saved = get(PROJECTS_KEY, null)
+
   if (saved) return saved
   set(PROJECTS_KEY, staticProjects)
   return staticProjects
