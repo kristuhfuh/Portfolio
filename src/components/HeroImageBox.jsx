@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { getPageContent } from '../lib/cms.js';
+import { getPageContent, normalizeDriveUrl } from '../lib/cms.js';
 
 export default function HeroImageBox() {
   const [isHovering, setIsHovering] = useState(false);
   const hero = getPageContent('hero');
 
-  const topSrc = hero.topImage || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&h=1200&fit=crop';
-  const bottomSrc = hero.bottomImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=1200&fit=crop';
+  const topSrc = normalizeDriveUrl(hero.topImage || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&h=1200&fit=crop');
+  const bottomSrc = normalizeDriveUrl(hero.bottomImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=1200&fit=crop');
   const topFocus = hero.topImageFocus || { x: 50, y: 50 };
   const bottomFocus = hero.bottomImageFocus || { x: 50, y: 50 };
 

@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useRef, useEffect } from 'react'
-import { getProjects } from '../lib/cms.js'
+import { getProjects, normalizeDriveUrl } from '../lib/cms.js'
 
 function getSlides(project) {
   const gallery = (project.images || []).map(img => typeof img === 'string' ? img : img?.url).filter(Boolean)
-  return [project.cover, ...gallery].filter(Boolean)
+  return [project.cover, ...gallery].filter(Boolean).map(normalizeDriveUrl)
 }
 
 function SlideshowPreview({ project, hovered }) {

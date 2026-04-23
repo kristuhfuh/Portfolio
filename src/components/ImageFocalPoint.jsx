@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { normalizeDriveUrl } from '../lib/cms.js';
 
 export default function ImageFocalPoint({ label, imageValue, focusValue, onImageChange, onFocusChange }) {
   const [uploadMethod, setUploadMethod] = useState('url');
@@ -20,10 +21,7 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
 
   const handleDriveSubmit = () => {
     if (!urlInput.trim()) return;
-    let url = urlInput.trim();
-    const match = url.match(/\/file\/d\/([^/?#]+)/);
-    if (match) url = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w2000`;
-    onImageChange(url);
+    onImageChange(normalizeDriveUrl(urlInput.trim()));
   };
 
   const getFocusFromEvent = (e) => {

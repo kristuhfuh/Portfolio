@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
+import { normalizeDriveUrl } from '../lib/cms.js';
 
 function convertDrive(raw) {
-  const match = raw.match(/\/file\/d\/([^/?#]+)/);
-  return match ? `https://drive.google.com/thumbnail?id=${match[1]}&sz=w2000` : raw;
+  return normalizeDriveUrl(raw);
 }
 
 function isVideoUrl(url) {

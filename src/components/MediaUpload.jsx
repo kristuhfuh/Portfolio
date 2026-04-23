@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { normalizeDriveUrl } from '../lib/cms.js';
 
 export default function MediaUpload({ value, onChange, label = 'Media', accept = 'image/*,video/*' }) {
   const [uploadMethod, setUploadMethod] = useState('url'); // 'url', 'drive', 'file'
@@ -39,16 +40,7 @@ export default function MediaUpload({ value, onChange, label = 'Media', accept =
 
   const handleDriveLink = () => {
     if (urlInput.trim()) {
-      // Convert Google Drive share link to direct link if needed
-      let driveUrl = urlInput.trim();
-      
-      // Convert "https://drive.google.com/file/d/FILE_ID/view" to direct link
-      const driveMatch = driveUrl.match(/\/file\/d\/([^/?#]+)/);
-      if (driveMatch) {
-        driveUrl = `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w2000`;
-      }
-      
-      onChange(driveUrl);
+      onChange(normalizeDriveUrl(urlInput.trim()));
     }
   };
 

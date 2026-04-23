@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useEffect, useState, useRef } from 'react'
-import { getProjectBySlug as getProject, getProjects } from '../lib/cms.js'
+import { getProjectBySlug as getProject, getProjects, normalizeDriveUrl } from '../lib/cms.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
 
 function getNextProject(slug) {
@@ -190,10 +190,13 @@ function Reception({ quote, accent }) {
 
 const THUMB_THRESHOLD = 5
 
-// Normalize images — handles both old string[] and new {url,caption}[] formats
+// Normalize images — handles both old string[] and new {url,caption}[] formats, fixes Drive URLs
 function normalizeImages(images) {
   if (!images) return []
-  return images.map(img => typeof img === 'string' ? { url: img, caption: '' } : img)
+  return images.map(img => {
+    if (typeof img === 'string') return { url: normalizeDriveUrl(img), caption: '' }
+    return { ...img, url: normalizeDriveUrl(img.url) }
+  })
 }
 
 // ─── Image gallery — auto-slideshow + Apple-style thumbnail strip ───
@@ -505,7 +508,7 @@ export default function CaseStudy() {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            src={project.cover}
+            src={normalizeDriveUrl(project.cover)}
             alt={project.title}
             className="h-auto w-full object-cover"
             loading="eager"

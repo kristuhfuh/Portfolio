@@ -1,5 +1,23 @@
 import { projects as staticProjects } from '../data/projects.js'
 
+// Converts any Google Drive URL variant to the stable lh3 embed format.
+// Handles: share links, thumbnail API URLs, uc?export URLs, already-correct lh3 URLs.
+export function normalizeDriveUrl(url) {
+  if (!url || typeof url !== 'string') return url
+  // Already correct
+  if (url.includes('lh3.googleusercontent.com/d/')) return url
+  // drive.google.com/thumbnail?id=FILE_ID (old format we stored)
+  const thumbMatch = url.match(/drive\.google\.com\/thumbnail\?id=([^&\s]+)/)
+  if (thumbMatch) return `https://lh3.googleusercontent.com/d/${thumbMatch[1]}`
+  // drive.google.com/file/d/FILE_ID/...
+  const fileMatch = url.match(/\/file\/d\/([^/?#\s]+)/)
+  if (fileMatch) return `https://lh3.googleusercontent.com/d/${fileMatch[1]}`
+  // drive.google.com/uc?...id=FILE_ID or drive.google.com/uc?id=FILE_ID&...
+  const ucMatch = url.match(/drive\.google\.com\/uc\?.*?id=([^&\s]+)/)
+  if (ucMatch) return `https://lh3.googleusercontent.com/d/${ucMatch[1]}`
+  return url
+}
+
 const PROJECTS_KEY = 'cms_projects'
 const CONTACTS_KEY = 'cms_contacts'
 const PAGES_KEY = 'cms_pages'
