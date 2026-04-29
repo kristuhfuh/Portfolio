@@ -2,33 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide default cursor on desktop */
+/* ─── Cursor ─────────────────────────────────────────────────────────────── */
 @media (min-width: 1024px) {
-  * {
-    cursor: none !important;
-  }
+  * { cursor: none !important; }
 }
 
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
-}
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
 
-body {
-  @apply antialiased;
-}
+body { @apply antialiased; }
 
 :root {
   color-scheme: light;
-
-  /* Custom easing curves — stronger than CSS builtins */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-expo:   cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
   background: #f5f3ee;
@@ -39,8 +30,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-html.dark,
-html.dark body {
+html.dark, html.dark body {
   background: #0e0e0e;
   color: #ededed;
 }
@@ -50,24 +40,23 @@ html.dark body {
   color: #f5f3ee;
 }
 
-/* Subtle grain overlay — editorial print feel */
+/* ─── Grain overlay ──────────────────────────────────────────────────────── */
 .grain::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 100;
-  opacity: 0.035;
+  opacity: 0.032;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
-
 html.dark .grain::before {
-  opacity: 0.07;
+  opacity: 0.065;
   mix-blend-mode: screen;
 }
 
-/* Display type utilities */
+/* ─── Typography ─────────────────────────────────────────────────────────── */
 .display-hero {
   font-family: 'Fraunces', serif;
   font-optical-sizing: auto;
@@ -94,42 +83,87 @@ html.dark .grain::before {
   font-weight: 500;
 }
 
-/* Marquee */
+/* ─── Marquee ────────────────────────────────────────────────────────────── */
 @keyframes marquee {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to   { transform: translateX(-50%); }
 }
 .animate-marquee {
-  animation: marquee 40s linear infinite;
+  animation: marquee 38s linear infinite;
 }
 .marquee-pause:hover .animate-marquee {
   animation-play-state: paused;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 10px; height: 10px; }
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #e2ded5; border-radius: 10px; }
 html.dark ::-webkit-scrollbar-thumb { background: #1f1f1f; }
 
-/* Link reveal underline */
+/* ─── Link underline ─────────────────────────────────────────────────────── */
 .link-underline {
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0% 1px;
   background-position: 0 100%;
   background-repeat: no-repeat;
-  transition: background-size 0.25s var(--ease-out);
+  transition: background-size 0.28s var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  .link-underline:hover {
-    background-size: 100% 1px;
-  }
+  .link-underline:hover { background-size: 100% 1px; }
 }
 
-/* Hide scrollbar utility */
+/* ─── Dotted grid ────────────────────────────────────────────────────────── */
+.dotted {
+  background-image: radial-gradient(circle, #1414141a 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+html.dark .dotted {
+  background-image: radial-gradient(circle, #ededed15 1px, transparent 1px);
+}
+
+/* ─── Float animation ────────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ─── Slow spin (decorative rings in Contact) ────────────────────────────── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 24s linear infinite; }
+
+/* ─── Text stroke (outline text accent) ─────────────────────────────────── */
+.text-stroke {
+  -webkit-text-stroke: 1.5px currentColor;
+  color: transparent;
+}
+
+/* ─── Clip-path reveal utility ───────────────────────────────────────────── */
+.clip-bottom {
+  clip-path: inset(0 0 100% 0);
+}
+.clip-reveal {
+  clip-path: inset(0 0 0% 0);
+  transition: clip-path 0.7s var(--ease-expo);
+}
+
+/* ─── Word-clip helper (overflow:hidden wrapper) ─────────────────────────── */
+.word-clip {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+/* ─── Scrollbar hide ─────────────────────────────────────────────────────── */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
-/* Rich text editor content styles */
+/* ─── Rich text editor ───────────────────────────────────────────────────── */
 .rich-editor:focus { cursor: text; }
 .rich-editor b, .rich-editor strong { font-weight: 700; }
 .rich-editor i, .rich-editor em { font-style: italic; }
@@ -137,72 +171,34 @@ html.dark ::-webkit-scrollbar-thumb { background: #1f1f1f; }
 .rich-editor s { text-decoration: line-through; }
 .rich-editor h2 { font-size: 1.25rem; font-weight: 700; margin: 0.5em 0 0.25em; }
 .rich-editor h3 { font-size: 1.05rem; font-weight: 600; margin: 0.4em 0 0.2em; }
-.rich-editor p { margin: 0.25em 0; }
+.rich-editor p  { margin: 0.25em 0; }
 .rich-editor ul { list-style: disc; padding-left: 1.4em; margin: 0.25em 0; }
 .rich-editor ol { list-style: decimal; padding-left: 1.4em; margin: 0.25em 0; }
 .rich-editor li { margin: 0.15em 0; }
 .rich-editor br { display: block; content: ''; }
 
-/* Dotted grid BG accent */
-.dotted {
-  background-image: radial-gradient(circle, #1414141a 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-html.dark .dotted {
-  background-image: radial-gradient(circle, #ededed1a 1px, transparent 1px);
-}
+/* ─── Video overlay ──────────────────────────────────────────────────────── */
+.video-overlay { transition: opacity 0.3s var(--ease-out); }
 
-/* Smooth scroll for all */
-html {
-  scroll-behavior: smooth;
-}
+/* ─── CMS sidebar ────────────────────────────────────────────────────────── */
+.cms-sidebar { transition: width 0.3s var(--ease-out); }
 
-/* Floating animation for decorative elements */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
+/* ─── Button press ───────────────────────────────────────────────────────── */
+.btn-press { transition: transform 160ms var(--ease-out); }
+.btn-press:active { transform: scale(0.97); }
 
-/* Subtle scale on scroll-reveal */
-@keyframes reveal-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Page transition fade */
+/* ─── Page entry animation ───────────────────────────────────────────────── */
 @keyframes page-in {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
-.page-enter {
-  animation: page-in 0.4s ease;
-}
+.page-enter { animation: page-in 0.4s ease; }
 
-/* Video hover overlay for Beyond Pixels */
-.video-overlay {
-  transition: opacity 0.3s var(--ease-out);
-}
-
-/* CMS sidebar transition */
-.cms-sidebar {
-  transition: width 0.3s var(--ease-out);
-}
-
-/* Button press feedback — apply to any pressable element */
-.btn-press {
-  transition: transform 160ms var(--ease-out);
-}
-.btn-press:active {
-  transform: scale(0.97);
-}
-
-/* prefers-reduced-motion — remove position-based animations, keep opacity */
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
-  .animate-float {
+  .animate-float,
+  .animate-spin-slow {
     animation: none;
   }
   * {

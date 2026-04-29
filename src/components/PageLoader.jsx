@@ -1,73 +1,107 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+
+const first = 'Christopher'.split('')
+const last = 'Akpoguma'.split('')
 
 export default function PageLoader() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [curtain, setCurtain] = useState(false)
+  const [done, setDone] = useState(false)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => setIsLoading(false), 400);
-          return 100;
-        }
-        return prev + Math.random() * 18;
-      });
-    }, 80);
-    return () => clearInterval(interval);
-  }, []);
+    const t1 = setTimeout(() => setCurtain(true), 2100)
+    const t2 = setTimeout(() => setDone(true), 3100)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [])
+
+  if (done) return null
 
   return (
-    <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, y: -24 }}
-          transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-cream dark:bg-[#0e0e0e]"
-        >
-          {/* Wordmark */}
-          <motion.div
-            initial={{ opacity: 0, transform: 'translateY(12px)' }}
-            animate={{ opacity: 1, transform: 'translateY(0px)' }}
-            transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-            className="mb-10 flex items-center gap-3"
-          >
-            <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="6" className="fill-ink dark:fill-cream" />
-              <text x="16" y="22" fontFamily="Fraunces, serif" fontSize="18" fontWeight="500" textAnchor="middle" className="fill-cream dark:fill-ink">C</text>
-              <circle cx="24" cy="8" r="3" fill="#6D28D9" />
-            </svg>
-            <div className="flex flex-col leading-tight">
-              <span className="label text-ink dark:text-dark-ink">Christopher Akpoguma</span>
-              <span className="label text-muted dark:text-dark-muted">/kris+tuh+fuh/</span>
-            </div>
-          </motion.div>
+    <motion.div
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-ink overflow-hidden select-none"
+      animate={curtain ? { y: '-100%' } : { y: '0%' }}
+      transition={curtain ? { duration: 0.95, ease: [0.76, 0, 0.24, 1] } : {}}
+    >
+      {/* Progress line sweeps left to right */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute bottom-0 left-0 right-0 h-[2px] bg-accent"
+        style={{ transformOrigin: 'left center' }}
+      />
 
-          {/* Progress track */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15, duration: 0.3 }}
-            className="w-48"
-          >
-            <div className="h-px w-full bg-line dark:bg-dark-line overflow-hidden rounded-full">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.15, ease: 'linear' }}
-                className="h-full bg-accent"
-              />
-            </div>
-            <div className="mt-3 flex items-center justify-between">
-              <span className="label text-muted dark:text-dark-muted">Loading</span>
-              <span className="label tabular-nums text-muted dark:text-dark-muted">{Math.min(100, Math.round(progress))}%</span>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+      {/* Top right corner mark */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        className="absolute top-8 right-8 label text-cream/30 tracking-[0.2em]"
+      >
+        ©{new Date().getFullYear()}
+      </motion.div>
+
+      <div className="flex flex-col items-center gap-1">
+        {/* First name — chars rise from below */}
+        <div className="flex" style={{ overflow: 'hidden' }}>
+          {first.map((char, i) => (
+            <span
+              key={i}
+              className="inline-block"
+              style={{ overflow: 'hidden', lineHeight: 1.08 }}
+            >
+              <motion.span
+                className="inline-block font-display text-[clamp(2.8rem,9vw,7.5rem)] text-cream"
+                style={{ letterSpacing: '-0.045em' }}
+                initial={{ y: '106%' }}
+                animate={{ y: '0%' }}
+                transition={{
+                  delay: 0.04 * i + 0.1,
+                  duration: 0.72,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                {char}
+              </motion.span>
+            </span>
+          ))}
+        </div>
+
+        {/* Last name — italic accent, slight extra delay */}
+        <div className="flex" style={{ overflow: 'hidden' }}>
+          {last.map((char, i) => (
+            <span
+              key={i}
+              className="inline-block"
+              style={{ overflow: 'hidden', lineHeight: 1.08 }}
+            >
+              <motion.span
+                className="inline-block font-display italic text-accent text-[clamp(2.8rem,9vw,7.5rem)]"
+                style={{ letterSpacing: '-0.045em' }}
+                initial={{ y: '106%' }}
+                animate={{ y: '0%' }}
+                transition={{
+                  delay: 0.04 * i + 0.65,
+                  duration: 0.72,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                {char}
+              </motion.span>
+            </span>
+          ))}
+        </div>
+
+        {/* Role label */}
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6, duration: 0.5 }}
+          className="mt-6 label text-cream/35 tracking-[0.28em]"
+        >
+          PRODUCT DESIGNER · LAGOS
+        </motion.p>
+      </div>
+    </motion.div>
+  )
 }
