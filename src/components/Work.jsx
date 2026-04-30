@@ -113,7 +113,7 @@ export default function Work() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.45 }}
-              className="mb-3 font-display italic text-lg text-muted dark:text-dark-muted"
+              className="mb-3 italic text-lg text-muted dark:text-dark-muted"
             >
               / Best Projects /
             </motion.p>

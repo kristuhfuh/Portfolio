@@ -28,7 +28,7 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-5 font-display italic text-lg text-muted dark:text-dark-muted"
+          className="mb-5 italic text-lg text-muted dark:text-dark-muted"
         >
           / Who Am I /
         </motion.p>
@@ -42,7 +42,7 @@ export default function About() {
           className="mb-16 display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
         >
           Pushing Boundaries{' '}
-          <em className="italic text-accent">since 2022.</em>
+          <span className="text-accent">since 2022.</span>
         </motion.h2>
 
         <div className="grid gap-12 md:grid-cols-12">

@@ -22,7 +22,7 @@ export default function Statement() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-12 font-display italic text-2xl text-muted dark:text-dark-muted"
+          className="mb-12 italic text-2xl text-muted dark:text-dark-muted"
         >
           Hallo!
         </motion.p>
@@ -36,7 +36,6 @@ export default function Statement() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="font-display text-[clamp(1.5rem,2.8vw,2.6rem)] leading-[1.25] text-ink dark:text-dark-ink"
-              style={{ fontVariationSettings: '"opsz" 80' }}
             >
               focus is on blending clear strategy, thoughtful design, and user empathy to craft{' '}
               <em className="italic text-accent">experiences that solve real problems</em>.

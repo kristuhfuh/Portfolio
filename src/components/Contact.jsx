@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 import AvailabilityBadge from './AvailabilityBadge.jsx'
 import { addContact, getPageContent } from '../lib/cms.js'
 
@@ -58,16 +58,9 @@ function MagneticButton({ children, href, className = '' }) {
 }
 
 export default function Contact() {
-  const sectionRef = useRef(null)
   const content = getPageContent('contact')
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('')
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  })
-  const bgY = useTransform(scrollYProgress, [0, 1], [0, -60])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -87,19 +80,8 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      ref={sectionRef}
       className="relative overflow-hidden border-t border-line bg-ink text-cream dark:border-dark-line dark:bg-cream dark:text-ink"
     >
-      {/* Parallax blobs */}
-      <motion.div
-        style={{ y: bgY }}
-        className="pointer-events-none absolute -left-24 top-0 h-[500px] w-[500px] rounded-full bg-accent/25 blur-[120px]"
-      />
-      <motion.div
-        style={{ y: bgY }}
-        className="pointer-events-none absolute -right-24 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-500/18 blur-[100px]"
-      />
-
       {/* Decorative spinning ring */}
       <div className="pointer-events-none absolute right-10 top-16 hidden opacity-[0.06] md:block">
         <motion.div
@@ -133,7 +115,7 @@ export default function Contact() {
         {/* Headline — line curtain reveal */}
         <h2 className="display-hero text-[clamp(3rem,9.5vw,9rem)] leading-[0.9]">
           <LineReveal delay={0}>Let's build</LineReveal>
-          <LineReveal delay={0.14} className="italic text-accentSoft">
+          <LineReveal delay={0.14} className="text-accentSoft">
             something worth
           </LineReveal>
           <LineReveal delay={0.28}>the pixels.</LineReveal>

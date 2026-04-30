@@ -32,7 +32,7 @@ export default function Process() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="mb-3 font-display italic text-lg text-muted dark:text-dark-muted"
+            className="mb-3 italic text-lg text-muted dark:text-dark-muted"
           >
             / Our Process /
           </motion.p>

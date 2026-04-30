@@ -66,7 +66,7 @@ export default function Hero() {
           className="mb-8 flex flex-wrap items-center gap-4"
         >
           <AvailabilityBadge />
-          <span className="font-display italic text-xl text-muted dark:text-dark-muted">
+          <span className="italic text-xl text-muted dark:text-dark-muted">
             Hi, I'm Christopher —
           </span>
         </motion.div>
@@ -83,7 +83,7 @@ export default function Hero() {
             >
               Product
               <br />
-              <em className="italic text-accent">Designer.</em>
+              <span className="text-accent">Designer.</span>
             </motion.h1>
 
             {/* Description */}

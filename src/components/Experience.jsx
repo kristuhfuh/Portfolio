@@ -63,15 +63,15 @@ export default function Experience() {
                   ))}
                   <br />
                   <span className="inline-block overflow-hidden" style={{ verticalAlign: 'bottom' }}>
-                    <motion.em
-                      className="inline-block italic text-accent"
+                    <motion.span
+                      className="inline-block text-accent"
                       initial={{ y: '106%' }}
                       whileInView={{ y: '0%' }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.28, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
                     >
                       up.
-                    </motion.em>
+                    </motion.span>
                   </span>
                 </h2>
 

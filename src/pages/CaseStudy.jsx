@@ -72,11 +72,6 @@ function OutcomeStats({ stats, accent }) {
   if (!stats?.length) return null
   return (
     <section className="relative overflow-hidden border-t border-line bg-ink py-24 text-cream dark:border-dark-line dark:bg-cream dark:text-ink md:py-32">
-      {/* Accent-colored ambient glow */}
-      <div className="pointer-events-none absolute -left-24 top-0 h-[400px] w-[400px] rounded-full blur-3xl"
-        style={{ background: `${accent}40` }} />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-[400px] w-[400px] rounded-full blur-3xl"
-        style={{ background: `${accent}30` }} />
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         <div className="mb-16 max-w-3xl">
@@ -424,11 +419,6 @@ export default function CaseStudy() {
     <article>
       {/* ─── Hero with hook ─── */}
       <section ref={heroRef} className="relative overflow-hidden pb-12 pt-36 md:pb-20 md:pt-48">
-        {/* Accent-tinted ambient glows */}
-        <div className="pointer-events-none absolute -right-40 top-24 h-[500px] w-[500px] rounded-full blur-3xl"
-          style={{ background: `${accent}18` }} />
-        <div className="pointer-events-none absolute -left-32 bottom-0 h-[400px] w-[400px] rounded-full blur-3xl"
-          style={{ background: `${accent}10` }} />
         <div className="pointer-events-none absolute inset-0 dotted opacity-30" />
 
         <motion.div style={{ opacity: heroOpacity, y: heroY }} className="relative mx-auto max-w-[1400px] px-6 md:px-10">
