@@ -58,14 +58,14 @@ html.dark .grain::before {
 
 /* ─── Typography ─────────────────────────────────────────────────────────── */
 .display-hero {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 0.88;
 }
 
 .display-lg {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 0.95;
