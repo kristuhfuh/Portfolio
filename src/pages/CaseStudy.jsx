@@ -4,6 +4,17 @@ import { useEffect, useState, useRef } from 'react'
 import { getProjectBySlug as getProject, getProjects, normalizeDriveUrl } from '../lib/cms.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
 
+// Renders CMS text that may be plain (uses \n\n) or HTML (from RichTextField)
+function richHtml(content = '') {
+  if (!content) return ''
+  if (/<[a-z][\s\S]*>/i.test(content)) return content
+  return content
+    .split('\n\n')
+    .filter(Boolean)
+    .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+    .join('')
+}
+
 function getNextProject(slug) {
   const projects = getProjects()
   const idx = projects.findIndex((p) => p.slug === slug)
@@ -513,18 +524,18 @@ export default function CaseStudy() {
 
       {/* ─── The story: overview ─── */}
       <StoryBlock label="Overview" heading="The setup." accent={accent}>
-        <div className="space-y-6 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85">
-          {project.overview.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
-        </div>
+        <div
+          className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
+          dangerouslySetInnerHTML={{ __html: richHtml(project.overview) }}
+        />
       </StoryBlock>
 
       {/* ─── Challenge ─── */}
       <StoryBlock label="The tension" heading="What had to change." accent={accent}>
-        <div className="space-y-6 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85">
-          {project.challenge.split('\n\n').map((p, i) => (
-            <p key={i} className="whitespace-pre-line">{p}</p>
-          ))}
-        </div>
+        <div
+          className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
+          dangerouslySetInnerHTML={{ __html: richHtml(project.challenge) }}
+        />
       </StoryBlock>
 
       {/* ─── Pull quote (mid-story breakpoint) ─── */}
@@ -548,7 +559,10 @@ export default function CaseStudy() {
               <span className="label shrink-0 pt-1 tabular-nums" style={{ color: accent }}>
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <span className="text-lg leading-relaxed text-ink dark:text-dark-ink">{step}</span>
+              <span
+                className="text-lg leading-relaxed text-ink dark:text-dark-ink [&>b]:font-semibold [&>strong]:font-semibold"
+                dangerouslySetInnerHTML={{ __html: richHtml(step) }}
+              />
             </motion.li>
           ))}
         </ol>
@@ -556,11 +570,10 @@ export default function CaseStudy() {
 
       {/* ─── Outcome (prose) ─── */}
       <StoryBlock label="What shipped" heading="The result." accent={accent}>
-        <div className="space-y-6 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85">
-          {project.outcome.split('\n\n').map((p, i) => (
-            <p key={i} className="whitespace-pre-line">{p}</p>
-          ))}
-        </div>
+        <div
+          className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
+          dangerouslySetInnerHTML={{ __html: richHtml(project.outcome) }}
+        />
       </StoryBlock>
 
       {/* ─── Deliverables list ─── */}
@@ -581,9 +594,10 @@ export default function CaseStudy() {
                 <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
                 Reflection
               </div>
-              <div className="space-y-6 font-display text-2xl italic leading-relaxed tracking-tighter2 text-ink/90 dark:text-dark-ink/90 md:text-3xl">
-                {project.reflection.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
-              </div>
+              <div
+                className="text-lg leading-relaxed text-ink/90 dark:text-dark-ink/90 [&>p]:mb-5 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
+                dangerouslySetInnerHTML={{ __html: richHtml(project.reflection) }}
+              />
             </div>
           </div>
         </section>
