@@ -3,6 +3,11 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import AvailabilityBadge from './AvailabilityBadge.jsx'
 import { addContact, getPageContent } from '../lib/cms.js'
 
+function richHtml(content = '') {
+  if (/<[a-z][\s\S]*>/i.test(content)) return content
+  return content.replace(/\n/g, '<br>')
+}
+
 const links = [
   { label: 'Email', key: 'email', prefix: 'mailto:' },
   { label: 'LinkedIn', key: 'linkedin', prefix: '' },
@@ -142,9 +147,10 @@ export default function Contact() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <AvailabilityBadge className="!text-cream/65 dark:!text-ink/65" />
-              <p className="mt-6 max-w-sm text-cream/75 dark:text-ink/75">
-                {content.description}
-              </p>
+              <p
+                className="mt-6 max-w-sm text-cream/75 dark:text-ink/75"
+                dangerouslySetInnerHTML={{ __html: richHtml(content.description) }}
+              />
             </motion.div>
 
             {/* Contact form */}

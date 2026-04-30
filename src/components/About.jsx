@@ -4,6 +4,16 @@ import { tools, recognition } from '../data/experience.js'
 import { getPageContent } from '../lib/cms.js'
 import BeyondPixels from './BeyondPixels.jsx'
 
+// Renders CMS content that may be HTML (RichTextField) or plain text (\n\n paragraphs)
+function richHtml(content = '') {
+  if (/<[a-z][\s\S]*>/i.test(content)) return content
+  return content
+    .split('\n\n')
+    .filter(Boolean)
+    .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+    .join('')
+}
+
 export default function About() {
   const sectionRef = useRef(null)
   const { scrollYProgress } = useScroll({
@@ -67,20 +77,15 @@ export default function About() {
 
           {/* Right: bio + tools + recognition */}
           <div className="md:col-span-7">
-            {/* Bio */}
-            <div className="space-y-5 text-lg leading-relaxed text-ink/82 dark:text-dark-ink/82">
-              {content.bio.split('\n\n').map((para, i) => (
-                <motion.p
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-5%' }}
-                  transition={{ duration: 0.55, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {para}
-                </motion.p>
-              ))}
-            </div>
+            {/* Bio — dangerouslySetInnerHTML so RichTextField HTML renders correctly */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-5%' }}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              className="text-lg leading-relaxed text-ink/82 dark:text-dark-ink/82 [&>p]:mb-5 [&>p:last-child]:mb-0"
+              dangerouslySetInnerHTML={{ __html: richHtml(content.bio) }}
+            />
 
             {/* Tools */}
             <motion.div
