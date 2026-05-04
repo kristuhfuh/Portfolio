@@ -22,7 +22,7 @@ function cfg(index, total) {
 }
 
 // ─── Single portrait card ─────────────────────────────────────────────────────
-function Card({ item, index, total, isHovered, isAnyHovered, onClick }) {
+function Card({ item, index, total, isHovered, isAnyHovered, onHover, onLeave }) {
   const c = cfg(index, total)
 
   return (
@@ -43,8 +43,9 @@ function Card({ item, index, total, isHovered, isAnyHovered, onClick }) {
         y:       isHovered ? -56 : 0,
       }}
       transition={{ type: 'spring', stiffness: 280, damping: 26, mass: 0.8 }}
-      whileTap={{ scale: isHovered ? 1.18 : 1 }}
-      onClick={onClick}
+      whileTap={{ scale: 0.97 }}
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
     >
       {/* Card face */}
       <div
@@ -132,7 +133,6 @@ export default function WorkGallery() {
           perspective:       '900px',
           perspectiveOrigin: '50% 100%',  // vanishing point at bottom centre
         }}
-        onMouseLeave={() => setHovered(null)}
       >
         {items.map((item, i) => (
           <Card
@@ -142,7 +142,8 @@ export default function WorkGallery() {
             total={items.length}
             isHovered={hovered === i}
             isAnyHovered={hovered !== null && hovered !== i}
-            onClick={() => setHovered(hovered === i ? null : i)}
+            onHover={() => setHovered(i)}
+            onLeave={() => setHovered(null)}
           />
         ))}
       </div>
