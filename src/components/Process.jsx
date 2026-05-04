@@ -58,14 +58,14 @@ export default function Process() {
               transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
             >
-              {/* Connector line between steps on desktop */}
+              {/* Connector line — starts at THIS step's right edge, spans the gap to the next */}
               {i < steps.length - 1 && (
                 <motion.div
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, delay: i * 0.1 + 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute right-0 top-8 hidden h-px w-[calc(100%+2.5rem)] bg-gradient-to-r from-accent/40 to-accent/10 md:block"
+                  className="absolute left-full top-7 hidden h-px w-10 bg-gradient-to-r from-accent/40 to-accent/10 md:block"
                   style={{ transformOrigin: 'left center' }}
                 />
               )}

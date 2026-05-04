@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import AvailabilityBadge from './AvailabilityBadge.jsx'
 import { addContact, getPageContent } from '../lib/cms.js'
+import ContactGallery from './ContactGallery.jsx'
 
 function richHtml(content = '') {
   if (/<[a-z][\s\S]*>/i.test(content)) return content
@@ -297,6 +298,21 @@ export default function Contact() {
             </motion.div>
           </motion.div>
         </div>
+
+        {/* 3D Depth-Stack Gallery — fills the empty space */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-20"
+        >
+          <div className="mb-6 flex items-center justify-between">
+            <p className="label text-cream/45 dark:text-ink/45">✦ Work Gallery</p>
+            <p className="label text-cream/30 dark:text-ink/30">click to expand · esc to close</p>
+          </div>
+          <ContactGallery />
+        </motion.div>
       </div>
     </section>
   )

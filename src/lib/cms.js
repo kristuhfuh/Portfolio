@@ -145,6 +145,43 @@ export function savePageContent(page, content) {
   return all
 }
 
+// ─── Contact Gallery (3D depth stack) ───
+const GALLERY_KEY = 'cms_contact_gallery'
+
+const defaultGallery = [
+  {
+    id: '1',
+    type: 'image',
+    src: 'https://framerusercontent.com/images/lR97iC7TvTLzZJIa88VIn4qKw.webp?width=1920&height=1072',
+    poster: '',
+    caption: 'FlySmart — Drone Delivery Platform',
+  },
+  {
+    id: '2',
+    type: 'image',
+    src: 'https://framerusercontent.com/images/A96w4ZpC5F1QA39OE7wySL4yBg4.webp?width=2400&height=1800',
+    poster: '',
+    caption: 'Landmark Citizen App',
+  },
+  {
+    id: '3',
+    type: 'image',
+    src: 'https://framerusercontent.com/images/9rxzSGbFPzINONwbQL9Fckii4Qc.webp?width=1134&height=893',
+    poster: '',
+    caption: 'We Are Wear — AI Fashion',
+  },
+  {
+    id: '4',
+    type: 'image',
+    src: 'https://framerusercontent.com/images/HdRijaIyFVF9IsZtaToNSjQZliE.png?width=904&height=1200',
+    poster: '',
+    caption: 'Pixel Pulse Identity',
+  },
+]
+
+export function getContactGallery() { return get(GALLERY_KEY, defaultGallery) }
+export function saveContactGallery(items) { set(GALLERY_KEY, items); return items }
+
 // ─── Beyond Pixels ───
 const defaultBeyond = [
   {

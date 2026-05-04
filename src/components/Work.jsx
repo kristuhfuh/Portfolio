@@ -1,12 +1,25 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { getProjects, normalizeDriveUrl } from '../lib/cms.js'
 
 function ProjectCard({ project, index }) {
   const { slug, number, title, tagline, tags, year, accent = '#6D28D9' } = project
   const [hovered, setHovered] = useState(false)
   const cover = project.cover ? normalizeDriveUrl(project.cover) : null
+  const videoRef = useRef(null)
+
+  // Play/pause hover video when hovering the card
+  useEffect(() => {
+    if (!videoRef.current || !project.hoverVideo) return
+    if (hovered) {
+      videoRef.current.currentTime = 0
+      videoRef.current.play().catch(() => {})
+    } else {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+    }
+  }, [hovered, project.hoverVideo])
 
   return (
     <motion.div
@@ -32,6 +45,19 @@ function ProjectCard({ project, index }) {
                 animate={{ scale: hovered ? 1.05 : 1 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               />
+              {/* Hover video — plays muted over the cover image */}
+              {project.hoverVideo && (
+                <motion.video
+                  ref={videoRef}
+                  src={normalizeDriveUrl(project.hoverVideo)}
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 h-full w-full object-cover"
+                  animate={{ opacity: hovered ? 1 : 0 }}
+                  transition={{ duration: 0.4 }}
+                />
+              )}
               {/* Hover overlay */}
               <motion.div
                 animate={{ opacity: hovered ? 1 : 0 }}

@@ -269,6 +269,18 @@ export function AdminProjectEdit() {
               <GalleryImageManager images={galleryImages} onChange={setGalleryImages} />
             </Field>
 
+            <Field label="Hover Video URL (plays muted when hovering the project card)">
+              <input
+                className={inputCls}
+                value={project.hoverVideo || ''}
+                onChange={e => update('hoverVideo', e.target.value)}
+                placeholder="https://... (mp4, webm, or Google Drive link)"
+              />
+              <p className="mt-1.5 text-[11px] text-muted dark:text-dark-muted">
+                Optional. Loops silently on hover in the Selected Works grid.
+              </p>
+            </Field>
+
             <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Metrics</h2>
             <div className="grid gap-6 md:grid-cols-2">
               {project.metrics.map((m, i) => (

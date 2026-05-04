@@ -4,6 +4,12 @@ import AvailabilityBadge from './AvailabilityBadge.jsx'
 import HeroImageBox from './HeroImageBox.jsx'
 import { getPageContent } from '../lib/cms.js'
 
+function richHtml(content = '') {
+  if (!content) return ''
+  if (/<[a-z][\s\S]*>/i.test(content)) return content
+  return content.split('\n\n').filter(Boolean).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')
+}
+
 function cvDownloadUrl(raw) {
   if (!raw) return null
   const match = raw.match(/\/file\/d\/([^/?#]+)/)
@@ -86,17 +92,27 @@ export default function Hero() {
               <span className="text-accent">Designer.</span>
             </motion.h1>
 
-            {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-9 max-w-[480px] text-lg leading-relaxed text-ink/72 dark:text-dark-ink/72 md:text-xl"
-            >
-              Turning complex ideas into <RotatingWord /> people actually finish using.
-              Four years across fintech, real estate, events &amp; apps — with a specialty in{' '}
-              <em className="italic text-accent">Framer</em> for production-ready web.
-            </motion.p>
+            {/* Description — uses CMS subtitle if set, otherwise fallback with RotatingWord */}
+            {heroContent.subtitle ? (
+              <motion.div
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-9 max-w-[480px] text-lg leading-relaxed text-ink/72 dark:text-dark-ink/72 md:text-xl [&>p]:mb-3 [&>p:last-child]:mb-0"
+                dangerouslySetInnerHTML={{ __html: richHtml(heroContent.subtitle) }}
+              />
+            ) : (
+              <motion.p
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-9 max-w-[480px] text-lg leading-relaxed text-ink/72 dark:text-dark-ink/72 md:text-xl"
+              >
+                Turning complex ideas into <RotatingWord /> people actually finish using.
+                Four years across fintech, real estate, events &amp; apps — with a specialty in{' '}
+                <em className="italic text-accent">Framer</em> for production-ready web.
+              </motion.p>
+            )}
 
             {/* CTA row */}
             <motion.div
@@ -139,8 +155,8 @@ export default function Hero() {
             >
               {[
                 { label: 'Location', value: 'Lagos, Nigeria' },
-                { label: 'Focus', value: 'Product Design · Framer' },
-                { label: 'Open to', value: 'Full-time · Contract' },
+                { label: 'Focus', value: heroContent.focus || 'Product Design · Framer' },
+                { label: 'Open to', value: heroContent.openTo || 'Full-time · Contract' },
               ].map(item => (
                 <div key={item.label}>
                   <div className="label text-muted dark:text-dark-muted">{item.label}</div>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels } from '../lib/cms.js'
+import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels, getContactGallery, saveContactGallery } from '../lib/cms.js'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 import RichTextField from '../components/RichTextField.jsx'
 
@@ -38,14 +38,27 @@ export default function AdminPages() {
   const [about, setAbout] = useState(getPageContent('about'))
   const [contact, setContact] = useState(getPageContent('contact'))
   const [beyond, setBeyond] = useState(getBeyondPixels())
+  const [gallery, setGallery] = useState(getContactGallery())
   const [saved, setSaved] = useState('')
 
   const save = (page, data) => {
     if (page === 'beyond') saveBeyondPixels(data)
+    else if (page === 'gallery') saveContactGallery(data)
     else savePageContent(page, data)
     setSaved(page)
     setTimeout(() => setSaved(''), 2000)
   }
+
+  const updateGalleryItem = (idx, key, val) => {
+    const next = [...gallery]
+    next[idx] = { ...next[idx], [key]: val }
+    setGallery(next)
+  }
+  const addGalleryItem = () => {
+    if (gallery.length >= 4) return
+    setGallery([...gallery, { id: Date.now().toString(), type: 'image', src: '', poster: '', caption: '' }])
+  }
+  const removeGalleryItem = (idx) => setGallery(gallery.filter((_, i) => i !== idx))
 
   const updateBeyondItem = (idx, key, value) => {
     const items = [...beyond]
@@ -155,6 +168,69 @@ export default function AdminPages() {
           <button onClick={() => save('contact', contact)}
             className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'contact' ? 'bg-emerald-500' : 'bg-accent'}`}>
             {saved === 'contact' ? '✓ Saved' : 'Save Contact'}
+          </button>
+        </Section>
+
+        {/* Contact Gallery */}
+        <Section title="Contact Gallery (3D Depth Stack)">
+          <p className="text-sm text-muted dark:text-dark-muted">
+            Up to 4 items shown as a stacked 3D gallery in the contact section. Supports images and videos.
+          </p>
+          <div className="space-y-4">
+            {gallery.map((item, i) => (
+              <div key={item.id} className="rounded-xl border border-line p-4 dark:border-dark-line">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="label text-muted dark:text-dark-muted">Item {i + 1}</span>
+                  <button
+                    onClick={() => removeGalleryItem(i)}
+                    className="label text-red-500 hover:text-red-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  <Field label="Type">
+                    <select
+                      className={inputCls}
+                      value={item.type}
+                      onChange={e => updateGalleryItem(i, 'type', e.target.value)}
+                    >
+                      <option value="image">Image</option>
+                      <option value="video">Video</option>
+                    </select>
+                  </Field>
+                  <Field label={item.type === 'video' ? 'Video URL (.mp4 / .webm)' : 'Image URL'}>
+                    <input className={inputCls} value={item.src} onChange={e => updateGalleryItem(i, 'src', e.target.value)} placeholder="https://..." />
+                  </Field>
+                  {item.type === 'video' && (
+                    <Field label="Poster / Thumbnail URL (optional)">
+                      <input className={inputCls} value={item.poster || ''} onChange={e => updateGalleryItem(i, 'poster', e.target.value)} placeholder="https://..." />
+                    </Field>
+                  )}
+                  <Field label="Caption (optional)">
+                    <input className={inputCls} value={item.caption || ''} onChange={e => updateGalleryItem(i, 'caption', e.target.value)} placeholder="Project name or short description" />
+                  </Field>
+                  {item.src && item.type === 'image' && (
+                    <img src={item.src} alt="" className="h-24 w-40 rounded-lg object-cover" />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          {gallery.length < 4 && (
+            <button
+              onClick={addGalleryItem}
+              className="label mt-1 inline-flex items-center gap-2 rounded-lg border border-line px-4 py-2.5 text-ink dark:border-dark-line dark:text-dark-ink"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
+              Add Item
+            </button>
+          )}
+          <button
+            onClick={() => save('gallery', gallery)}
+            className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'gallery' ? 'bg-emerald-500' : 'bg-accent'}`}
+          >
+            {saved === 'gallery' ? '✓ Saved' : 'Save Gallery'}
           </button>
         </Section>
       </div>
