@@ -39,8 +39,8 @@ function Card({ item, index, total, isHovered, isAnyHovered, onClick }) {
         x:       c.x,
         rotateZ: isHovered ? 0 : c.rotateZ,
         rotateY: isHovered ? 0 : c.rotateY,
-        scale:   isHovered ? 1.13 : isAnyHovered ? 0.97 : 1,
-        y:       isHovered ? -32 : 0,
+        scale:   isHovered ? 1.22 : isAnyHovered ? 0.96 : 1,
+        y:       isHovered ? -56 : 0,
       }}
       transition={{ type: 'spring', stiffness: 280, damping: 26, mass: 0.8 }}
       whileTap={{ scale: isHovered ? 1.18 : 1 }}
