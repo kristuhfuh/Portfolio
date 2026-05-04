@@ -127,6 +127,18 @@ html.dark .dotted {
   animation: float 6s ease-in-out infinite;
 }
 
+/* ─── Portrait gallery horizontal scroll ────────────────────────────────── */
+@keyframes gallery-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-gallery-scroll {
+  animation: gallery-scroll 38s linear infinite;
+}
+.gallery-pause:hover .animate-gallery-scroll {
+  animation-play-state: paused;
+}
+
 /* ─── Slow spin (decorative rings in Contact) ────────────────────────────── */
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
@@ -194,7 +206,8 @@ html.dark .dotted {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-float,
-  .animate-spin-slow {
+  .animate-spin-slow,
+  .animate-gallery-scroll {
     animation: none;
   }
   * {

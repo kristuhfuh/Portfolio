@@ -174,7 +174,7 @@ export default function AdminPages() {
         {/* Contact Gallery */}
         <Section title="Contact Gallery (3D Depth Stack)">
           <p className="text-sm text-muted dark:text-dark-muted">
-            Up to 4 items shown as a stacked 3D gallery in the contact section. Supports images and videos.
+            Up to 7 portrait images or videos shown as a horizontal scrolling strip above the contact section.
           </p>
           <div className="space-y-4">
             {gallery.map((item, i) => (
@@ -217,7 +217,7 @@ export default function AdminPages() {
               </div>
             ))}
           </div>
-          {gallery.length < 4 && (
+          {gallery.length < 7 && (
             <button
               onClick={addGalleryItem}
               className="label mt-1 inline-flex items-center gap-2 rounded-lg border border-line px-4 py-2.5 text-ink dark:border-dark-line dark:text-dark-ink"

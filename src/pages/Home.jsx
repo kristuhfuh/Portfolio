@@ -5,6 +5,7 @@ import Work from '../components/Work.jsx'
 import Process from '../components/Process.jsx'
 import Experience from '../components/Experience.jsx'
 import About from '../components/About.jsx'
+import WorkGallery from '../components/ContactGallery.jsx'
 import Contact from '../components/Contact.jsx'
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <Process />
       <Experience />
       <About />
+      <WorkGallery />
       <Contact />
     </>
   )
