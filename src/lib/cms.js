@@ -37,9 +37,10 @@ async function dbGet(key) {
 }
 
 async function dbSet(key, val) {
-  await supabase
+  const { error } = await supabase
     .from('settings')
     .upsert({ key, value: val }, { onConflict: 'key' })
+  if (error) console.error('[Supabase] write failed:', error.message, error)
 }
 
 // ─── Boot: pull latest data from Supabase into localStorage ───────────────────
@@ -47,12 +48,15 @@ export async function initCMS() {
   try {
     const result = await Promise.race([
       supabase.from('settings').select('key, value'),
-      new Promise(resolve => setTimeout(() => resolve({ data: null }), 4000)),
+      new Promise(resolve => setTimeout(() => resolve({ data: null, error: 'timeout' }), 4000)),
     ])
     const { data, error } = result
-    if (error || !data) return
+    if (error) { console.warn('[Supabase] read failed:', error); return }
+    if (!data) return
     data.forEach(({ key, value }) => lsSet(key, value))
-  } catch { /* offline — localStorage fallback works fine */ }
+  } catch (e) {
+    console.warn('[Supabase] initCMS error:', e)
+  }
 }
 
 // ─── Keys ─────────────────────────────────────────────────────────────────────
