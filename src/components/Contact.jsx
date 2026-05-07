@@ -95,7 +95,7 @@ export default function Contact() {
         <div className="animate-spin-ccw-22 h-[180px] w-[180px] rounded-full border-[1.5px] border-cream dark:border-ink" />
       </div>
 
-      <div className="relative mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-44">
+      <div className="relative mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
 
         {/* Label */}
         <motion.div
