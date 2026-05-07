@@ -3,6 +3,7 @@
 // New fields: hook, pullQuote, outcomeStats[], deliverables[], reception
 // ─────────────────────────────────────────────────────────────
 
+// my projects
 export const projects = [
   {
     slug: 'landmark-citizen-app',
