@@ -94,7 +94,7 @@ export default function Contact() {
         <div className="animate-spin-ccw-22 h-[180px] w-[180px] rounded-full border-[1.5px] border-cream dark:border-ink" />
       </div>
 
-      <div className="relative mx-auto max-w-[1400px] px-6 py-10 md:px-10 md:py-14">
+      <div className="relative mx-auto max-w-[1400px] px-6 py-6 md:px-10 md:py-8">
 
         {/* Label */}
         <motion.div
@@ -102,7 +102,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="label mb-6 text-cream/55 dark:text-ink/55"
+          className="label mb-4 text-cream/55 dark:text-ink/55"
         >
           ✦ Contact
         </motion.div>
