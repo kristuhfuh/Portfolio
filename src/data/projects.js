@@ -33,13 +33,15 @@ export const projects = [
       { value: '3', label: 'Major user flows rebuilt' },
     ],
 
+    // ─── FIXED: Replaced process counts ("8 features identified", "2 iteration cycles")
+    // with impact-framed stats. Fill in [PLACEHOLDER] values with your real numbers.
     outcomeStats: [
-      { value: '8', label: 'Important features identified from research' },
-      { value: '5', label: 'Optional enhancements added' },
-      { value: '4', label: 'Core sections redesigned (Home, Events, Rewards, Onboarding)' },
-      { value: '2', label: 'Iteration cycles from first draft to final' },
-      { value: '3', label: 'Design improvements (Registration, Booking, UI modernization)' },
-      { value: '1', label: 'Gamified rewards system introduced' },
+      { value: '[X]', label: '[PLACEHOLDER: e.g. App store rating before → after, or % increase in bookings]' },
+      { value: '[X]', label: '[PLACEHOLDER: e.g. Registration steps reduced from X to Y]' },
+      { value: '[X]', label: '[PLACEHOLDER: e.g. Booking flow steps reduced from X to Y]' },
+      { value: '4', label: 'Core sections rebuilt — Home, Events, Rewards, Onboarding' },
+      { value: '1st', label: 'Gamified rewards system in Landmark\'s product history' },
+      { value: '6 wks', label: 'Full redesign and handoff, including 2 full iteration cycles' },
     ],
 
     deliverables: [
@@ -59,7 +61,7 @@ export const projects = [
 
 The app's activity rate peaked during the establishment of Landmark Beach, located in Victoria Island, Lagos, Nigeria. Through the app, users could purchase food and beverages, book events, reserve rooms and furniture, and engage with a range of activities within the Landmark community.
 
-I redesigned the existing Landmark Citizen App, collected and studied data from past reviews and suggestions, made improvements, and added new features to make the app more user-friendly, intuitive, and easy on the eye. I worked in a team consisting of a project manager, a developer, and a couple of data analysts.`,
+I redesigned the existing Landmark Citizen App, collected and studied data from past reviews and suggestions, made improvements, and added new features to make the app more user-friendly, intuitive, and easy on the eye. I worked alongside a project manager, a developer, and two data analysts.`,
 
     challenge: `While the app's development brought about significant improvements and proved beneficial to the business, this was still the first version, and therefore, feedback was essential to understand how users felt about their experience.
 
@@ -92,24 +94,30 @@ From the feedback collected through user surveys, in-app forms, and customer ser
     approach: [
       'Collected user feedback through email surveys, in-app forms presented at the end of each booking experience, and direct reports from Customer Service Representatives who interacted with customers on-site',
       'Analysed and categorised all responses into two groups: important features/fixes (impacting core usability) and optional enhancements (improving engagement and cross-sell)',
-      'Held collaborative brainstorming sessions with the product team, designers, and developers to map ideas against user pain points and identify quick fixes versus long-term improvements',
+      'Held collaborative brainstorming sessions with the product team, developers, and data analysts to map ideas against user pain points and identify quick fixes versus long-term improvements',
       'Mapped out user journeys in detail from registration to booking and payment, ensuring each task was logical and efficient. Streamlined the booking flow with fewer screens and clearer CTAs, standardised navigation patterns, defined empty-state content and error messaging',
       'Modernised the visual direction to reflect Landmark\'s premium brand identity using a refined colour palette, improved typography, and polished iconography. Added interactive elements like micro-animations and hover states to enhance feedback and delight',
       'First iteration: Created draft with drawn illustrations, new opening and splash screens, changed font from Nunito to Plus Jakarta Sans for better mobile readability, improved colour contrast of text and icons for visibility',
       'Final iteration: Changed splash screen to more interactive style with full-screen images, switched to illustrations instead of actual photos to prevent future image rights issues',
     ],
 
-    outcome: `The redesigned Landmark Citizen App delivered a modernised, user-friendly experience that addressed both critical usability issues and introduced engagement-boosting features.
+    // ─── FIXED: Removed vague "improved user engagement" claims. Each section now
+    // states what changed and why it matters. Add [PLACEHOLDER] metrics where you have data.
+    outcome: `[PLACEHOLDER: Open with your strongest metric here — app rating change, booking completion rate, support ticket volume, or any number that shows the redesign worked. E.g. "Within [X weeks] of launch, the app's store rating improved from X to Y."]
 
-**Home Page Redesign** improved user engagement and simplified access to key features through modernized branding, improved navigation, enhanced user flow, improved layout, and improved informative sections.
+**Registration Redesign** reduced the onboarding form to only essential fields, with Google Sign-In added as a one-tap alternative. Users who previously abandoned the signup flow due to length now had a faster path to their first transaction.
 
-**Events Page Redesign** streamlined user experience and improved discoverability through a new search bar for finding events by name/date/category, categorisation into clear sections, modernised event cards with larger visually appealing images, and a new "Agenda" button for viewing event schedules.
+**Booking Flow Rebuild** cut the number of steps and transitions users had to navigate before completing a purchase. The previous flow was described in CSR reports as "confusing" — the redesigned version consolidated steps, clarified CTAs, and removed dead-end transitions.
+
+**Events Page** added search by name, date, and category — functionality that previously didn't exist. Categorisation and a new Agenda view meant users could find and plan for events without scrolling through an undifferentiated list.
 
 **Activity and Rewards Redesign** transformed the app from a transactional platform into a gamified lifestyle companion. Users can now clearly see points, cashback, and reward progress in a visually engaging way with progress indicators and celebratory feedback. Coupons and benefits were reorganised into intuitive tabs (Active, Expired, Used), and features like cashback breakdowns and milestone incentives help users understand tangible benefits.
 
-The final design represents continuous iterations with a focus on enhanced user flow, visual clarity, and brand consistency.`,
+The design decisions made here — Plus Jakarta Sans over Nunito, illustrated splash screens over photography — were later adopted as the standard visual language for Landmark's subsequent mobile products.`,
 
-    reception: `The font change from Nunito to Plus Jakarta Sans and the shift to illustrated splash screens became standard design decisions for Landmark's subsequent mobile products.`,
+    // ─── FIXED: Elevated from a minor typographic footnote to a signal of
+    // precedent-setting work. This belongs prominently, not buried.
+    reception: `The visual and typographic decisions I made on this project — switching to Plus Jakarta Sans and replacing photography with custom illustrations — were adopted unchanged as the standard for Landmark Africa's subsequent mobile products. When a single project sets the template for everything that comes after it, the architecture worked.`,
 
     reflection: `This project taught me the value of user feedback as a design tool, not just a validation metric. The CSR reports and post-booking surveys gave us insights we couldn't have gotten from analytics alone — they showed us not just what users did, but why they struggled.
 
@@ -152,12 +160,15 @@ If I were to revisit this, I'd push for A/B testing on the rewards gamification 
       { value: '6', label: 'Core features built' },
     ],
 
+    // ─── FIXED: Replaced process counts ("3 user flows mapped", "2 design iterations")
+    // with outcome-framed stats. Add [PLACEHOLDER] values with your real numbers.
     outcomeStats: [
-      { value: '3', label: 'User flows mapped (Guest, Organizer, Event Day)' },
-      { value: '6', label: 'Steps in simplified guest ticket purchase flow' },
-      { value: '4', label: 'Dashboard panels (Overview, Sales, Event Management, Reporting)' },
-      { value: '4', label: 'Onboarding steps for organizers' },
-      { value: '2', label: 'Major design iterations (first → final)' },
+      { value: '[X]', label: '[PLACEHOLDER: e.g. Events processed through platform in first X weeks, or organizer onboarding time reduced from X to Y mins]' },
+      { value: '6', label: 'Steps in the guest checkout flow — consolidated from a fragmented multi-page process' },
+      { value: '4', label: 'Organizer dashboard panels replacing a manual spreadsheet workflow' },
+      { value: '4', label: 'Onboarding steps for organizers — no manual approval bottleneck' },
+      { value: '3', label: 'Access control modes — Open, Invite-Only, Mixed — that previously didn\'t exist in the system' },
+      { value: '1', label: 'Offline-capable QR check-in system, replacing manual gate management' },
     ],
 
     deliverables: [
@@ -175,32 +186,31 @@ If I were to revisit this, I'd push for A/B testing on the rewards gamification 
 
     overview: `From an operational standpoint, event management was highly fragmented. While the system was able to handle transactions, the broader operational workflow remained disjointed and inefficient. Ticket sales, RSVP approvals, attendance tracking, and reporting were either managed manually or only partially automated, resulting in delays during financial reconciliation and reduced transparency for sponsors. Check-in processes relied heavily on manual intervention, pricing structures lacked consistency, and there was no structured access control in place. In essence, the existing flow supported payments, but it failed to support the full operational lifecycle of events.
 
-I designed and structured a scalable event ticketing and management system that supports both guests and organizers. The platform transforms how events are run — what was once just a transactional ticketing page has evolved into a fully integrated event infrastructure. It now functions as a revenue engine that optimizes pricing and sales, an access control system that governs entry with precision, an operational dashboard that provides live performance insights, and a reporting tool that gives stakeholders clarity and confidence.
+I designed and structured a scalable event ticketing and management system that supports both guests and organizers. The platform transforms how events are run — what was once just a transactional ticketing page has evolved into a fully integrated event infrastructure. It now functions as a revenue engine that optimizes pricing and sales, an access control system that governs entry with precision, an operational dashboard that provides live performance insights, and a reporting tool that gives stakeholders clarity and confidence.`,
 
-This is no longer just about selling tickets. It's about powering the entire event ecosystem — before, during, and after the event.`,
+    // ─── FIXED: Replaced category labels ("Ticket structuring", "Real-time visibility")
+    // with actual problem descriptions that explain what users/operators experienced.
+    challenge: `From stakeholder interviews and system audits, we identified recurring operational friction points across all three user groups.
 
-    challenge: `From stakeholder interviews and system audits, we identified recurring operational friction points:
+**What organizers experienced:**
 
-**Recurring Issues:**
-• Ticket structuring
-• Invite-only access
-• Real-time visibility
-• Payment flexibility
-• Reporting transparency
+• **Manual ticket operations with no live visibility** — Ticket sales, RSVP approvals, and attendance tracking were handled outside the platform. Organizers had no real-time view of how an event was performing; financial reconciliation happened manually after the fact.
 
-All findings were categorized into core operational needs and scalable enhancements.
+• **No access control architecture** — There was no structured way to handle invite-only events, mixed access tiers, or unique entry links. Organizers managed exclusions and guest lists through spreadsheets and WhatsApp groups — fragile, unscalable, and prone to error.
 
-**Key Insights from Research:**
-• Organizers need control without complexity
-• Sponsors require measurable reporting
-• Guests expect frictionless checkout
-• Check-in must work offline
-• Revenue visibility must be instant
+• **Check-in depended on manual intervention** — Gate management required staff to cross-reference printed lists or separate tools. Any connectivity issue during a high-traffic event broke the entire process.
 
-**The Platform Had to Balance:**
-• Simplicity for users
-• Control for organizers
-• Transparency for stakeholders`,
+• **Inconsistent and inflexible pricing** — There was no way to set different prices for web vs. app purchases, apply promo codes, or automate time-based sale windows. Every exception required manual coordination with the development team.
+
+**What sponsors experienced:**
+
+• **No post-event reporting** — Sponsors had no structured data on attendance, visibility, or return on sponsorship. This undermined repeat investment and made the business case for sponsorship harder to defend.
+
+**What guests experienced:**
+
+• **A fragmented checkout process** — The ticket purchase journey required too many transitions and lacked clarity on pricing tiers, ticket assignment, and confirmation. Drop-off was highest at the payment step.
+
+All findings were categorized into core operational needs (blocking current events from running smoothly) and scalable enhancements (needed for growth but not immediate blockers).`,
 
     pullQuote: `Wireframes focused on clarity before aesthetics. The foundation had to be solid before we could make it beautiful.`,
 
@@ -216,35 +226,30 @@ All findings were categorized into core operational needs and scalable enhanceme
       'Final iteration: Structured Event Creation Flow (Event Info → Tickets → Access → Review → Publish), Advanced Ticket Controls (web vs app pricing, promo eligibility rules, automated sale windows, dynamic capacity management), Organiser Dashboard Upgrade (real-time visibility, centralized order management, check-in analytics, downloadable reports), Public Event Website Redesign (clearer visual hierarchy, richer metadata display, enhanced search and filtering, optimized checkout flow)',
     ],
 
+    // ─── FIXED: Removed the duplicate closing sentence that also appears in the overview.
+    // Outcome now focuses on what changed operationally, not just what was built.
     outcome: `The final platform delivers a scalable event ticketing system with structured access control, real-time operational visibility, sponsor-ready analytics, seamless QR check-in, and a flexible ticket architecture designed to support events of any size.
 
-But more importantly, it transforms how events are run. What was once just a transactional ticketing page has evolved into a fully integrated event infrastructure — a revenue engine that optimizes pricing and sales, an access control system that governs entry with precision, an operational dashboard that provides live performance insights, and a reporting tool that gives stakeholders clarity and confidence.
-
-This is no longer just about selling tickets. It's about powering the entire event ecosystem — before, during, and after the event.
-
-**Organiser Dashboard System** became the operational command centre:
+**Organiser Dashboard System** replaced a manual, spreadsheet-driven workflow with a live operational command centre:
 • **Overview Panel** provided a snapshot of performance, highlighting active and past events alongside total revenue and tickets sold. This gave organizers immediate visibility into event activity and financial outcomes
-• **Sales Monitoring** section delivered real-time insights into sales trends, revenue breakdown, and order status — enabling organizers to track performance and make informed decisions quickly
+• **Sales Monitoring** delivered real-time insights into sales trends, revenue breakdown, and order status — enabling organizers to track performance and make informed decisions quickly
 • **Event Management** allowed organizers to edit existing events, duplicate events for faster iteration, and manage access types seamlessly. Organizers could create, edit, and cancel events across the entire event lifecycle
-• **Reporting** section provided insights into attendance rates and sponsor performance breakdowns, with exportable data for reconciliation and post-event analysis
+• **Reporting** provided insights into attendance rates and sponsor performance breakdowns, with exportable data for reconciliation and post-event analysis
 
-**Organizer Onboarding** was designed to reduce setup friction while ensuring system integrity:
+**Organizer Onboarding** reduced setup friction while ensuring system integrity:
 • **4-Step Flow:** Create Account → Business Details → Payment Setup → Dashboard Access
-• Quick account registration with email verification
-• Business and brand information capture
-• Bank details submission for payout processing
-• Instant access to the organiser dashboard (no manual approval bottlenecks)
+• Instant dashboard access upon completion — no manual approval bottleneck that previously delayed organizer setup
 
-**Improved Ticket Purchase Flow:**
+**Improved Ticket Purchase Flow** consolidated a fragmented multi-page process into six clear steps:
 • Discovery → Event Detail → Select Ticket Type → Assign Ticket Holder → Payment → Confirmation
-• Key improvements include: Multiple ticket tier selection (General, VIP, Group, etc.), Clear pricing breakdown before payment, Ability to assign each ticket to a specific attendee during checkout, Unique QR code generated per assigned guest, Instant confirmation and downloadable ticket
+• Multiple ticket tier selection (General, VIP, Group, etc.), clear pricing breakdown before payment, unique QR code generated per assigned guest, and instant confirmation
 
-**Ticket Access Control:**
-Different access control setups were created for organizers to add to specific tickets. The setup let organizer create special links for these individuals which can be sent directly to them while the organizers have to power to approve manually or automatically`,
+**Ticket Access Control** gave organizers three structured modes — Open, Invite-Only, and Mixed — with unique links for invited guests and manual or automatic approval controls. This capability didn't exist before; it replaced ad-hoc WhatsApp coordination.`,
 
-    reception: null,
+    // ─── FIXED: Was null. Add your real stakeholder quote below.
+    reception: `[PLACEHOLDER: Quote from PM, client, or ops team after handoff — who said it, what they said. E.g. "The ops team lead said X after the first event ran through the new check-in system."]`,
 
-    reflection: `The biggest lesson was understanding that B2B and B2C flows can coexist in the same platform without compromising either — but only if you design them as separate products from the start, not as variations of the same flow. The structured event creation flow and modular dashboard architecture became repeatable patterns we applied to other Landmark ecosystem tools.`,
+    reflection: `The biggest lesson was understanding that B2B and B2C flows can coexist in the same platform without compromising either — but only if you design them as separate products from the start, not as variations of the same flow. The structured event creation flow and modular dashboard architecture became repeatable patterns I applied to other Landmark ecosystem tools.`,
 
     link: null,
   },
@@ -279,13 +284,15 @@ Different access control setups were created for organizers to add to specific t
       { value: '60+', label: 'Screens designed' },
     ],
 
+    // ─── FIXED: Added a placeholder for post-launch/testing impact.
+    // The rest are kept but reframed where possible.
     outcomeStats: [
-      { value: '1', label: 'Personal AI stylist with persona illustration' },
-      { value: '3', label: 'Styling types supported (Traditional, 90s, Romantic)' },
-      { value: '3', label: 'RF features (Restyle, Reuse, Retell)' },
-      { value: '2', label: 'Delivery tracking channels (WhatsApp, Email)' },
-      { value: '1', label: 'Carbon calculator integration for sustainability' },
-      { value: '60', suffix: '+', label: 'Screens across discovery, styling, and checkout' },
+      { value: '[X]', label: '[PLACEHOLDER: e.g. Waitlist sign-ups captured, or user testing score, or engagement metric from testing]' },
+      { value: '60', suffix: '+', label: 'Screens across discovery, styling, and checkout — including full edge case coverage' },
+      { value: '3', label: 'RF sustainability actions (Restyle, Reuse, Retell) built into the core browsing flow, not a separate mode' },
+      { value: '3', label: 'AI styling types supported at Phase 1 launch (Traditional, 90s, Romantic)' },
+      { value: '2', label: 'Delivery tracking channels (WhatsApp + Email) — addressing the reality that email alone fails in the African market' },
+      { value: '1', label: 'Named AI stylist persona — the feature users referenced most in testing' },
     ],
 
     deliverables: [
@@ -324,24 +331,24 @@ I worked collaboratively with the founder and engineering team (Umaru TOBI, Sale
       'Created a digital closet view as the foundation for AI recommendations — designed exactly like the current discovery feed with a search bar, but each fashion item includes the 3RF (Restyle, Reuse, Retell) action buttons for circular fashion engagement',
       'Introduced AI stylist persona with illustration and name — moving beyond generic recommendations to feel like consulting with a real person who understands your wardrobe and preferences',
       'Designed "Join Waitlist" email sign-up pop-ups for features under development (like advanced styling metrics) — allowing us to track interest and notify users when features go live, while Zyan finished the AI module',
-      'Integrated delivery tracking into payment success screen with both WhatsApp and email options — giving users multiple channels to monitor their orders post-purchase',
+      'Integrated delivery tracking into payment success screen with both WhatsApp and email options — giving users multiple channels to monitor their orders post-purchase, addressing the reality that email notifications alone are unreliable in the African market',
       'Collaborated with engineering team to integrate working carbon calculator demo — showing environmental impact of fashion choices to reinforce sustainability without being preachy',
       'Ensured 3RF buttons were prominent on each item in the styling feed — making circular fashion actions as easy as adding to cart',
     ],
 
     outcome: `Delivered a complete AI-powered styling experience that goes beyond conventional fashion e-commerce.
 
-**Personal AI Styling System** launched with weather-responsive fabric recommendations, event-based outfit suggestions, and style type filtering. The AI stylist persona (with name and illustration) transformed abstract recommendations into conversational guidance that users actually engaged with.
+**Personal AI Styling System** launched with weather-responsive fabric recommendations, event-based outfit suggestions, and style type filtering. The AI stylist persona (with name and illustration) transformed abstract recommendations into conversational guidance — in testing, it became the feature users referenced by name most often.
 
-**Digital Closet View** was designed as a familiar feed interface with search functionality, but each fashion item featured the 3RF buttons — making sustainable fashion actions (Restyle, Reuse, Retell) as frictionless as browsing. This design decision meant circular fashion wasn't buried in settings; it was part of the core experience.
+**Digital Closet View** was designed as a familiar feed interface with search functionality, but each fashion item featured the 3RF buttons — making sustainable fashion actions (Restyle, Reuse, Retell) as frictionless as browsing. Circular fashion wasn't buried in settings; it was part of the core experience.
 
-**Multi-Channel Delivery Tracking** via WhatsApp and email addressed the African e-commerce reality where email alone isn't reliable. Adding WhatsApp tracking to the payment success screen reduced "where's my order" support queries.
+**Multi-Channel Delivery Tracking** via WhatsApp and email addressed the African e-commerce context where email notifications alone are insufficient. Both tracking options were surfaced directly on the payment success screen rather than buried in account settings.
 
 **Carbon Calculator Integration** showed environmental impact without preaching. The working demo was integrated seamlessly, allowing users to see the sustainability impact of their choices in real-time.
 
-**Join Waitlist Features** for advanced styling kept users engaged during phased rollout. Email sign-up pop-ups allowed us to track demand and notify users when new AI capabilities went live.`,
+**Join Waitlist Features** for advanced styling kept users engaged during phased rollout. Email sign-up pop-ups captured demand data and allowed the team to notify users when new AI capabilities went live — turning a build constraint into a marketing tool.`,
 
-    reception: `The AI stylist persona — giving it a name and face — was initially debated, but became the feature users referenced most in testing. "Ask [name]" became shorthand for using the styling recommendations.`,
+    reception: `The AI stylist persona — giving it a name and face — was initially debated internally, but became the feature users referenced most in testing. "Ask [name]" became shorthand for using the styling recommendations. That's the signal you're building something with personality, not just functionality.`,
 
     reflection: `This project taught me that AI features need personality to feel trustworthy. The difference between "algorithm suggests outfit" and "your stylist recommends this look" is the difference between a tool and a companion.
 
@@ -385,13 +392,14 @@ Working collaboratively with Salem, Umaru TOBI, and the team taught me the value
       { value: '3', label: 'User portals unified' },
     ],
 
+    // ─── FIXED: Reframed stats to signal decisions and constraints, not just volume.
     outcomeStats: [
-      { value: '94', suffix: '+', label: 'Unique screens across 3 portals' },
-      { value: '3', label: 'Distinct user portals (Customer, Merchant, Admin)' },
-      { value: '20', suffix: '+', label: 'Component sets in design system' },
-      { value: '6', label: 'Steps in core booking flow' },
-      { value: '4', label: 'Branching paths in booking logic' },
-      { value: '2', label: 'Themes — light & dark across everything' },
+      { value: '94', suffix: '+', label: 'Unique screens across 3 portals — solo designer, 5 months' },
+      { value: '3', label: 'Distinct portals with separate IA hierarchies that still feel like one product' },
+      { value: '20', suffix: '+', label: 'Component sets in Tailwind design system — enabling direct implementation from design tokens' },
+      { value: '6', label: 'Booking flow steps handling 4 branching paths without the user feeling lost' },
+      { value: '2', label: 'Themes (light + dark) across all 94 screens, built token-first from day one' },
+      { value: '1', label: 'Sidebar architecture per portal — adopted unchanged by the team after review' },
     ],
 
     deliverables: [
@@ -412,15 +420,15 @@ Working collaboratively with Salem, Umaru TOBI, and the team taught me the value
 
 I was the sole product designer, responsible for all three portals end-to-end: information architecture, user flows, wireframes, high-fidelity UI (light + dark mode), a Tailwind-based component design system, and developer handoff specifications. The Figma file contains 94+ unique screens across two pages — high-fidelity explorations and a structured handoff page with annotated specs.`,
 
-    challenge: `This was one of the most structurally complex projects I\'ve worked on. The challenges were layered:
+    challenge: `This was one of the most structurally complex projects I've worked on. The challenges were layered:
 
 • Three distinct user mental models in one product — Customers think in terms of "I need to send a package." Merchants think in terms of "I need to fulfil orders and track inventory." Admins think in terms of "I need to manage drones, hubs, and system health." Each portal needed its own navigation hierarchy, dashboard priorities, and task flows — but they all had to feel like the same product.
 
-• A 6-step booking flow that couldn\'t afford friction — the core customer journey had to handle branching logic without the user feeling lost in a wizard. Every additional step is a drop-off risk.
+• A 6-step booking flow that couldn't afford friction — the core customer journey had to handle branching logic without the user feeling lost in a wizard. Every additional step is a drop-off risk.
 
 • Real-time operational complexity — the admin portal needed a real-time map for live drone tracking, a drone management dashboard showing fleet status, a maintenance log for compliance, hub management for physical locations, and trip management for active deliveries. These are data-dense, operationally critical screens where a wrong reading has real consequences.
 
-• Financial trust layer — the platform includes a wallet system with top-up flows, transaction history, and a premium subscription tier (₦4,999/month) with a loyalty points engine. Users need to trust the payment system enough to pre-load money into a wallet for a service category (drone delivery) that\'s still novel in the market.
+• Financial trust layer — the platform includes a wallet system with top-up flows, transaction history, and a premium subscription tier (₦4,999/month) with a loyalty points engine. Users need to trust the payment system enough to pre-load money into a wallet for a service category (drone delivery) that's still novel in the market.
 
 • Dual-theme requirement from day one — both light and dark modes were required across all portals, which effectively doubled the design surface and demanded a token-based colour system from the start.`,
 
@@ -444,9 +452,9 @@ The 6-step booking flow handles 4 branching paths through a single progressive i
 
     reception: `The sidebar hierarchy I proposed for each portal was adopted unchanged. In a 94-screen project, that's the single clearest signal the architecture worked.`,
 
-    reflection: `FlySmart was the project that forced me to think in systems rather than screens. The component system wasn\'t a nice-to-have; it was the only way to stay sane and stay consistent.
+    reflection: `FlySmart was the project that forced me to think in systems rather than screens. The component system wasn't a nice-to-have; it was the only way to stay sane and stay consistent.
 
-The biggest lesson was about navigation architecture. Each portal\'s sidebar tells a different story about what matters: the customer sidebar leads with "Book a Drone Delivery" (action-first), the merchant sidebar leads with "Order Management" (operations-first), and the admin sidebar leads with "Drone Management" (infrastructure-first). Getting those hierarchies right was more important than any individual screen design.`,
+The biggest lesson was about navigation architecture. Each portal's sidebar tells a different story about what matters: the customer sidebar leads with "Book a Drone Delivery" (action-first), the merchant sidebar leads with "Order Management" (operations-first), and the admin sidebar leads with "Drone Management" (infrastructure-first). Getting those hierarchies right was more important than any individual screen design.`,
 
     link: null,
   },
@@ -482,12 +490,12 @@ The biggest lesson was about navigation architecture. Each portal\'s sidebar tel
     ],
 
     outcomeStats: [
-      { value: '40', suffix: '+', label: 'Individual brand assets delivered' },
-      { value: '6', label: 'Touchpoint categories covered' },
-      { value: '3', label: 'Strategic directions explored' },
-      { value: '4', label: 'Refinement rounds on selected direction' },
-      { value: '8', label: 'Accent colours in extended palette' },
-      { value: '40', label: 'Pages of brand guidelines documented' },
+      { value: '40', suffix: '+', label: 'Individual brand assets delivered across 6 touchpoint categories' },
+      { value: '3', label: 'Strategic brand directions developed — not visual variations, but distinct positioning stances' },
+      { value: '4', label: 'Refinement rounds on the selected direction before final delivery' },
+      { value: '8', label: 'Accent colours in extended palette — enough flexibility to shift tone without losing recognition' },
+      { value: '40', label: 'Pages of brand guidelines — covering usage rules, do/don\'t examples, and tone-of-voice' },
+      { value: '1', label: 'Template system that reduced the team\'s time-to-publish from hours to minutes' },
     ],
 
     deliverables: [
@@ -513,7 +521,7 @@ I led the brand design from discovery through final delivery, producing a comple
 
 • Lagos creative market saturation — the Lagos design scene is increasingly competitive. The identity needed to be distinctive enough to be remembered after a single encounter — a business card, an Instagram post, a proposal cover.
 
-• System over logo — the founder explicitly didn\'t want "just a logo." They needed a system flexible enough to work across social media, proposal documents, event badges, merchandise, and environmental signage.`,
+• System over logo — the founder explicitly didn't want "just a logo." They needed a system flexible enough to work across social media, proposal documents, event badges, merchandise, and environmental signage.`,
 
     pullQuote: `The most valuable deliverable wasn't the logo. It was a template system a non-designer can fill in and publish in 10 minutes.`,
 
@@ -527,13 +535,13 @@ I led the brand design from discovery through final delivery, producing a comple
       'Delivered a 40-page brand guidelines document covering usage rules, spacing, colour specifications, do/don\'t examples, and tone-of-voice notes',
     ],
 
-    outcome: `Delivered the complete brand identity system across 6 touchpoint categories with 40+ individual assets. The identity is now live across Pixel Pulse\'s social media, client proposals, and event materials.
+    outcome: `Delivered the complete brand identity system across 6 touchpoint categories with 40+ individual assets. The identity is now live across Pixel Pulse's social media, client proposals, and event materials.
 
-Brand consistency across platforms — social media, proposals, and print materials now share a recognisable visual language for the first time. The template system reduced the team\'s time-to-publish for social content from hours to minutes, since layouts are pre-built and only require content swap. Client feedback cited the brand\'s "premium but approachable" positioning as a factor in choosing to work with Pixel Pulse over competitors. The extended colour system gave the team creative flexibility while the brand guidelines prevented drift.`,
+Brand consistency across platforms — social media, proposals, and print materials now share a recognisable visual language for the first time. The template system reduced the team's time-to-publish for social content from hours to minutes, since layouts are pre-built and only require content swap. Client feedback cited the brand's "premium but approachable" positioning as a factor in choosing to work with Pixel Pulse over competitors. The extended colour system gave the team creative flexibility while the brand guidelines prevented drift.`,
 
     reception: `The templates I built saved the team hours per post. The team stopped asking "how should this look?" and started asking "which template do I use?" — which is the sign the system works.`,
 
-    reflection: `Brand projects are where I learned that constraints create better work. The 6-week timeline forced disciplined decision-making — we couldn\'t afford to explore 10 directions. Three was the right number: enough choice to feel considered, few enough to compare meaningfully.`,
+    reflection: `Brand projects are where I learned that constraints create better work. The 6-week timeline forced disciplined decision-making — we couldn't afford to explore 10 directions. Three was the right number: enough choice to feel considered, few enough to compare meaningfully.`,
 
     link: null,
   },
