@@ -86,28 +86,6 @@ export default function Experience() {
                   consumer apps, and government-facing platforms.
                 </motion.p>
 
-                {/* Stats row */}
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.32 }}
-                  className="mt-10 flex gap-8"
-                >
-                  {[
-                    { value: '4+', label: 'Years' },
-                    { value: '15+', label: 'Projects' },
-                    { value: '5', label: 'Companies' },
-                  ].map(stat => (
-                    <div key={stat.label}>
-                      <div className="font-display text-3xl text-ink dark:text-dark-ink"
-                        style={{ letterSpacing: '-0.04em' }}>
-                        {stat.value}
-                      </div>
-                      <div className="label text-muted dark:text-dark-muted">{stat.label}</div>
-                    </div>
-                  ))}
-                </motion.div>
               </motion.div>
             </div>
           </div>

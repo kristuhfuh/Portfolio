@@ -51,8 +51,8 @@ export default function About() {
           transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
         >
-          Pushing Boundaries{' '}
-          <span className="text-accent">since 2022.</span>
+          Designing from Lagos,{' '}
+          <span className="text-accent">for the world.</span>
         </motion.h2>
 
         <div className="grid gap-12 md:grid-cols-12">
@@ -95,22 +95,10 @@ export default function About() {
               transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               className="mt-10"
             >
-              <div className="label mb-4 text-muted dark:text-dark-muted">The Kit</div>
-              <div className="flex flex-wrap gap-2">
-                {tools.map((t, i) => (
-                  <motion.span
-                    key={t}
-                    initial={{ opacity: 0, scale: 0.88 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.35, delay: i * 0.05 }}
-                    whileHover={{ scale: 1.05, y: -1 }}
-                    className="rounded-full border border-line bg-cream px-4 py-2 text-sm text-ink hover:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink"
-                  >
-                    {t}
-                  </motion.span>
-                ))}
-              </div>
+              <p className="text-sm text-ink/60 dark:text-dark-ink/60">
+                <span className="label mr-2 text-muted dark:text-dark-muted">The kit —</span>
+                {tools.join(' · ')}
+              </p>
             </motion.div>
 
             {/* Track record */}

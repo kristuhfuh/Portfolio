@@ -3,21 +3,21 @@ import { motion } from 'framer-motion'
 const steps = [
   {
     number: '01',
-    title: 'Discover',
+    title: 'Listen first.',
     description:
-      'Understanding your goals, users, and pain points through structured research, stakeholder interviews, and data analysis. The foundation everything is built on.',
+      "Before a single wireframe, I need to understand what problem we're actually solving. I interview, push back on assumptions, and sit with the data until the real question emerges — because building the wrong thing beautifully is still failure.",
   },
   {
     number: '02',
-    title: 'Design',
+    title: 'Make it real, fast.',
     description:
-      'Crafting beautiful, functional solutions that balance aesthetics with usability — from rough wireframes to high-fidelity Figma files that are ready for engineering.',
+      "I move from rough concepts to interactive Framer prototypes faster than most designers get to wireframes. You'll see something you can click and test — not a slide deck full of boxes — so we catch wrong turns early.",
   },
   {
     number: '03',
-    title: 'Deliver',
+    title: 'Ship, then watch.',
     description:
-      'Testing, refining, and shipping. Then monitoring how real users interact with the product to drive continuous improvement and ensure the design holds up in the wild.',
+      "Handoff is not the finish line. I stay close through engineering, care about what actually ships, and track how real people use it. The most useful design insight usually comes the week after launch.",
   },
 ]
 
@@ -43,7 +43,7 @@ export default function Process() {
             transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
           >
-            Here's how it works
+            How I work
           </motion.h2>
         </div>
 
