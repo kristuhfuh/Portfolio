@@ -36,6 +36,13 @@ html.dark .cursor-plus {
 /* ─── Base ───────────────────────────────────────────────────────────────── */
 html { scroll-behavior: smooth; }
 
+/* ─── Focus visible (keyboard nav) ──────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #6D28D9;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 body { @apply antialiased; }
 
 :root {

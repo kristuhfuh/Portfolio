@@ -53,7 +53,17 @@ export async function initCMS() {
     const { data, error } = result
     if (error) { console.warn('[Supabase] read failed:', error); return }
     if (!data) return
-    data.forEach(({ key, value }) => lsSet(key, value))
+
+    // If the stored schema version doesn't match the current one, skip loading
+    // projects data — getProjects() will re-seed from the updated static file
+    // and push the fresh data back to Supabase.
+    const storedVersion = data.find(r => r.key === VERSION_KEY)?.value
+    const schemaMatch = storedVersion === SCHEMA_VERSION
+
+    data.forEach(({ key, value }) => {
+      if (!schemaMatch && (key === PROJECTS_KEY || key === VERSION_KEY)) return
+      lsSet(key, value)
+    })
   } catch (e) {
     console.warn('[Supabase] initCMS error:', e)
   }
@@ -66,7 +76,7 @@ const PAGES_KEY     = 'cms_pages'
 const BEYOND_KEY    = 'cms_beyond_pixels'
 const GALLERY_KEY   = 'cms_contact_gallery'
 const VERSION_KEY   = 'cms_schema_version'
-const SCHEMA_VERSION = 'v2-story'
+const SCHEMA_VERSION = 'v3'
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 export function getProjects() {

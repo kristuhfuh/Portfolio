@@ -23,8 +23,9 @@ export function AdminProjects() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-4xl text-ink dark:text-dark-ink">Case Studies</h1>
-          <p className="mt-2 text-muted dark:text-dark-muted">
+          <h1 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
+            className="text-2xl text-[#141414]">Case Studies</h1>
+          <p className="mt-1 text-sm text-[#141414]/50">
             {projects.length} projects · {projects.filter(p => !p.hidden).length} visible
           </p>
         </div>
@@ -40,29 +41,29 @@ export function AdminProjects() {
           <motion.div key={p.slug}
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: i * 0.04 }}
-            className={`flex items-center gap-4 rounded-2xl border border-line bg-white/60 p-4 backdrop-blur dark:border-dark-line dark:bg-white/[0.03] ${p.hidden ? 'opacity-50' : ''}`}
+            className={`flex items-center gap-4 rounded-2xl border border-black/6 bg-white p-4 ${p.hidden ? 'opacity-50' : ''}`}
           >
             <div className="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-line dark:bg-dark-line">
               {p.cover && <img src={normalizeDriveUrl(p.cover)} alt="" className="h-full w-full object-cover" />}
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-xs text-muted dark:text-dark-muted">{p.number}</span>
-                <h3 className="truncate font-display text-xl text-ink dark:text-dark-ink">{p.title}</h3>
+                <span className="font-mono text-xs text-[#141414]/40">{p.number}</span>
+                <h3 className="truncate font-display text-xl text-[#141414]">{p.title}</h3>
                 {p.hidden && (
                   <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] text-gray-600 dark:bg-gray-700 dark:text-gray-400">Hidden</span>
                 )}
               </div>
               <div className="mt-1 flex gap-2">
                 {p.tags?.slice(0, 3).map(t => (
-                  <span key={t} className="rounded-full bg-line/60 px-2 py-0.5 text-[10px] text-muted dark:bg-dark-line dark:text-dark-muted">{t}</span>
+                  <span key={t} className="rounded-full bg-black/6 px-2 py-0.5 text-[10px] text-[#141414]/50">{t}</span>
                 ))}
               </div>
             </div>
             <div className="flex shrink-0 gap-2">
-              <button 
+              <button
                 onClick={() => handleToggleVisibility(p.slug)}
-                className="rounded-lg border border-line px-3 py-2 text-xs text-ink transition-colors hover:bg-accent hover:text-cream dark:border-dark-line dark:text-dark-ink"
+                className="rounded-lg border border-black/10 px-3 py-2 text-xs text-[#141414] transition-colors hover:bg-[#141414] hover:text-white"
                 title={p.hidden ? 'Show on website' : 'Hide from website'}
               >
                 {p.hidden ? (
@@ -78,11 +79,11 @@ export function AdminProjects() {
                 )}
               </button>
               <Link to={`/admin/projects/${p.slug}`}
-                className="rounded-lg border border-line px-3 py-2 text-xs text-ink transition-colors hover:bg-accent hover:text-cream dark:border-dark-line dark:text-dark-ink">
+                className="rounded-lg border border-black/10 px-3 py-2 text-xs text-[#141414] transition-colors hover:bg-[#6D28D9] hover:text-white hover:border-[#6D28D9]">
                 Edit
               </Link>
               <button onClick={() => handleDelete(p.slug)}
-                className="rounded-lg border border-line px-3 py-2 text-xs text-red-500 transition-colors hover:bg-red-50 dark:border-dark-line dark:hover:bg-red-900/20">
+                className="rounded-lg border border-black/10 px-3 py-2 text-xs text-red-400 transition-colors hover:bg-red-50">
                 Delete
               </button>
             </div>
@@ -108,13 +109,14 @@ const emptyProject = {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="label mb-1.5 block text-muted dark:text-dark-muted">{label}</label>
+      <label className="mb-1.5 block text-[10px] font-medium uppercase tracking-widest text-[#141414]/40"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</label>
       {children}
     </div>
   )
 }
 
-const inputCls = 'w-full rounded-lg border border-line bg-cream px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink'
+const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/30 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
 const textareaCls = inputCls + ' min-h-[120px] resize-y'
 
 export function AdminProjectEdit() {
