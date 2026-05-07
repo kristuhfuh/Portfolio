@@ -87,9 +87,17 @@ export default function Hero() {
               transition={{ duration: 0.75, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="display-hero text-[clamp(4.5rem,13vw,12rem)] leading-[0.87] text-ink dark:text-dark-ink"
             >
-              Product
-              <br />
-              <span className="text-accent">Designer.</span>
+              {heroContent.headline
+                ? heroContent.headline.split('\n').map((line, i, arr) => (
+                    <span key={i}>
+                      {i === arr.length - 1
+                        ? <span className="text-accent">{line}</span>
+                        : line}
+                      {i < arr.length - 1 && <br />}
+                    </span>
+                  ))
+                : (<>Product<br /><span className="text-accent">Designer.</span></>)
+              }
             </motion.h1>
 
             {/* Description — uses CMS subtitle if set, otherwise fallback with RotatingWord */}
