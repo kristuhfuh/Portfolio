@@ -89,19 +89,10 @@ export default function Contact() {
     >
       {/* Decorative spinning ring */}
       <div className="pointer-events-none absolute right-10 top-16 hidden opacity-[0.06] md:block">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          className="h-[320px] w-[320px] rounded-full border-[1.5px] border-cream dark:border-ink"
-          style={{ borderStyle: 'dashed' }}
-        />
+        <div className="animate-spin-slow-30 h-[320px] w-[320px] rounded-full border-[1.5px] border-cream dark:border-ink" style={{ borderStyle: 'dashed' }} />
       </div>
       <div className="pointer-events-none absolute right-24 top-28 hidden opacity-[0.04] md:block">
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-          className="h-[180px] w-[180px] rounded-full border-[1.5px] border-cream dark:border-ink"
-        />
+        <div className="animate-spin-ccw-22 h-[180px] w-[180px] rounded-full border-[1.5px] border-cream dark:border-ink" />
       </div>
 
       <div className="relative mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-44">
@@ -277,11 +268,7 @@ export default function Contact() {
                 className="group inline-flex items-center gap-4 rounded-full border border-cream/20 px-8 py-5 text-cream transition-[background-color,border-color] duration-200 hover:border-accent hover:bg-accent dark:border-ink/20 dark:text-ink dark:hover:border-accent dark:hover:bg-accent dark:hover:text-cream"
               >
                 <span className="label tracking-widest">Open to new work</span>
-                <motion.span
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-                  className="inline-block"
-                >
+                <span className="animate-nudge-x inline-block">
                   <svg
                     width="18"
                     height="18"
@@ -292,7 +279,7 @@ export default function Contact() {
                   >
                     <path d="M5 12h14M13 5l7 7-7 7" />
                   </svg>
-                </motion.span>
+                </span>
               </MagneticButton>
             </motion.div>
           </motion.div>
