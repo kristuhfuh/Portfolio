@@ -1,107 +1,156 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getContacts, markContactRead, deleteContact } from '../lib/cms.js'
+import { loadContacts, markContactRead, deleteContact } from '../lib/cms.js'
+
+function Avatar({ name }) {
+  return (
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#6D28D9]/10 text-sm font-semibold text-[#6D28D9]">
+      {name?.[0]?.toUpperCase() ?? '?'}
+    </div>
+  )
+}
 
 export default function AdminContacts() {
-  const [contacts, setContacts] = useState(getContacts())
+  const [contacts, setContacts] = useState([])
   const [selected, setSelected] = useState(null)
+  const [loading, setLoading]   = useState(true)
 
-  const handleRead = (id) => {
-    setContacts(markContactRead(id))
-    const c = contacts.find(x => x.id === id)
-    setSelected(c ? { ...c, read: true } : null)
+  useEffect(() => {
+    loadContacts().then(data => { setContacts(data); setLoading(false) })
+  }, [])
+
+  const unread = contacts.filter(c => !c.read).length
+
+  const handleSelect = (c) => {
+    setSelected(c)
+    if (!c.read) {
+      const updated = markContactRead(c.id)
+      setContacts(Array.isArray(updated) ? updated : contacts.map(x => x.id === c.id ? { ...x, read: true } : x))
+    }
   }
 
   const handleDelete = (id) => {
     if (!window.confirm('Delete this message?')) return
-    setContacts(deleteContact(id))
+    deleteContact(id)
+    setContacts(prev => prev.filter(c => c.id !== id))
     if (selected?.id === id) setSelected(null)
   }
 
-  const unread = contacts.filter(c => !c.read).length
+  if (loading) return (
+    <div className="flex h-64 items-center justify-center">
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#141414]/10 border-t-[#6D28D9]" />
+    </div>
+  )
 
   return (
-    <div>
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-4xl text-ink dark:text-dark-ink">Contact Messages</h1>
-        <p className="mt-2 text-muted dark:text-dark-muted">
-          {contacts.length} messages · {unread} unread
-        </p>
+    <div className="max-w-4xl">
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+        <div className="flex items-center gap-3">
+          <p className="text-[#141414]/40 text-sm">{contacts.length} total</p>
+          {unread > 0 && (
+            <span className="rounded-full bg-[#6D28D9]/10 px-2.5 py-0.5 text-xs text-[#6D28D9]"
+              style={{ fontFamily: "'JetBrains Mono', monospace" }}>{unread} unread</span>
+          )}
+        </div>
       </motion.div>
 
       {contacts.length === 0 ? (
-        <div className="mt-16 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-line dark:bg-dark-line">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-muted"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white py-24 text-center">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-black/5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+              strokeLinecap="round" className="text-[#141414]/30">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+            </svg>
           </div>
-          <p className="text-muted dark:text-dark-muted">No messages yet.</p>
-          <p className="mt-1 text-sm text-muted dark:text-dark-muted">When visitors submit your contact form, messages will appear here.</p>
-        </div>
+          <p className="font-medium text-[#141414]">No messages yet</p>
+          <p className="mt-1 text-sm text-[#141414]/40">When visitors submit your contact form, they'll appear here.</p>
+        </motion.div>
       ) : (
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-          {/* List */}
+        <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+
+          {/* ── Message list ── */}
           <div className="space-y-2">
             {contacts.map((c, i) => (
               <motion.button key={c.id}
-                initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: i * 0.03 }}
-                onClick={() => { setSelected(c); handleRead(c.id) }}
-                className={`w-full rounded-xl border p-4 text-left transition-all ${
+                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.04 }}
+                onClick={() => handleSelect(c)}
+                className={`w-full rounded-2xl border p-4 text-left transition-all duration-150 ${
                   selected?.id === c.id
-                    ? 'border-accent bg-accent/5'
-                    : 'border-line bg-white/60 hover:border-accent/30 dark:border-dark-line dark:bg-white/[0.03]'
+                    ? 'border-[#6D28D9]/30 bg-[#6D28D9]/5 shadow-sm'
+                    : 'border-black/6 bg-white hover:border-black/10 hover:shadow-sm'
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${c.read ? 'bg-transparent' : 'bg-accent'}`} />
+                  <Avatar name={c.name} />
                   <div className="min-w-0 flex-1">
-                    <div className="flex justify-between gap-2">
-                      <span className={`truncate text-sm ${c.read ? 'text-muted dark:text-dark-muted' : 'font-medium text-ink dark:text-dark-ink'}`}>{c.name}</span>
-                      <span className="shrink-0 text-[10px] text-muted dark:text-dark-muted">{new Date(c.date).toLocaleDateString()}</span>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className={`text-sm ${!c.read ? 'font-semibold text-[#141414]' : 'font-medium text-[#141414]/60'}`}>
+                        {c.name}
+                      </span>
+                      <span className="shrink-0 text-[10px] text-[#141414]/30"
+                        style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                        {new Date(c.date || c.created_at).toLocaleDateString()}
+                      </span>
                     </div>
-                    <div className="truncate text-xs text-muted dark:text-dark-muted">{c.email}</div>
-                    <p className="mt-1 line-clamp-1 text-xs text-ink/60 dark:text-dark-ink/60">{c.message}</p>
+                    <div className="mt-0.5 text-xs text-[#141414]/40">{c.email}</div>
+                    <p className="mt-1.5 line-clamp-2 text-xs text-[#141414]/60">{c.message}</p>
                   </div>
+                  {!c.read && <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#6D28D9]" />}
                 </div>
               </motion.button>
             ))}
           </div>
 
-          {/* Detail */}
+          {/* ── Detail pane ── */}
           <AnimatePresence mode="wait">
             {selected ? (
               <motion.div key={selected.id}
-                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                className="rounded-2xl border border-line bg-white/60 p-6 backdrop-blur dark:border-dark-line dark:bg-white/[0.03]"
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="rounded-2xl border border-black/6 bg-white p-6"
               >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h2 className="font-display text-2xl text-ink dark:text-dark-ink">{selected.name}</h2>
-                    <a href={`mailto:${selected.email}`} className="text-sm text-accent hover:underline">{selected.email}</a>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <Avatar name={selected.name} />
+                    <div>
+                      <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
+                        className="text-xl text-[#141414]">{selected.name}</h2>
+                      <a href={`mailto:${selected.email}`}
+                        className="text-sm text-[#6D28D9] hover:underline">{selected.email}</a>
+                    </div>
                   </div>
                   <button onClick={() => handleDelete(selected.id)}
-                    className="rounded-lg border border-line px-3 py-1.5 text-xs text-red-500 hover:bg-red-50 dark:border-dark-line dark:hover:bg-red-900/20">
+                    className="shrink-0 rounded-xl border border-red-100 px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-50">
                     Delete
                   </button>
                 </div>
-                <div className="mt-1 text-xs text-muted dark:text-dark-muted">
-                  {new Date(selected.date).toLocaleString()}
-                </div>
-                <div className="mt-6 whitespace-pre-wrap text-ink/85 dark:text-dark-ink/85">
+
+                <p className="mt-2 text-xs text-[#141414]/30" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  {new Date(selected.date || selected.created_at).toLocaleString()}
+                </p>
+
+                <div className="mt-6 rounded-xl bg-[#f5f3ee] p-4 text-sm leading-relaxed text-[#141414]/80 whitespace-pre-wrap">
                   {selected.message}
                 </div>
-                <div className="mt-6 border-t border-line pt-4 dark:border-dark-line">
-                  <a href={`mailto:${selected.email}`}
-                    className="label inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-cream transition-transform hover:scale-[1.02]">
-                    Reply via Email
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+
+                <div className="mt-6">
+                  <a href={`mailto:${selected.email}?subject=Re: your message`}
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#141414] px-5 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/15">
+                    Reply via email
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M5 12h14M13 5l7 7-7 7" />
+                    </svg>
                   </a>
                 </div>
               </motion.div>
             ) : (
-              <div className="flex items-center justify-center rounded-2xl border border-dashed border-line py-20 dark:border-dark-line">
-                <p className="text-sm text-muted dark:text-dark-muted">Select a message to read</p>
-              </div>
+              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="flex items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white">
+                <p className="text-sm text-[#141414]/30">Select a message to read</p>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

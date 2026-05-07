@@ -1,88 +1,129 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../lib/auth.jsx'
 import { getContacts } from '../lib/cms.js'
 
-const navItems = [
-  { to: '/admin', label: 'Dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4', end: true },
-  { to: '/admin/projects', label: 'Projects', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
-  { to: '/admin/pages', label: 'Page Content', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-  { to: '/admin/contacts', label: 'Contacts', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+const nav = [
+  {
+    to: '/admin', end: true, label: 'Overview',
+    icon: <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />,
+  },
+  {
+    to: '/admin/projects', label: 'Projects',
+    icon: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
+  },
+  {
+    to: '/admin/pages', label: 'Page Content',
+    icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></>,
+  },
+  {
+    to: '/admin/contacts', label: 'Messages',
+    icon: <><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></>,
+  },
 ]
 
 export default function AdminLayout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const unread = getContacts().filter(c => !c.read).length
 
   const handleLogout = () => { logout(); navigate('/admin/login') }
 
+  const sectionTitle = nav.find(n => n.end ? pathname === n.to : pathname.startsWith(n.to))?.label ?? 'Admin'
+
   return (
-    <div className="flex min-h-screen bg-cream dark:bg-dark-bg [&_*]:!cursor-auto">
-      {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-line bg-white/70 backdrop-blur-xl dark:border-dark-line dark:bg-white/[0.02]">
-        <div className="flex items-center gap-3 border-b border-line px-6 py-5 dark:border-dark-line">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="6" className="fill-ink dark:fill-cream" />
-            <text x="16" y="22" fontFamily="Fraunces, serif" fontSize="18" fontWeight="500" textAnchor="middle" className="fill-cream dark:fill-ink">C</text>
-            <circle cx="24" cy="8" r="3" fill="#6D28D9" />
-          </svg>
+    <div className="flex min-h-screen bg-[#f5f3ee] [&_*]:!cursor-auto" style={{ fontFamily: "'Geist Sans', sans-serif" }}>
+
+      {/* ── Sidebar ──────────────────────────────────────────────────────── */}
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-[#141414]">
+
+        {/* Brand */}
+        <div className="flex items-center gap-3 px-6 pt-8 pb-6">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
+            <span style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800 }}
+              className="text-lg text-white leading-none">C</span>
+            <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[#6D28D9] ring-2 ring-[#141414]" />
+          </div>
           <div>
-            <div className="text-sm font-semibold text-ink dark:text-dark-ink">Portfolio CMS</div>
-            <div className="text-xs text-muted dark:text-dark-muted">Content Manager</div>
+            <div className="text-sm font-semibold text-white">Christopher</div>
+            <div className="text-[10px] uppercase tracking-widest text-white/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>CMS</div>
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-4">
-          {navItems.map(item => (
+        {/* Nav */}
+        <nav className="flex-1 space-y-0.5 px-3">
+          {nav.map(item => (
             <NavLink key={item.to} to={item.to} end={item.end}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 ${
                   isActive
-                    ? 'bg-accent/10 font-medium text-accent'
-                    : 'text-muted hover:bg-line/50 hover:text-ink dark:text-dark-muted dark:hover:bg-dark-line/50 dark:hover:text-dark-ink'
+                    ? 'bg-white/10 text-white'
+                    : 'text-white/40 hover:bg-white/5 hover:text-white/80'
                 }`
               }
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <path d={item.icon} />
-              </svg>
-              {item.label}
-              {item.label === 'Contacts' && unread > 0 && (
-                <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-cream">{unread}</span>
+              {({ isActive }) => (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                    className={`shrink-0 transition-colors ${isActive ? 'text-[#a78bfa]' : 'text-white/30 group-hover:text-white/60'}`}>
+                    {item.icon}
+                  </svg>
+                  <span>{item.label}</span>
+                  {item.label === 'Messages' && unread > 0 && (
+                    <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#6D28D9] px-1.5 text-[10px] font-bold text-white">
+                      {unread}
+                    </span>
+                  )}
+                </>
               )}
             </NavLink>
           ))}
         </nav>
 
-        <div className="border-t border-line p-4 dark:border-dark-line">
-          <div className="mb-3 truncate text-xs text-muted dark:text-dark-muted">{user?.email}</div>
-          <div className="flex gap-2">
-            <a href="/" target="_blank" rel="noreferrer"
-              className="flex-1 rounded-lg border border-line px-3 py-2 text-center text-xs text-muted transition-colors hover:bg-line/50 dark:border-dark-line dark:text-dark-muted">
-              View Site
-            </a>
-            <button onClick={handleLogout}
-              className="flex-1 rounded-lg border border-line px-3 py-2 text-xs text-red-500 transition-colors hover:bg-red-50 dark:border-dark-line dark:hover:bg-red-900/20">
-              Logout
+        {/* Bottom */}
+        <div className="px-3 pb-6 space-y-2">
+          <a href="/" target="_blank" rel="noreferrer"
+            className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-white/40 transition-all hover:bg-white/5 hover:text-white/80">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            View live site
+          </a>
+
+          <div className="mx-3 border-t border-white/8" />
+
+          <div className="flex items-center gap-3 px-3 py-2">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] text-[11px] font-bold text-white">
+              {user?.email?.[0]?.toUpperCase() ?? 'C'}
+            </div>
+            <span className="min-w-0 flex-1 truncate text-xs text-white/40">{user?.email}</span>
+            <button onClick={handleLogout} title="Sign out"
+              className="shrink-0 text-white/25 transition-colors hover:text-red-400">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="ml-64 flex min-h-screen flex-col">
-        <div className="flex-1 p-8">
-          <Outlet />
-        </div>
-        <footer className="border-t border-line px-8 py-4 dark:border-dark-line">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-muted dark:text-dark-muted">© {new Date().getFullYear()} Christopher Akpoguma · Portfolio CMS</span>
-            <a href="/" target="_blank" rel="noreferrer" className="text-xs text-muted transition-colors hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink">
-              View live site ↗
-            </a>
+      {/* ── Main ─────────────────────────────────────────────────────────── */}
+      <div className="ml-60 flex min-h-screen flex-1 flex-col">
+        {/* Top bar */}
+        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-black/6 bg-[#f5f3ee]/90 px-8 py-4 backdrop-blur">
+          <h1 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
+            className="text-xl text-[#141414] tracking-tight">{sectionTitle}</h1>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="text-xs text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>LIVE</span>
           </div>
-        </footer>
-      </main>
+        </header>
+
+        <main className="flex-1 px-8 py-8">
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }
