@@ -45,7 +45,11 @@ async function dbSet(key, val) {
 // ─── Boot: pull latest data from Supabase into localStorage ───────────────────
 export async function initCMS() {
   try {
-    const { data, error } = await supabase.from('settings').select('key, value')
+    const result = await Promise.race([
+      supabase.from('settings').select('key, value'),
+      new Promise(resolve => setTimeout(() => resolve({ data: null }), 4000)),
+    ])
+    const { data, error } = result
     if (error || !data) return
     data.forEach(({ key, value }) => lsSet(key, value))
   } catch { /* offline — localStorage fallback works fine */ }
