@@ -25,7 +25,7 @@ export default function Footer() {
         aria-hidden="true"
       >
         <p
-          className="display-hero whitespace-nowrap text-[clamp(5rem,18vw,20rem)] leading-[0.82] text-ink/[0.06] dark:text-dark-ink/[0.06]"
+          className="display-hero w-full text-center whitespace-nowrap text-[clamp(5rem,18.5vw,100vw)] leading-[0.82] text-ink/[0.06] dark:text-dark-ink/[0.06]"
           style={{ letterSpacing: '-0.045em' }}
         >
           Christopher
