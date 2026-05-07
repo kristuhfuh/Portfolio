@@ -16,7 +16,7 @@ function cvDownloadUrl(raw) {
   return match ? `https://drive.google.com/uc?export=download&id=${match[1]}` : raw
 }
 
-const rotatingWords = ['interfaces', 'systems', 'journeys', 'products', 'stories']
+const rotatingWords = ['interfaces', 'systems', 'experiences', 'products', 'journeys']
 
 function RotatingWord() {
   const [index, setIndex] = useState(0)
@@ -116,8 +116,8 @@ export default function Hero() {
                 transition={{ duration: 0.65, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-9 max-w-[480px] text-lg leading-relaxed text-ink/72 dark:text-dark-ink/72 md:text-xl"
               >
-                Turning complex ideas into <RotatingWord /> people actually finish using.
-                Four years across fintech, real estate, events &amp; apps — with a specialty in{' '}
+                I design <RotatingWord /> that people love to use — four years across
+                fintech, real estate, events &amp; apps, with a specialty in{' '}
                 <em className="italic text-accent">Framer</em> for production-ready web.
               </motion.p>
             )}
@@ -144,12 +144,9 @@ export default function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   download
-                  className="label inline-flex items-center gap-2 text-ink transition-opacity hover:opacity-70 dark:text-dark-ink"
+                  className="link-underline text-sm text-ink/60 transition-opacity hover:opacity-70 dark:text-dark-ink/60"
                 >
-                  <span className="link-underline">Download CV</span>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 3v14M5 10l7 7 7-7" />
-                  </svg>
+                  Download CV
                 </a>
               )}
             </motion.div>
@@ -192,15 +189,11 @@ export default function Hero() {
           transition={{ delay: 1.1, duration: 0.7 }}
           className="mt-16 flex items-center gap-3 text-muted dark:text-dark-muted"
         >
-          <motion.span
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-            className="inline-block"
-          >
+          <span className="animate-float inline-block" style={{ animationDuration: '1.6s' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M12 5v14M5 12l7 7 7-7" />
             </svg>
-          </motion.span>
+          </span>
           <span className="label">Scroll to see the work</span>
         </motion.div>
       </motion.div>

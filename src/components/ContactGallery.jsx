@@ -152,8 +152,8 @@ export default function WorkGallery() {
             <motion.p
               initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-display italic text-xl text-muted dark:text-dark-muted"
-            >/ Gallery /</motion.p>
+              className="label text-muted dark:text-dark-muted"
+            >✦ Gallery</motion.p>
             <motion.p
               initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
               viewport={{ once: true }}

@@ -38,9 +38,9 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-5 italic text-lg text-muted dark:text-dark-muted"
+          className="label mb-5 text-muted dark:text-dark-muted"
         >
-          / Who Am I /
+          ✦ About
         </motion.p>
 
         {/* Headline */}
