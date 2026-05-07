@@ -11,14 +11,13 @@ import './index.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
-// Render immediately with cached data, then sync from Supabase in background
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
-)
-
-// Pull latest content from Supabase into localStorage for next render
-initCMS()
+// Wait for Supabase data before first render so all browsers see the latest content
+initCMS().then(() => {
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
+  )
+})
