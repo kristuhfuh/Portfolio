@@ -4,22 +4,23 @@ import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels, get
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 import RichTextField from '../components/RichTextField.jsx'
 
-const inputCls = 'w-full rounded-lg border border-line bg-cream px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink'
+const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/30 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
 const textareaCls = inputCls + ' min-h-[120px] resize-y'
 
 function Section({ title, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="rounded-2xl border border-line bg-white/60 backdrop-blur dark:border-dark-line dark:bg-white/[0.03]">
+    <div className="rounded-2xl border border-black/6 bg-white">
       <button onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between px-6 py-5 text-left">
-        <h2 className="font-display text-xl text-ink dark:text-dark-ink">{title}</h2>
+        <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
+          className="text-lg text-[#141414]">{title}</h2>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-          className={`text-muted transition-transform ${open ? 'rotate-180' : ''}`}>
+          className={`text-[#141414]/30 transition-transform ${open ? 'rotate-180' : ''}`}>
           <path d="M6 9l6 6 6-6" />
         </svg>
       </button>
-      {open && <div className="space-y-4 border-t border-line px-6 pb-6 pt-4 dark:border-dark-line">{children}</div>}
+      {open && <div className="space-y-4 border-t border-black/6 px-6 pb-6 pt-4">{children}</div>}
     </div>
   )
 }
@@ -27,7 +28,8 @@ function Section({ title, children, defaultOpen = false }) {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="label mb-1.5 block text-muted dark:text-dark-muted">{label}</label>
+      <label className="mb-1.5 block text-[10px] font-medium uppercase tracking-widest text-[#141414]/40"
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</label>
       {children}
     </div>
   )
@@ -66,95 +68,86 @@ export default function AdminPages() {
     setBeyond(items)
   }
 
+  const SaveBtn = ({ page, label }) => (
+    <button onClick={() => save(page, page === 'beyond' ? beyond : page === 'gallery' ? gallery : page === 'hero' ? hero : page === 'about' ? about : contact)}
+      className={`mt-2 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 ${saved === page ? 'bg-emerald-500' : 'bg-[#141414] hover:shadow-lg hover:shadow-black/15'}`}
+      style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+      {saved === page ? '✓ Saved' : label}
+    </button>
+  )
+
   return (
-    <div className="mx-auto max-w-3xl">
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-display text-4xl text-ink dark:text-dark-ink">Page Content</h1>
-        <p className="mt-2 text-muted dark:text-dark-muted">Edit the text and media on every section of your portfolio.</p>
+    <div className="max-w-3xl">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+        <p className="text-sm text-[#141414]/40">Make changes and hit save — updates go live instantly.</p>
       </motion.div>
 
-      <div className="mt-8 space-y-4">
+      <div className="space-y-3">
         {/* Hero */}
-        <Section title="Hero Section" defaultOpen>
+        <Section title="Hero" defaultOpen>
           <Field label="Headline (use \n for line breaks)">
             <textarea className={textareaCls} value={hero.headline} onChange={e => setHero({ ...hero, headline: e.target.value })} />
           </Field>
           <Field label="Subtitle">
             <RichTextField value={hero.subtitle} onChange={v => setHero({ ...hero, subtitle: v })} placeholder="Hero subtitle…" minHeight={100} />
           </Field>
-          <Field label="Focus"><input className={inputCls} value={hero.focus} onChange={e => setHero({ ...hero, focus: e.target.value })} /></Field>
-          <Field label="Open To"><input className={inputCls} value={hero.openTo} onChange={e => setHero({ ...hero, openTo: e.target.value })} /></Field>
+          <div className="grid gap-3 md:grid-cols-2">
+            <Field label="Focus"><input className={inputCls} value={hero.focus} onChange={e => setHero({ ...hero, focus: e.target.value })} /></Field>
+            <Field label="Open To"><input className={inputCls} value={hero.openTo} onChange={e => setHero({ ...hero, openTo: e.target.value })} /></Field>
+          </div>
           <Field label="CV / Resume URL">
-            <input className={inputCls} value={hero.cvUrl || ''} onChange={e => setHero({ ...hero, cvUrl: e.target.value })}
-              placeholder="Paste a Google Drive or direct link to your CV PDF" />
-            <p className="mt-1.5 text-[11px] text-muted dark:text-dark-muted">For Google Drive: share the file → "Anyone with the link" → paste the link here.</p>
+            <input className={inputCls} value={hero.cvUrl || ''} onChange={e => setHero({ ...hero, cvUrl: e.target.value })} placeholder="Google Drive or direct PDF link" />
+            <p className="mt-1.5 text-[11px] text-[#141414]/40">Share file → "Anyone with the link" → paste here.</p>
           </Field>
-
-          <div className="pt-2 border-t border-line dark:border-dark-line">
-            <p className="label mb-4 text-muted dark:text-dark-muted">Hero Image Reveal — click image to set crop focus</p>
+          <div className="border-t border-black/6 pt-4">
+            <p className="mb-4 text-[10px] font-medium uppercase tracking-widest text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              Hero Images — click to set crop focus
+            </p>
             <div className="grid gap-6 md:grid-cols-2">
-              <ImageFocalPoint
-                label="Top Image (shown by default)"
-                imageValue={hero.topImage}
-                focusValue={hero.topImageFocus}
-                onImageChange={v => setHero({ ...hero, topImage: v })}
-                onFocusChange={v => setHero({ ...hero, topImageFocus: v })}
-              />
-              <ImageFocalPoint
-                label="Bottom Image (revealed on hover)"
-                imageValue={hero.bottomImage}
-                focusValue={hero.bottomImageFocus}
-                onImageChange={v => setHero({ ...hero, bottomImage: v })}
-                onFocusChange={v => setHero({ ...hero, bottomImageFocus: v })}
-              />
+              <ImageFocalPoint label="Top Image (default)" imageValue={hero.topImage} focusValue={hero.topImageFocus}
+                onImageChange={v => setHero({ ...hero, topImage: v })} onFocusChange={v => setHero({ ...hero, topImageFocus: v })} />
+              <ImageFocalPoint label="Bottom Image (on hover)" imageValue={hero.bottomImage} focusValue={hero.bottomImageFocus}
+                onImageChange={v => setHero({ ...hero, bottomImage: v })} onFocusChange={v => setHero({ ...hero, bottomImageFocus: v })} />
             </div>
           </div>
-
-          <button onClick={() => save('hero', hero)}
-            className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'hero' ? 'bg-emerald-500' : 'bg-accent'}`}>
-            {saved === 'hero' ? '✓ Saved' : 'Save Hero'}
-          </button>
+          <SaveBtn page="hero" label="Save Hero" />
         </Section>
 
         {/* About */}
-        <Section title="About Section">
+        <Section title="About">
           <Field label="Heading">
             <RichTextField value={about.heading} onChange={v => setAbout({ ...about, heading: v })} placeholder="Section heading…" singleLine />
           </Field>
           <Field label="Bio">
             <RichTextField value={about.bio} onChange={v => setAbout({ ...about, bio: v })} placeholder="Your bio…" minHeight={200} />
           </Field>
-          <Field label="Photo URL"><input className={inputCls} value={about.photo} onChange={e => setAbout({ ...about, photo: e.target.value })} /></Field>
+          <Field label="Photo URL">
+            <input className={inputCls} value={about.photo} onChange={e => setAbout({ ...about, photo: e.target.value })} />
+          </Field>
           {about.photo && <img src={about.photo} alt="preview" className="h-40 w-32 rounded-xl object-cover" />}
-          <button onClick={() => save('about', about)}
-            className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'about' ? 'bg-emerald-500' : 'bg-accent'}`}>
-            {saved === 'about' ? '✓ Saved' : 'Save About'}
-          </button>
+          <SaveBtn page="about" label="Save About" />
         </Section>
 
         {/* Beyond the Pixels */}
-        <Section title="Beyond the Pixels (4-box grid)">
-          <p className="text-sm text-muted dark:text-dark-muted">Each box shows a placeholder image. On hover, the video plays. Leave video empty for image-only boxes.</p>
-          <div className="space-y-6">
+        <Section title="Beyond the Pixels">
+          <p className="text-sm text-[#141414]/50">Image shows by default. Video plays on hover. Leave video empty for image-only.</p>
+          <div className="space-y-4">
             {beyond.map((item, i) => (
-              <div key={item.id} className="rounded-xl border border-line p-4 dark:border-dark-line">
-                <div className="mb-3 text-sm font-medium text-ink dark:text-dark-ink">Box {i + 1}</div>
+              <div key={item.id} className="rounded-xl border border-black/6 bg-[#f5f3ee] p-4">
+                <p className="mb-3 text-[10px] font-medium uppercase tracking-widest text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Box {i + 1}</p>
                 <div className="space-y-3">
                   <Field label="Label"><input className={inputCls} value={item.label} onChange={e => updateBeyondItem(i, 'label', e.target.value)} /></Field>
                   <Field label="Image URL"><input className={inputCls} value={item.image} onChange={e => updateBeyondItem(i, 'image', e.target.value)} /></Field>
-                  <Field label="Video URL (optional — plays on hover)"><input className={inputCls} value={item.video || ''} onChange={e => updateBeyondItem(i, 'video', e.target.value)} placeholder="https://....mp4" /></Field>
+                  <Field label="Video URL (optional)"><input className={inputCls} value={item.video || ''} onChange={e => updateBeyondItem(i, 'video', e.target.value)} placeholder="https://....mp4" /></Field>
                 </div>
               </div>
             ))}
           </div>
-          <button onClick={() => save('beyond', beyond)}
-            className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'beyond' ? 'bg-emerald-500' : 'bg-accent'}`}>
-            {saved === 'beyond' ? '✓ Saved' : 'Save Beyond Pixels'}
-          </button>
+          <SaveBtn page="beyond" label="Save Beyond Pixels" />
         </Section>
 
         {/* Contact */}
-        <Section title="Contact Section">
+        <Section title="Contact">
           <Field label="Heading">
             <RichTextField value={contact.heading} onChange={v => setContact({ ...contact, heading: v })} placeholder="Contact heading…" minHeight={80} />
           </Field>
@@ -162,39 +155,27 @@ export default function AdminPages() {
             <RichTextField value={contact.description} onChange={v => setContact({ ...contact, description: v })} placeholder="Contact description…" minHeight={100} />
           </Field>
           <Field label="Email"><input className={inputCls} value={contact.email} onChange={e => setContact({ ...contact, email: e.target.value })} /></Field>
-          <Field label="LinkedIn URL"><input className={inputCls} value={contact.linkedin} onChange={e => setContact({ ...contact, linkedin: e.target.value })} /></Field>
-          <Field label="Twitter URL"><input className={inputCls} value={contact.twitter} onChange={e => setContact({ ...contact, twitter: e.target.value })} /></Field>
-          <Field label="Dribbble URL"><input className={inputCls} value={contact.dribbble} onChange={e => setContact({ ...contact, dribbble: e.target.value })} /></Field>
-          <button onClick={() => save('contact', contact)}
-            className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'contact' ? 'bg-emerald-500' : 'bg-accent'}`}>
-            {saved === 'contact' ? '✓ Saved' : 'Save Contact'}
-          </button>
+          <div className="grid gap-3 md:grid-cols-3">
+            <Field label="LinkedIn URL"><input className={inputCls} value={contact.linkedin} onChange={e => setContact({ ...contact, linkedin: e.target.value })} /></Field>
+            <Field label="Twitter URL"><input className={inputCls} value={contact.twitter} onChange={e => setContact({ ...contact, twitter: e.target.value })} /></Field>
+            <Field label="Dribbble URL"><input className={inputCls} value={contact.dribbble} onChange={e => setContact({ ...contact, dribbble: e.target.value })} /></Field>
+          </div>
+          <SaveBtn page="contact" label="Save Contact" />
         </Section>
 
-        {/* Contact Gallery */}
-        <Section title="Contact Gallery (3D Depth Stack)">
-          <p className="text-sm text-muted dark:text-dark-muted">
-            Up to 7 portrait images or videos shown as a horizontal scrolling strip above the contact section.
-          </p>
-          <div className="space-y-4">
+        {/* Gallery */}
+        <Section title="Gallery">
+          <p className="text-sm text-[#141414]/50">Up to 7 portrait images or videos in the scrolling strip above the contact section.</p>
+          <div className="space-y-3">
             {gallery.map((item, i) => (
-              <div key={item.id} className="rounded-xl border border-line p-4 dark:border-dark-line">
+              <div key={item.id} className="rounded-xl border border-black/6 bg-[#f5f3ee] p-4">
                 <div className="mb-3 flex items-center justify-between">
-                  <span className="label text-muted dark:text-dark-muted">Item {i + 1}</span>
-                  <button
-                    onClick={() => removeGalleryItem(i)}
-                    className="label text-red-500 hover:text-red-600"
-                  >
-                    Remove
-                  </button>
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Item {i + 1}</p>
+                  <button onClick={() => removeGalleryItem(i)} className="text-xs text-red-400 hover:text-red-500">Remove</button>
                 </div>
                 <div className="space-y-3">
                   <Field label="Type">
-                    <select
-                      className={inputCls}
-                      value={item.type}
-                      onChange={e => updateGalleryItem(i, 'type', e.target.value)}
-                    >
+                    <select className={inputCls} value={item.type} onChange={e => updateGalleryItem(i, 'type', e.target.value)}>
                       <option value="image">Image</option>
                       <option value="video">Video</option>
                     </select>
@@ -208,30 +189,21 @@ export default function AdminPages() {
                     </Field>
                   )}
                   <Field label="Caption (optional)">
-                    <input className={inputCls} value={item.caption || ''} onChange={e => updateGalleryItem(i, 'caption', e.target.value)} placeholder="Project name or short description" />
+                    <input className={inputCls} value={item.caption || ''} onChange={e => updateGalleryItem(i, 'caption', e.target.value)} placeholder="Short description" />
                   </Field>
-                  {item.src && item.type === 'image' && (
-                    <img src={item.src} alt="" className="h-24 w-40 rounded-lg object-cover" />
-                  )}
+                  {item.src && item.type === 'image' && <img src={item.src} alt="" className="h-24 w-40 rounded-lg object-cover" />}
                 </div>
               </div>
             ))}
           </div>
           {gallery.length < 7 && (
-            <button
-              onClick={addGalleryItem}
-              className="label mt-1 inline-flex items-center gap-2 rounded-lg border border-line px-4 py-2.5 text-ink dark:border-dark-line dark:text-dark-ink"
-            >
+            <button onClick={addGalleryItem}
+              className="mt-1 inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-[#141414] transition-colors hover:bg-black/5">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
               Add Item
             </button>
           )}
-          <button
-            onClick={() => save('gallery', gallery)}
-            className={`label mt-2 rounded-lg px-5 py-2.5 text-cream ${saved === 'gallery' ? 'bg-emerald-500' : 'bg-accent'}`}
-          >
-            {saved === 'gallery' ? '✓ Saved' : 'Save Gallery'}
-          </button>
+          <SaveBtn page="gallery" label="Save Gallery" />
         </Section>
       </div>
     </div>
