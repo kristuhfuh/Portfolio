@@ -6,7 +6,6 @@ function PixelBox({ item, index }) {
   const videoRef = useRef(null)
   const [hovering, setHovering] = useState(false)
   const [muted, setMuted] = useState(true)
-
   const hasVideo = !!item.video
 
   const handleEnter = () => {
@@ -43,7 +42,6 @@ function PixelBox({ item, index }) {
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >
-      {/* Placeholder image */}
       <img
         src={item.image}
         alt={item.label}
@@ -52,7 +50,6 @@ function PixelBox({ item, index }) {
         }`}
       />
 
-      {/* Video layer */}
       {hasVideo && (
         <video
           ref={videoRef}
@@ -67,15 +64,12 @@ function PixelBox({ item, index }) {
         />
       )}
 
-      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-      {/* Label */}
       <div className="absolute inset-x-0 bottom-0 px-4 pb-4 pt-10">
         <span className="label text-cream/90">{item.label}</span>
       </div>
 
-      {/* Mute button — visible on hover when video exists */}
       {hasVideo && hovering && (
         <motion.button
           initial={{ opacity: 0, scale: 0.8 }}
@@ -96,7 +90,6 @@ function PixelBox({ item, index }) {
         </motion.button>
       )}
 
-      {/* Play indicator for video boxes */}
       {hasVideo && !hovering && (
         <div className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-cream/70">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
@@ -110,16 +103,41 @@ export default function BeyondPixels() {
   const items = getBeyondPixels()
 
   return (
-    <div className="mt-8 rounded-3xl border border-line bg-white/40 p-8 backdrop-blur dark:border-dark-line dark:bg-white/[0.02] md:p-10">
-      <div className="label mb-2 text-muted dark:text-dark-muted">Beyond the pixels</div>
-      <p className="mb-6 text-muted dark:text-dark-muted">
-        Writing, singing, gospel music, Manchester United, and the cinema screen. Hover to play.
-      </p>
-      <div className="grid grid-cols-2 gap-3">
-        {items.map((item, i) => (
-          <PixelBox key={item.id} item={item} index={i} />
-        ))}
+    <section className="border-t border-line py-24 dark:border-dark-line md:py-32">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+
+        {/* Header */}
+        <div className="mb-14 flex items-end justify-between">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.45 }}
+              className="label mb-3 text-muted dark:text-dark-muted">
+              ✦ Beyond the Pixels
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+              className="display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink">
+              Outside the work.
+            </motion.h2>
+          </div>
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
+            className="hidden label text-muted dark:text-dark-muted md:block">
+            Hover to play
+          </motion.p>
+        </div>
+
+        {/* 4-col grid on desktop, 2-col on mobile */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {items.map((item, i) => (
+            <PixelBox key={item.id} item={item} index={i} />
+          ))}
+        </div>
+
       </div>
-    </div>
+    </section>
   )
 }

@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 
 const items = [
   { text: 'Product Design', italic: false },
@@ -15,13 +14,7 @@ const items = [
 ]
 
 const Star = () => (
-  <motion.span
-    animate={{ rotate: 360 }}
-    transition={{ duration: 9, repeat: Infinity, ease: 'linear' }}
-    className="inline-block shrink-0 text-accent"
-  >
-    ✦
-  </motion.span>
+  <span className="animate-spin-slow inline-block shrink-0 text-accent" style={{ animationDuration: '9s' }}>✦</span>
 )
 
 export default function Marquee() {

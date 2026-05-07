@@ -11,7 +11,7 @@ export default function Footer() {
         </div>
         <div className="flex flex-wrap items-center gap-6">
           <LocalTime />
-          <span className="label text-muted dark:text-dark-muted">Set in Fraunces + Inter Tight</span>
+          <span className="label text-muted dark:text-dark-muted">Bricolage Grotesque · Geist Sans · JetBrains Mono</span>
         </div>
       </div>
 

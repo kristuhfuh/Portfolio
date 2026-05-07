@@ -66,15 +66,16 @@ export default function Contact() {
   const content = getPageContent('contact')
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('')
+  const [sentName, setSentName] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.name || !form.email || !form.message) return
     setStatus('sending')
+    setSentName(form.name.split(' ')[0])
     await addContact(form)
     setStatus('sent')
     setForm({ name: '', email: '', message: '' })
-    setTimeout(() => setStatus(''), 4000)
   }
 
   const inputCls =
@@ -142,67 +143,93 @@ export default function Contact() {
               />
             </motion.div>
 
-            {/* Contact form */}
-            <motion.form
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.18 }}
-              onSubmit={handleSubmit}
-              className="mt-10 space-y-4"
-            >
-              <input
-                className={inputCls}
-                placeholder="Your name"
-                value={form.name}
-                onChange={e => setForm({ ...form, name: e.target.value })}
-                required
-              />
-              <input
-                className={inputCls}
-                type="email"
-                placeholder="Your email"
-                value={form.email}
-                onChange={e => setForm({ ...form, email: e.target.value })}
-                required
-              />
-              <textarea
-                className={inputCls + ' min-h-[130px] resize-y'}
-                placeholder="Your message"
-                value={form.message}
-                onChange={e => setForm({ ...form, message: e.target.value })}
-                required
-              />
-
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className={`label mt-2 inline-flex items-center gap-3 rounded-full px-7 py-4 text-cream transition-[background-color,transform,box-shadow] duration-200 active:scale-[0.97] disabled:opacity-70 hover:shadow-[0_8px_28px_rgba(109,40,217,0.35)] ${
-                  status === 'sent' ? 'bg-emerald-500' : 'bg-accent'
-                }`}
+            {/* Contact form / Success state */}
+            {status === 'sent' ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-10"
               >
-                {status === 'sending' && (
-                  <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-cream/30 border-t-cream" />
-                )}
-                {status === 'sending'
-                  ? 'Sending...'
-                  : status === 'sent'
-                  ? '✓ Message Sent!'
-                  : 'Send Message'}
-                {status !== 'sent' && status !== 'sending' && (
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M5 12h14M13 5l7 7-7 7" />
-                  </svg>
-                )}
-              </button>
-            </motion.form>
+                <div className="rounded-2xl border border-cream/15 p-8 dark:border-ink/15">
+                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/20">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </div>
+                  <h3 className="font-display text-2xl text-cream dark:text-ink">
+                    Got it, {sentName}.
+                  </h3>
+                  <p className="mt-3 text-cream/65 dark:text-ink/65 leading-relaxed">
+                    Message received. I reply to every enquiry within 24 hours on weekdays — usually faster.
+                  </p>
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <a
+                      href="#work"
+                      className="label inline-flex items-center gap-2 rounded-full border border-cream/20 px-5 py-3 text-cream transition-colors hover:border-cream/50 dark:border-ink/20 dark:text-ink dark:hover:border-ink/50"
+                    >
+                      View my work
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <path d="M5 12h14M13 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                    <button
+                      onClick={() => setStatus('')}
+                      className="label text-cream/35 transition-colors hover:text-cream/65 dark:text-ink/35 dark:hover:text-ink/65"
+                    >
+                      Send another message →
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.form
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.18 }}
+                onSubmit={handleSubmit}
+                className="mt-10 space-y-4"
+              >
+                <input
+                  className={inputCls}
+                  placeholder="Your name"
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+                <input
+                  className={inputCls}
+                  type="email"
+                  placeholder="Your email"
+                  value={form.email}
+                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  required
+                />
+                <textarea
+                  className={inputCls + ' min-h-[130px] resize-y'}
+                  placeholder="Your message"
+                  value={form.message}
+                  onChange={e => setForm({ ...form, message: e.target.value })}
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={status === 'sending'}
+                  className="label mt-2 inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-cream transition-[background-color,transform,box-shadow] duration-200 active:scale-[0.97] disabled:opacity-70 hover:shadow-[0_8px_28px_rgba(109,40,217,0.35)]"
+                >
+                  {status === 'sending' && (
+                    <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-cream/30 border-t-cream" />
+                  )}
+                  {status === 'sending' ? 'Sending...' : 'Send Message'}
+                  {status !== 'sending' && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 12h14M13 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </button>
+              </motion.form>
+            )}
           </div>
 
           {/* Right — social links */}

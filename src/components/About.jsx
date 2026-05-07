@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { tools, recognition } from '../data/experience.js'
 import { getPageContent } from '../lib/cms.js'
-import BeyondPixels from './BeyondPixels.jsx'
 
 // Renders CMS content that may be HTML (RichTextField) or plain text (\n\n paragraphs)
 function richHtml(content = '') {
@@ -127,16 +126,6 @@ export default function About() {
               </ul>
             </motion.div>
 
-            {/* Beyond the Pixels */}
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.28 }}
-              className="mt-10"
-            >
-              <BeyondPixels />
-            </motion.div>
           </div>
         </div>
       </div>

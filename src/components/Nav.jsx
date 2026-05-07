@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../lib/theme.jsx'
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
-import LocalTime from './LocalTime.jsx'
 import { getPageContent } from '../lib/cms.js'
 
 function ThemeToggle() {
@@ -82,7 +81,6 @@ export default function Nav() {
 
           {/* Right actions */}
           <div className="flex items-center gap-3">
-            <LocalTime className="hidden sm:inline-flex" />
             <ThemeToggle />
             <a
               href={`mailto:${contactEmail}`}
