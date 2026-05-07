@@ -67,16 +67,14 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.name || !form.email || !form.message) return
     setStatus('sending')
-    setTimeout(() => {
-      addContact(form)
-      setStatus('sent')
-      setForm({ name: '', email: '', message: '' })
-      setTimeout(() => setStatus(''), 4000)
-    }, 600)
+    await addContact(form)
+    setStatus('sent')
+    setForm({ name: '', email: '', message: '' })
+    setTimeout(() => setStatus(''), 4000)
   }
 
   const inputCls =
