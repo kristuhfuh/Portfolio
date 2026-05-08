@@ -25,6 +25,11 @@ function PixelBox({ item, index }) {
     }
   }
 
+  const handleTap = () => {
+    if (!window.matchMedia('(hover: none)').matches) return
+    hovering ? handleLeave() : handleEnter()
+  }
+
   const toggleMute = (e) => {
     e.stopPropagation()
     const next = !muted
@@ -41,6 +46,7 @@ function PixelBox({ item, index }) {
       className="group relative aspect-[3/4] cursor-pointer overflow-hidden rounded-2xl border border-line dark:border-dark-line"
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
+      onClick={handleTap}
     >
       <img
         src={item.image}
@@ -74,7 +80,7 @@ function PixelBox({ item, index }) {
         <motion.button
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          onClick={toggleMute}
+          onClick={(e) => { e.stopPropagation(); toggleMute(e) }}
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-cream backdrop-blur-sm transition-transform hover:scale-110"
           aria-label={muted ? 'Unmute' : 'Mute'}
         >
@@ -125,8 +131,10 @@ export default function BeyondPixels() {
           <motion.p
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
-            className="hidden label text-muted dark:text-dark-muted md:block">
-            Hover to play
+            className="label text-muted dark:text-dark-muted">
+            <span className="hidden md:inline">Hover</span>
+            <span className="md:hidden">Tap</span>
+            {' '}to play
           </motion.p>
         </div>
 

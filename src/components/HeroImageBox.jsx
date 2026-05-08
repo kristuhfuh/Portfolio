@@ -11,6 +11,10 @@ export default function HeroImageBox() {
   const topFocus = hero.topImageFocus || { x: 50, y: 50 };
   const bottomFocus = hero.bottomImageFocus || { x: 50, y: 50 };
 
+  const handleTap = () => {
+    if (window.matchMedia('(hover: none)').matches) setIsHovering(h => !h)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -19,6 +23,7 @@ export default function HeroImageBox() {
       className="relative w-full max-w-md aspect-[3/4] rounded-2xl overflow-hidden cursor-none"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      onClick={handleTap}
     >
       {/* Bottom image — always visible underneath */}
       <div className="absolute inset-0">
@@ -56,7 +61,9 @@ export default function HeroImageBox() {
         transition={{ duration: 0.25 }}
         className="absolute bottom-6 right-6 text-white text-sm font-medium bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full pointer-events-none"
       >
-        Hover to reveal
+        <span className="hidden md:inline">Hover</span>
+        <span className="md:hidden">Tap</span>
+        {' '}to reveal
       </motion.div>
     </motion.div>
   );
