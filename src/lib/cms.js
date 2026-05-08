@@ -54,14 +54,7 @@ export async function initCMS() {
     if (error) { console.warn('[Supabase] read failed:', error); return }
     if (!data) return
 
-    // If the stored schema version doesn't match the current one, skip loading
-    // projects data — getProjects() will re-seed from the updated static file
-    // and push the fresh data back to Supabase.
-    const storedVersion = data.find(r => r.key === VERSION_KEY)?.value
-    const schemaMatch = storedVersion === SCHEMA_VERSION
-
     data.forEach(({ key, value }) => {
-      if (!schemaMatch && (key === PROJECTS_KEY || key === VERSION_KEY)) return
       lsSet(key, value)
     })
   } catch (e) {

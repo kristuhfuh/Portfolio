@@ -165,6 +165,7 @@ export default function WorkGallery() {
   const targetSpeedRef = useRef(SPD_NORM)
   const cursorXRef     = useRef(null)
   const rafRef         = useRef(null)
+  const touchLastXRef  = useRef(null)
   const [selected, setSelected] = useState(null)
 
   useEffect(() => {
@@ -216,6 +217,21 @@ export default function WorkGallery() {
     targetSpeedRef.current = SPD_NORM
   }
 
+  const onTouchStart = (e) => {
+    touchLastXRef.current = e.touches[0].clientX
+    targetSpeedRef.current = 0
+  }
+  const onTouchMove = (e) => {
+    if (touchLastXRef.current === null) return
+    const dx = touchLastXRef.current - e.touches[0].clientX
+    offsetRef.current = ((offsetRef.current + dx) % LOOP_W + LOOP_W) % LOOP_W
+    touchLastXRef.current = e.touches[0].clientX
+  }
+  const onTouchEnd = () => {
+    touchLastXRef.current = null
+    targetSpeedRef.current = SPD_NORM
+  }
+
   const selectedItem = selected !== null ? rawItems[selected % total] : null
 
   return (
@@ -229,17 +245,22 @@ export default function WorkGallery() {
             </motion.p>
             <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
               viewport={{ once: true }} className="label text-muted dark:text-dark-muted">
-              Hover to slow · click to expand
+              <span className="hidden md:inline">Hover to slow · click</span>
+              <span className="md:hidden">Swipe · tap</span>
+              {' '}to expand
             </motion.p>
           </div>
         </div>
 
         <div
           ref={containerRef}
-          className="relative w-full overflow-hidden"
-          style={{ height: CARD_H + WAVE_AMP + 24 }}
+          className="relative w-full [overflow-x:clip]"
+          style={{ height: CARD_H + WAVE_AMP + 48 }}
           onMouseMove={onMouseMove}
           onMouseLeave={onMouseLeave}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
         >
           {loopItems.map((item, i) => (
             <GalleryCard
@@ -254,7 +275,6 @@ export default function WorkGallery() {
           ))}
         </div>
 
-        <p className="mt-4 text-center label text-muted dark:text-dark-muted md:hidden">← Swipe to browse →</p>
       </section>
 
       <AnimatePresence>

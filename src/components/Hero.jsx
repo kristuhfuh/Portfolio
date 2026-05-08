@@ -47,7 +47,8 @@ export default function Hero() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const textY = useTransform(scrollYProgress, [0, 1], [0, -70])
   const imgY = useTransform(scrollYProgress, [0, 1], [0, 50])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const opacity = useTransform(scrollYProgress, [0, 0.5], isMobile ? [1, 1] : [1, 0])
 
   const heroContent = getPageContent('hero')
   const cvUrl = cvDownloadUrl(heroContent.cvUrl)
