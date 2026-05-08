@@ -62,8 +62,22 @@ function MagneticButton({ children, href, className = '' }) {
   )
 }
 
+// Parse heading from CMS (plain \n or HTML) into an array of lines
+function parseHeadingLines(heading) {
+  const fallback = ["Let's build", "something worth", "the pixels."]
+  if (!heading) return fallback
+  const plain = heading
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .trim()
+  const lines = plain.split('\n').map(l => l.trim()).filter(Boolean)
+  return lines.length ? lines : fallback
+}
+
 export default function Contact() {
   const content = getPageContent('contact')
+  const headingLines = parseHeadingLines(content.heading)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('')
   const [sentName, setSentName] = useState('')
@@ -107,13 +121,17 @@ export default function Contact() {
           ✦ Contact
         </motion.div>
 
-        {/* Headline — line curtain reveal */}
+        {/* Headline — line curtain reveal, driven by CMS */}
         <h2 className="display-hero text-[clamp(3rem,9.5vw,9rem)] leading-[0.9]">
-          <LineReveal delay={0}>Let's build</LineReveal>
-          <LineReveal delay={0.14} className="text-accentSoft">
-            something worth
-          </LineReveal>
-          <LineReveal delay={0.28}>the pixels.</LineReveal>
+          {headingLines.map((line, i) => (
+            <LineReveal
+              key={i}
+              delay={i * 0.14}
+              className={i === 1 && headingLines.length >= 3 ? 'text-accentSoft' : ''}
+            >
+              {line}
+            </LineReveal>
+          ))}
         </h2>
 
         {/* Decorative horizontal rule */}

@@ -50,8 +50,10 @@ export default function About() {
           transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
         >
-          Designing from Lagos,{' '}
-          <span className="text-accent">for the world.</span>
+          {content.heading
+            ? <span dangerouslySetInnerHTML={{ __html: richHtml(content.heading) }} />
+            : <>Designing from Lagos, <span className="text-accent">for the world.</span></>
+          }
         </motion.h2>
 
         <div className="grid gap-12 md:grid-cols-12">
