@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels, getContactGallery, saveContactGallery } from '../lib/cms.js'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 import RichTextField from '../components/RichTextField.jsx'
+import MediaUpload from '../components/MediaUpload.jsx'
 
 const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/30 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
 const textareaCls = inputCls + ' min-h-[120px] resize-y'
@@ -135,10 +136,24 @@ export default function AdminPages() {
             {beyond.map((item, i) => (
               <div key={item.id} className="rounded-xl border border-black/6 bg-[#f5f3ee] p-4">
                 <p className="mb-3 text-[10px] font-medium uppercase tracking-widest text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Box {i + 1}</p>
-                <div className="space-y-3">
-                  <Field label="Label"><input className={inputCls} value={item.label} onChange={e => updateBeyondItem(i, 'label', e.target.value)} /></Field>
-                  <Field label="Image URL"><input className={inputCls} value={item.image} onChange={e => updateBeyondItem(i, 'image', e.target.value)} /></Field>
-                  <Field label="Video URL (optional)"><input className={inputCls} value={item.video || ''} onChange={e => updateBeyondItem(i, 'video', e.target.value)} placeholder="https://....mp4" /></Field>
+                <div className="space-y-4">
+                  <Field label="Label">
+                    <input className={inputCls} value={item.label} onChange={e => updateBeyondItem(i, 'label', e.target.value)} />
+                  </Field>
+                  <Field label="Image">
+                    <MediaUpload
+                      accept="image/*"
+                      value={item.image}
+                      onChange={v => updateBeyondItem(i, 'image', v)}
+                    />
+                  </Field>
+                  <Field label="Video (optional — plays on hover)">
+                    <MediaUpload
+                      accept="video/*"
+                      value={item.video || ''}
+                      onChange={v => updateBeyondItem(i, 'video', v)}
+                    />
+                  </Field>
                 </div>
               </div>
             ))}

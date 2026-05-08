@@ -1,179 +1,175 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { normalizeDriveUrl } from '../lib/cms.js';
+import { useState, useRef } from 'react'
+import { supabase } from '../lib/supabase.js'
+import { normalizeDriveUrl } from '../lib/cms.js'
 
-export default function MediaUpload({ value, onChange, label = 'Media', accept = 'image/*,video/*' }) {
-  const [uploadMethod, setUploadMethod] = useState('url'); // 'url', 'drive', 'file'
-  const [urlInput, setUrlInput] = useState(value || '');
-  const [uploading, setUploading] = useState(false);
+const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/30 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
 
-  const handleUrlSubmit = () => {
-    if (urlInput.trim()) {
-      onChange(urlInput.trim());
-    }
-  };
+async function uploadToSupabase(file) {
+  const ext = file.name.split('.').pop().toLowerCase()
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+  const { error } = await supabase.storage.from('media').upload(filename, file, { upsert: false })
+  if (error) throw error
+  const { data } = supabase.storage.from('media').getPublicUrl(filename)
+  return data.publicUrl
+}
 
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+export default function MediaUpload({
+  value = '',
+  onChange,
+  label = 'Media',
+  accept = 'image/*',  // 'image/*' or 'video/*'
+}) {
+  const [tab, setTab]         = useState('url')
+  const [urlInput, setUrlInput] = useState(value || '')
+  const [uploading, setUploading] = useState(false)
+  const [progress, setProgress]   = useState(0)
+  const [error, setError]         = useState('')
+  const fileRef = useRef(null)
 
-    setUploading(true);
+  const isImage = accept.includes('image')
+  const isVideo = accept.includes('video')
+
+  const applyUrl = (raw) => {
+    const cleaned = raw.trim()
+    if (!cleaned) return
+    const normalized = cleaned.includes('drive.google.com') ? normalizeDriveUrl(cleaned) : cleaned
+    onChange(normalized)
+    setUrlInput(normalized)
+    setError('')
+  }
+
+  const handleFile = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setError('')
+    setUploading(true)
+    setProgress(10)
+
     try {
-      // Create a local URL for preview
-      const localUrl = URL.createObjectURL(file);
-      
-      // For production, you'd upload to a service like Cloudinary, S3, etc.
-      // For now, we'll use the local URL
-      onChange(localUrl);
-      
-      // TODO: Implement actual file upload to your storage service
-      // const uploadedUrl = await uploadToStorage(file);
-      // onChange(uploadedUrl);
-      
-    } catch (error) {
-      console.error('Upload error:', error);
-      alert('Upload failed. Please try again.');
+      // Fake progress ticks while upload is in flight
+      const ticker = setInterval(() => setProgress(p => Math.min(p + 15, 85)), 400)
+      const url = await uploadToSupabase(file)
+      clearInterval(ticker)
+      setProgress(100)
+      onChange(url)
+      setUrlInput(url)
+      setTimeout(() => setProgress(0), 800)
+    } catch (err) {
+      setError(`Upload failed: ${err.message}`)
+      setProgress(0)
     } finally {
-      setUploading(false);
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ''
     }
-  };
+  }
 
-  const handleDriveLink = () => {
-    if (urlInput.trim()) {
-      onChange(normalizeDriveUrl(urlInput.trim()));
-    }
-  };
+  const tabs = [
+    { id: 'url',   label: 'URL' },
+    { id: 'drive', label: 'Google Drive' },
+    { id: 'file',  label: 'Upload file' },
+  ]
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-        {label}
-      </label>
-
-      {/* Upload method tabs */}
-      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
-        {['url', 'drive', 'file'].map((method) => (
-          <button
-            key={method}
-            onClick={() => setUploadMethod(method)}
-            className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-              uploadMethod === method
-                ? 'text-black dark:text-white'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+      {/* Tab strip */}
+      <div className="flex gap-1 rounded-lg border border-black/8 bg-[#f5f3ee] p-1">
+        {tabs.map(t => (
+          <button key={t.id} type="button" onClick={() => setTab(t.id)}
+            className={`flex-1 rounded-md py-1.5 text-[11px] font-medium transition-all ${
+              tab === t.id
+                ? 'bg-white text-[#141414] shadow-sm'
+                : 'text-[#141414]/40 hover:text-[#141414]/70'
             }`}
-          >
-            {method === 'url' && 'URL Link'}
-            {method === 'drive' && 'Google Drive'}
-            {method === 'file' && 'Upload File'}
-            {uploadMethod === method && (
-              <motion.div
-                layoutId="active-method"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-black dark:bg-white"
-              />
-            )}
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+            {t.label}
           </button>
         ))}
       </div>
 
-      {/* Upload interface */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={uploadMethod}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className="space-y-3"
-        >
-          {uploadMethod === 'url' && (
-            <>
-              <input
-                type="url"
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                placeholder="https://example.com/image.jpg"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black dark:border-gray-600 dark:bg-gray-800 dark:focus:border-white dark:focus:ring-white"
-              />
-              <button
-                onClick={handleUrlSubmit}
-                className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-              >
-                Add URL
-              </button>
-            </>
-          )}
+      {/* Tab content */}
+      {tab === 'url' && (
+        <div className="flex gap-2">
+          <input className={inputCls} value={urlInput}
+            onChange={e => setUrlInput(e.target.value)}
+            placeholder={isImage ? 'https://example.com/photo.jpg' : 'https://example.com/video.mp4'}
+            onKeyDown={e => e.key === 'Enter' && applyUrl(urlInput)} />
+          <button type="button" onClick={() => applyUrl(urlInput)}
+            className="shrink-0 rounded-xl bg-[#141414] px-4 py-2 text-sm font-medium text-white hover:bg-[#6D28D9] transition-colors">
+            Apply
+          </button>
+        </div>
+      )}
 
-          {uploadMethod === 'drive' && (
-            <>
-              <input
-                type="url"
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                placeholder="https://drive.google.com/file/d/..."
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black dark:border-gray-600 dark:bg-gray-800 dark:focus:border-white dark:focus:ring-white"
-              />
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                Paste a Google Drive share link. Make sure the file is publicly accessible.
-              </div>
-              <button
-                onClick={handleDriveLink}
-                className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-              >
-                Add from Drive
-              </button>
-            </>
-          )}
+      {tab === 'drive' && (
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <input className={inputCls} value={urlInput}
+              onChange={e => setUrlInput(e.target.value)}
+              placeholder="https://drive.google.com/file/d/..." />
+            <button type="button" onClick={() => applyUrl(urlInput)}
+              className="shrink-0 rounded-xl bg-[#141414] px-4 py-2 text-sm font-medium text-white hover:bg-[#6D28D9] transition-colors">
+              Apply
+            </button>
+          </div>
+          <p className="text-[11px] text-[#141414]/40">Share file → "Anyone with the link" → paste here.</p>
+        </div>
+      )}
 
-          {uploadMethod === 'file' && (
-            <div className="relative">
-              <input
-                type="file"
-                accept={accept}
-                onChange={handleFileUpload}
-                disabled={uploading}
-                className="w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-8 text-sm file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-black file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:file:bg-white dark:file:text-black dark:hover:file:bg-gray-200"
-              />
-              {uploading && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/80 dark:bg-gray-800/80">
-                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-black border-t-transparent dark:border-white dark:border-t-transparent" />
+      {tab === 'file' && (
+        <div>
+          <label className={`flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed border-black/10 bg-[#f5f3ee] px-4 py-8 text-center transition-colors hover:border-[#6D28D9]/40 hover:bg-[#6D28D9]/4 ${uploading ? 'pointer-events-none opacity-70' : ''}`}>
+            <input ref={fileRef} type="file" accept={accept} onChange={handleFile}
+              disabled={uploading} className="sr-only" />
+            {uploading ? (
+              <>
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#141414]/10 border-t-[#6D28D9]" />
+                <p className="text-sm text-[#141414]/50">Uploading…</p>
+                {progress > 0 && (
+                  <div className="w-full max-w-[200px] overflow-hidden rounded-full bg-black/8 h-1.5">
+                    <div className="h-full rounded-full bg-[#6D28D9] transition-all duration-300"
+                      style={{ width: `${progress}%` }} />
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="1.5" strokeLinecap="round" className="text-[#141414]/30">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                <div>
+                  <p className="text-sm font-medium text-[#141414]">
+                    Click to upload {isImage ? 'image' : 'video'}
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-[#141414]/40">
+                    {isImage ? 'JPG, PNG, WebP, GIF' : 'MP4, WebM, MOV'}
+                  </p>
                 </div>
-              )}
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+              </>
+            )}
+          </label>
+          {error && <p className="mt-1.5 text-[11px] text-red-500">{error}</p>}
+        </div>
+      )}
 
       {/* Preview */}
       {value && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative rounded-lg border border-gray-200 p-2 dark:border-gray-700"
-        >
-          {accept.includes('image') && (
-            <img
-              src={value}
-              alt="Preview"
-              className="h-32 w-full rounded object-cover"
-            />
+        <div className="relative overflow-hidden rounded-xl border border-black/8">
+          {isVideo && (value.includes('.mp4') || value.includes('.webm') || value.includes('.mov') || value.includes('video')) ? (
+            <video src={value} className="h-28 w-full object-cover" muted playsInline />
+          ) : (
+            <img src={value} alt="" className="h-28 w-full object-cover" />
           )}
-          {accept.includes('video') && value.includes('video') && (
-            <video
-              src={value}
-              className="h-32 w-full rounded object-cover"
-              controls
-            />
-          )}
-          <button
-            onClick={() => onChange('')}
-            className="absolute right-1 top-1 rounded-full bg-black/50 p-1 text-white hover:bg-black/70"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <button type="button" onClick={() => { onChange(''); setUrlInput('') }}
+            className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
-        </motion.div>
+        </div>
       )}
     </div>
-  );
+  )
 }
