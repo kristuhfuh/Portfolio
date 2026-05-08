@@ -188,25 +188,32 @@ export default function AdminPages() {
                   <p className="text-[10px] font-medium uppercase tracking-widest text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Item {i + 1}</p>
                   <button onClick={() => removeGalleryItem(i)} className="text-xs text-red-400 hover:text-red-500">Remove</button>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <Field label="Type">
                     <select className={inputCls} value={item.type} onChange={e => updateGalleryItem(i, 'type', e.target.value)}>
                       <option value="image">Image</option>
                       <option value="video">Video</option>
                     </select>
                   </Field>
-                  <Field label={item.type === 'video' ? 'Video URL (.mp4 / .webm)' : 'Image URL'}>
-                    <input className={inputCls} value={item.src} onChange={e => updateGalleryItem(i, 'src', e.target.value)} placeholder="https://..." />
+                  <Field label={item.type === 'video' ? 'Video' : 'Image'}>
+                    <MediaUpload
+                      accept={item.type === 'video' ? 'video/*' : 'image/*'}
+                      value={item.src}
+                      onChange={v => updateGalleryItem(i, 'src', v)}
+                    />
                   </Field>
                   {item.type === 'video' && (
-                    <Field label="Poster / Thumbnail URL (optional)">
-                      <input className={inputCls} value={item.poster || ''} onChange={e => updateGalleryItem(i, 'poster', e.target.value)} placeholder="https://..." />
+                    <Field label="Poster / Thumbnail (optional)">
+                      <MediaUpload
+                        accept="image/*"
+                        value={item.poster || ''}
+                        onChange={v => updateGalleryItem(i, 'poster', v)}
+                      />
                     </Field>
                   )}
                   <Field label="Caption (optional)">
                     <input className={inputCls} value={item.caption || ''} onChange={e => updateGalleryItem(i, 'caption', e.target.value)} placeholder="Short description" />
                   </Field>
-                  {item.src && item.type === 'image' && <img src={item.src} alt="" className="h-24 w-40 rounded-lg object-cover" />}
                 </div>
               </div>
             ))}
