@@ -58,7 +58,6 @@ export default function AdminPages() {
     setGallery(next)
   }
   const addGalleryItem = () => {
-    if (gallery.length >= 7) return
     setGallery([...gallery, { id: Date.now().toString(), type: 'image', src: '', poster: '', hoverVideo: '', caption: '' }])
   }
   const removeGalleryItem = (idx) => setGallery(gallery.filter((_, i) => i !== idx))
@@ -227,13 +226,11 @@ export default function AdminPages() {
               </div>
             ))}
           </div>
-          {gallery.length < 7 && (
-            <button onClick={addGalleryItem}
-              className="mt-1 inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-[#141414] transition-colors hover:bg-black/5">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
-              Add Item
-            </button>
-          )}
+          <button onClick={addGalleryItem}
+            className="mt-1 inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-[#141414] transition-colors hover:bg-black/5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
+            Add Item
+          </button>
           <SaveBtn page="gallery" label="Save Gallery" />
         </Section>
       </div>

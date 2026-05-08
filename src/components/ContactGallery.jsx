@@ -65,15 +65,21 @@ function ExpandedCard({ item, onClose }) {
   )
 }
 
-// ─── Single card — owns hover state + video ref ────────────────────────────────
+// ─── Single card — image shows by default, video plays on hover ───────────────
 function GalleryCard({ item, outerRef, innerRef, onHover, onLeave, onClick }) {
-  const videoRef  = useRef(null)
+  const videoRef = useRef(null)
   const [hovering, setHovering] = useState(false)
+
+  // The video source: video-type items use item.src; image-type items use item.hoverVideo
+  const videoSrc = item.type === 'video' ? item.src : (item.hoverVideo || null)
+  // The base image: video-type items use item.poster; image-type items use item.src
+  const imageSrc = item.type === 'video' ? item.poster : item.src
+  const hasVideo = !!videoSrc
 
   const handleEnter = () => {
     setHovering(true)
     onHover()
-    if (videoRef.current && item.hoverVideo) {
+    if (videoRef.current && hasVideo) {
       videoRef.current.currentTime = 0
       videoRef.current.play().catch(() => {})
     }
@@ -105,20 +111,18 @@ function GalleryCard({ item, outerRef, innerRef, onHover, onLeave, onClick }) {
           className="relative h-full w-full overflow-hidden"
           style={{ borderRadius: 20, boxShadow: '0 16px 40px rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.14)' }}
         >
-          {/* Base media */}
-          {item.type === 'video' ? (
-            <video src={item.src} poster={item.poster} muted loop playsInline autoPlay
-              className="absolute inset-0 h-full w-full object-cover" />
-          ) : (
-            <img src={item.src} alt={item.caption || ''} draggable={false}
-              className="absolute inset-0 h-full w-full object-cover" />
-          )}
+          {/* Base image — always visible */}
+          {imageSrc
+            ? <img src={imageSrc} alt={item.caption || ''} draggable={false}
+                className="absolute inset-0 h-full w-full object-cover" />
+            : <div className="absolute inset-0 bg-ink/10 dark:bg-white/10" />
+          }
 
-          {/* Hover video overlay */}
-          {item.hoverVideo && (
+          {/* Video — fades in on hover */}
+          {hasVideo && (
             <video
               ref={videoRef}
-              src={item.hoverVideo}
+              src={videoSrc}
               muted loop playsInline
               className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
               style={{ opacity: hovering ? 1 : 0 }}
@@ -132,8 +136,8 @@ function GalleryCard({ item, outerRef, innerRef, onHover, onLeave, onClick }) {
             </div>
           )}
 
-          {/* Video badge */}
-          {(item.type === 'video' || item.hoverVideo) && !hovering && (
+          {/* Play badge — shown when not hovering and video exists */}
+          {hasVideo && !hovering && (
             <div className="absolute right-3 top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/25 backdrop-blur-sm">
               <svg width="8" height="8" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
             </div>
@@ -146,7 +150,7 @@ function GalleryCard({ item, outerRef, innerRef, onHover, onLeave, onClick }) {
 
 // ─── Gallery section ──────────────────────────────────────────────────────────
 export default function WorkGallery() {
-  const rawItems = getContactGallery().slice(0, 7)
+  const rawItems = getContactGallery()
   if (!rawItems.length) return null
 
   const total  = rawItems.length
