@@ -2,15 +2,16 @@ import { useState, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { getContactGallery } from '../lib/cms.js'
 
+// ─── Layout constants ─────────────────────────────────────────────────────────
 const CARD_W   = 155
 const CARD_H   = 330
 const GAP      = 18
-const STRIDE   = CARD_W + GAP   // 173 px per slot
-const WAVE_AMP = 58             // max lift at cursor (px)
-const WAVE_SIG = 210            // Gaussian spread (px)
-const MAX_ROT  = 20             // max arc tilt at screen edges (deg)
-const SPD_NORM = 0.55           // px / frame — normal speed
-const SPD_SLOW = 0.07           // px / frame — on hover
+const STRIDE   = CARD_W + GAP
+const WAVE_AMP = 58
+const WAVE_SIG = 210
+const MAX_ROT  = 20
+const SPD_NORM = 0.55
+const SPD_SLOW = 0.07
 
 function lerp(a, b, t) { return a + (b - a) * t }
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)) }
@@ -64,24 +65,101 @@ function ExpandedCard({ item, onClose }) {
   )
 }
 
-// ─── Gallery ──────────────────────────────────────────────────────────────────
+// ─── Single card — owns hover state + video ref ────────────────────────────────
+function GalleryCard({ item, outerRef, innerRef, onHover, onLeave, onClick }) {
+  const videoRef  = useRef(null)
+  const [hovering, setHovering] = useState(false)
+
+  const handleEnter = () => {
+    setHovering(true)
+    onHover()
+    if (videoRef.current && item.hoverVideo) {
+      videoRef.current.currentTime = 0
+      videoRef.current.play().catch(() => {})
+    }
+  }
+
+  const handleLeave = () => {
+    setHovering(false)
+    onLeave()
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+    }
+  }
+
+  return (
+    <div
+      ref={outerRef}
+      className="absolute bottom-0 left-0 cursor-pointer select-none"
+      style={{ width: CARD_W, height: CARD_H, willChange: 'transform' }}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      onClick={onClick}
+    >
+      <div
+        ref={innerRef}
+        style={{ width: '100%', height: '100%', transformOrigin: 'bottom center', willChange: 'transform' }}
+      >
+        <div
+          className="relative h-full w-full overflow-hidden"
+          style={{ borderRadius: 20, boxShadow: '0 16px 40px rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.14)' }}
+        >
+          {/* Base media */}
+          {item.type === 'video' ? (
+            <video src={item.src} poster={item.poster} muted loop playsInline autoPlay
+              className="absolute inset-0 h-full w-full object-cover" />
+          ) : (
+            <img src={item.src} alt={item.caption || ''} draggable={false}
+              className="absolute inset-0 h-full w-full object-cover" />
+          )}
+
+          {/* Hover video overlay */}
+          {item.hoverVideo && (
+            <video
+              ref={videoRef}
+              src={item.hoverVideo}
+              muted loop playsInline
+              className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
+              style={{ opacity: hovering ? 1 : 0 }}
+            />
+          )}
+
+          {/* Caption */}
+          {item.caption && (
+            <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/50 to-transparent px-3 pb-3 pt-8">
+              <p className="label text-white/80" style={{ fontSize: 10 }}>{item.caption}</p>
+            </div>
+          )}
+
+          {/* Video badge */}
+          {(item.type === 'video' || item.hoverVideo) && !hovering && (
+            <div className="absolute right-3 top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/25 backdrop-blur-sm">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Gallery section ──────────────────────────────────────────────────────────
 export default function WorkGallery() {
   const rawItems = getContactGallery().slice(0, 7)
   if (!rawItems.length) return null
 
   const total  = rawItems.length
   const LOOP_W = total * STRIDE
-
-  // 3 copies for seamless infinite loop across any screen width
   const loopItems = [...rawItems, ...rawItems, ...rawItems]
 
   const containerRef   = useRef(null)
-  const outerRefs      = useRef([])   // handles translateX + translateY (wave)
-  const innerRefs      = useRef([])   // handles rotateZ around bottom-center
+  const outerRefs      = useRef([])
+  const innerRefs      = useRef([])
   const offsetRef      = useRef(0)
   const speedRef       = useRef(SPD_NORM)
   const targetSpeedRef = useRef(SPD_NORM)
-  const cursorXRef     = useRef(null) // null = not hovering
+  const cursorXRef     = useRef(null)
   const rafRef         = useRef(null)
   const [selected, setSelected] = useState(null)
 
@@ -90,7 +168,6 @@ export default function WorkGallery() {
     if (!container) return
 
     const tick = () => {
-      // Ease speed toward target
       speedRef.current = lerp(speedRef.current, targetSpeedRef.current, 0.05)
       offsetRef.current = (offsetRef.current + speedRef.current) % LOOP_W
 
@@ -100,27 +177,21 @@ export default function WorkGallery() {
         if (!outer) return
         const inner = innerRefs.current[i]
 
-        // Card's x position: slot within its copy + copy offset − scroll offset
         const slotIndex = i % total
         const copyIndex = Math.floor(i / total)
         const screenX   = slotIndex * STRIDE + copyIndex * LOOP_W - offsetRef.current
-
         const cardCenter = screenX + CARD_W / 2
 
-        // Arc tilt: cards at screen edges tilt more, centre cards upright
         const normT = clamp((cardCenter - W / 2) / (W / 2), -1, 1)
         const rotZ  = normT * MAX_ROT
 
-        // Wave: Gaussian peak centred on cursor position
         let waveY = 0
         if (cursorXRef.current !== null) {
           const dist = cardCenter - cursorXRef.current
           waveY = WAVE_AMP * Math.exp(-(dist * dist) / (2 * WAVE_SIG * WAVE_SIG))
         }
 
-        // Outer: position (X) + wave lift (Y)
         outer.style.transform = `translateX(${screenX}px) translateY(${-waveY}px)`
-        // Inner: arc rotation around bottom-centre of the card
         if (inner) inner.style.transform = `rotateZ(${rotZ}deg)`
       })
 
@@ -146,23 +217,19 @@ export default function WorkGallery() {
   return (
     <>
       <section className="border-t border-line dark:border-dark-line py-16">
-        {/* Label */}
         <div className="mx-auto mb-10 max-w-[1400px] px-6 md:px-10">
           <div className="flex items-end justify-between">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="label text-muted dark:text-dark-muted"
-            >✦ Gallery</motion.p>
-            <motion.p
-              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="label text-muted dark:text-dark-muted"
-            >Hover to slow · click to expand</motion.p>
+            <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} className="label text-muted dark:text-dark-muted">
+              ✦ Gallery
+            </motion.p>
+            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+              viewport={{ once: true }} className="label text-muted dark:text-dark-muted">
+              Hover to slow · click to expand
+            </motion.p>
           </div>
         </div>
 
-        {/* Stage — full-bleed, clips overflow */}
         <div
           ref={containerRef}
           className="relative w-full overflow-hidden"
@@ -171,40 +238,15 @@ export default function WorkGallery() {
           onMouseLeave={onMouseLeave}
         >
           {loopItems.map((item, i) => (
-            <div
+            <GalleryCard
               key={`${item.id}-${i}`}
-              ref={el => { outerRefs.current[i] = el }}
-              className="absolute bottom-0 left-0 cursor-pointer select-none"
-              style={{ width: CARD_W, height: CARD_H, willChange: 'transform' }}
+              item={item}
+              outerRef={el => { outerRefs.current[i] = el }}
+              innerRef={el => { innerRefs.current[i] = el }}
+              onHover={() => { targetSpeedRef.current = SPD_SLOW }}
+              onLeave={() => { targetSpeedRef.current = SPD_NORM }}
               onClick={() => setSelected(i)}
-            >
-              {/* Inner wrapper — rotates around its own bottom-centre */}
-              <div
-                ref={el => { innerRefs.current[i] = el }}
-                style={{ width: '100%', height: '100%', transformOrigin: 'bottom center', willChange: 'transform' }}
-              >
-                <div
-                  className="relative h-full w-full overflow-hidden"
-                  style={{ borderRadius: 20, boxShadow: '0 16px 40px rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.14)' }}
-                >
-                  {item.type === 'video' ? (
-                    <video src={item.src} poster={item.poster} muted loop playsInline autoPlay className="h-full w-full object-cover" />
-                  ) : (
-                    <img src={item.src} alt={item.caption || ''} className="h-full w-full object-cover" draggable={false} />
-                  )}
-                  {item.caption && (
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/50 to-transparent px-3 pb-3 pt-8">
-                      <p className="label text-white/80" style={{ fontSize: 10 }}>{item.caption}</p>
-                    </div>
-                  )}
-                  {item.type === 'video' && (
-                    <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-white/25 backdrop-blur-sm">
-                      <svg width="8" height="8" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            />
           ))}
         </div>
 

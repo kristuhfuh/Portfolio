@@ -58,8 +58,8 @@ export default function AdminPages() {
     setGallery(next)
   }
   const addGalleryItem = () => {
-    if (gallery.length >= 4) return
-    setGallery([...gallery, { id: Date.now().toString(), type: 'image', src: '', poster: '', caption: '' }])
+    if (gallery.length >= 7) return
+    setGallery([...gallery, { id: Date.now().toString(), type: 'image', src: '', poster: '', hoverVideo: '', caption: '' }])
   }
   const removeGalleryItem = (idx) => setGallery(gallery.filter((_, i) => i !== idx))
 
@@ -208,6 +208,15 @@ export default function AdminPages() {
                         accept="image/*"
                         value={item.poster || ''}
                         onChange={v => updateGalleryItem(i, 'poster', v)}
+                      />
+                    </Field>
+                  )}
+                  {item.type === 'image' && (
+                    <Field label="Hover Video (optional — plays on hover)">
+                      <MediaUpload
+                        accept="video/*"
+                        value={item.hoverVideo || ''}
+                        onChange={v => updateGalleryItem(i, 'hoverVideo', v)}
                       />
                     </Field>
                   )}
