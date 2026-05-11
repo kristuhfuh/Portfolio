@@ -25,13 +25,13 @@ function StatCard({ value, label, sub, accent, index }) {
         <span style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800 }}
           className={`text-5xl leading-none ${accent}`}>{value}</span>
         {sub !== undefined && (
-          <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${sub > 0 ? 'bg-[#6D28D9]/10 text-[#6D28D9]' : 'bg-black/5 text-black/30'}`}
+          <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${sub > 0 ? 'bg-[#6D28D9]/10 text-[#6D28D9]' : 'bg-black/8 text-[#141414]/55'}`}
             style={{ fontFamily: "'JetBrains Mono', monospace" }}>
             {sub > 0 ? `${sub} new` : 'none new'}
           </span>
         )}
       </div>
-      <p className="mt-3 text-sm text-[#141414]/50">{label}</p>
+      <p className="mt-3 text-sm text-[#141414]/60">{label}</p>
     </motion.div>
   )
 }
@@ -45,7 +45,7 @@ function QuickAction({ to, icon, title, desc, accent }) {
       </div>
       <div className="min-w-0 flex-1">
         <div className="font-semibold text-[#141414]">{title}</div>
-        <div className="mt-0.5 truncate text-sm text-[#141414]/50">{desc}</div>
+        <div className="mt-0.5 truncate text-sm text-[#141414]/60">{desc}</div>
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
         strokeLinecap="round" className="shrink-0 text-black/20 transition-transform group-hover:translate-x-0.5 group-hover:text-[#6D28D9]">
@@ -67,14 +67,14 @@ export default function AdminDashboard() {
 
       {/* Greeting */}
       <motion.div {...fadeUp(0)}>
-        <p className="text-sm text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+        <p className="text-sm text-[#141414]/55" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
           {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase()}
         </p>
         <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800 }}
           className="mt-1 text-4xl leading-tight text-[#141414]">
           {greeting()},<br />Christopher.
         </h2>
-        <p className="mt-2 text-[#141414]/50">Here's what's happening with your portfolio.</p>
+        <p className="mt-2 text-[#141414]/60">Here's what's happening with your portfolio.</p>
       </motion.div>
 
       {/* Stats */}
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
               <div>
                 <div style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
                   className="text-lg text-[#141414]">Generate with Claude AI</div>
-                <div className="mt-0.5 text-sm text-[#141414]/50">Draft a full case study narrative instantly</div>
+                <div className="mt-0.5 text-sm text-[#141414]/60">Draft a full case study narrative instantly</div>
               </div>
             </div>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
 
       {/* Quick actions */}
       <motion.div {...fadeUp(5)} className="mt-8">
-        <p className="mb-3 text-xs text-[#141414]/40 uppercase tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Quick Actions</p>
+        <p className="mb-3 text-xs text-[#141414]/55 uppercase tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Quick Actions</p>
         <div className="space-y-2">
           <QuickAction to="/admin/projects/new" title="Add a new case study"
             desc="Start from scratch with a blank project"
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
       {contacts.length > 0 && (
         <motion.div {...fadeUp(6)} className="mt-8">
           <div className="mb-3 flex items-center justify-between">
-            <p className="text-xs text-[#141414]/40 uppercase tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Recent Messages</p>
+            <p className="text-xs text-[#141414]/55 uppercase tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Recent Messages</p>
             <Link to="/admin/contacts" className="text-xs text-[#6D28D9] hover:underline">View all →</Link>
           </div>
           <div className="space-y-2">
@@ -153,13 +153,13 @@ export default function AdminDashboard() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className={`text-sm font-medium ${c.read ? 'text-[#141414]/50' : 'text-[#141414]'}`}>{c.name}</span>
-                    <span className="shrink-0 text-xs text-[#141414]/30"
+                    <span className={`text-sm font-medium ${c.read ? 'text-[#141414]/55' : 'text-[#141414]'}`}>{c.name}</span>
+                    <span className="shrink-0 text-xs text-[#141414]/50"
                       style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                       {new Date(c.date || c.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="mt-0.5 line-clamp-1 text-xs text-[#141414]/40">{c.message}</p>
+                  <p className="mt-0.5 line-clamp-1 text-xs text-[#141414]/55">{c.message}</p>
                 </div>
                 {!c.read && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#6D28D9]" />}
               </motion.div>

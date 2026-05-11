@@ -58,7 +58,7 @@ export default function AdminLayout() {
                 `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 ${
                   isActive
                     ? 'bg-white/10 text-white'
-                    : 'text-white/40 hover:bg-white/5 hover:text-white/80'
+                    : 'text-white/60 hover:bg-white/5 hover:text-white/90'
                 }`
               }
             >
@@ -66,7 +66,7 @@ export default function AdminLayout() {
                 <>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-                    className={`shrink-0 transition-colors ${isActive ? 'text-[#a78bfa]' : 'text-white/30 group-hover:text-white/60'}`}>
+                    className={`shrink-0 transition-colors ${isActive ? 'text-[#a78bfa]' : 'text-white/50 group-hover:text-white/80'}`}>
                     {item.icon}
                   </svg>
                   <span>{item.label}</span>
@@ -84,7 +84,7 @@ export default function AdminLayout() {
         {/* Bottom */}
         <div className="px-3 pb-6 space-y-2">
           <a href="/" target="_blank" rel="noreferrer"
-            className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-white/40 transition-all hover:bg-white/5 hover:text-white/80">
+            className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-white/60 transition-all hover:bg-white/5 hover:text-white/90">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
               <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" />
             </svg>
@@ -97,9 +97,9 @@ export default function AdminLayout() {
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#6D28D9] text-[11px] font-bold text-white">
               {user?.email?.[0]?.toUpperCase() ?? 'C'}
             </div>
-            <span className="min-w-0 flex-1 truncate text-xs text-white/40">{user?.email}</span>
+            <span className="min-w-0 flex-1 truncate text-xs text-white/60">{user?.email}</span>
             <button onClick={handleLogout} title="Sign out"
-              className="shrink-0 text-white/25 transition-colors hover:text-red-400">
+              className="shrink-0 text-white/50 transition-colors hover:text-red-400">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
               </svg>
@@ -116,7 +116,7 @@ export default function AdminLayout() {
             className="text-xl text-[#141414] tracking-tight">{sectionTitle}</h1>
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span className="text-xs text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>LIVE</span>
+            <span className="text-xs text-[#141414]/60" style={{ fontFamily: "'JetBrains Mono', monospace" }}>LIVE</span>
           </div>
         </header>
 
