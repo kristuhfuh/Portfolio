@@ -109,12 +109,12 @@ export default function RichTextField({ value = '', onChange, placeholder = '', 
     : { minHeight };
 
   return (
-    <div className={`relative rounded-lg border transition-colors ${focused ? 'border-accent ring-1 ring-accent' : 'border-line dark:border-dark-line'}`}>
+    <div className={`relative rounded-lg border transition-colors ${focused ? 'border-accent ring-1 ring-accent' : 'border-line'}`}>
       {/* Toolbar */}
-      <div className={`flex flex-wrap items-center gap-0.5 border-b px-2 py-1.5 transition-colors ${focused ? 'border-accent/30 bg-accent/5' : 'border-line dark:border-dark-line'} dark:border-dark-line rounded-t-lg`}>
+      <div className={`flex flex-wrap items-center gap-0.5 border-b px-2 py-1.5 transition-colors ${focused ? 'border-accent/30 bg-accent/5' : 'border-line'} rounded-t-lg`}>
         {TOOLBAR.map((group, gi) => (
           <span key={gi} className="contents">
-            {gi > 0 && <span className="mx-1 h-4 w-px bg-line dark:bg-dark-line" />}
+            {gi > 0 && <span className="mx-1 h-4 w-px bg-line" />}
             {group.map(({ cmd, arg, label, icon }) => (
               <button
                 key={cmd + (arg || '')}
@@ -124,7 +124,7 @@ export default function RichTextField({ value = '', onChange, placeholder = '', 
                 className={`flex h-7 w-7 items-center justify-center rounded text-xs transition-colors
                   ${activeFormats[cmd]
                     ? 'bg-accent text-cream'
-                    : 'text-muted hover:bg-line hover:text-ink dark:text-dark-muted dark:hover:bg-dark-line dark:hover:text-dark-ink'
+                    : 'text-muted hover:bg-line hover:text-ink'
                   }`}
               >
                 {icon}
@@ -137,7 +137,7 @@ export default function RichTextField({ value = '', onChange, placeholder = '', 
       {/* Editor area */}
       <div className="relative">
         {isEmpty && !focused && (
-          <div className="pointer-events-none absolute left-4 top-3 text-sm text-muted/50 dark:text-dark-muted/50 select-none">
+          <div className="pointer-events-none absolute left-4 top-3 text-sm text-muted/50/50 select-none">
             {placeholder}
           </div>
         )}
@@ -151,7 +151,7 @@ export default function RichTextField({ value = '', onChange, placeholder = '', 
           onKeyDown={handleKeyDown}
           onKeyUp={updateActiveFormats}
           onMouseUp={updateActiveFormats}
-          className="rich-editor w-full px-4 py-3 text-sm text-ink outline-none dark:text-dark-ink bg-cream dark:bg-dark-bg rounded-b-lg"
+          className="rich-editor w-full px-4 py-3 text-sm text-ink outline-none bg-cream rounded-b-lg"
           style={style}
         />
       </div>

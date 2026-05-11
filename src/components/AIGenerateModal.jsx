@@ -122,10 +122,10 @@ export default function AIGenerateModal({ onClose }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 24, scale: 0.97 }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-cream shadow-2xl dark:border-dark-line dark:bg-dark-bg"
+        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-line bg-cream shadow-2xl"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-line px-6 py-5 dark:border-dark-line">
+        <div className="flex items-center justify-between border-b border-line px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-accent">
@@ -133,15 +133,15 @@ export default function AIGenerateModal({ onClose }) {
               </svg>
             </div>
             <div>
-              <div className="font-semibold text-ink dark:text-dark-ink">Generate with Claude</div>
-              <div className="text-xs text-muted dark:text-dark-muted">
+              <div className="font-semibold text-ink">Generate with Claude</div>
+              <div className="text-xs text-muted">
                 {step === STEP_FORMAT && 'Step 1 of 2 — Choose a format'}
                 {step === STEP_BRIEF && 'Step 2 of 2 — Describe your project'}
                 {step === STEP_RESULT && 'Review your generated case study'}
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="rounded-lg p-2 text-muted transition-colors hover:bg-line/50 dark:text-dark-muted dark:hover:bg-dark-line/50">
+          <button onClick={onClose} className="rounded-lg p-2 text-muted transition-colors hover:bg-line/50">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
         </div>
@@ -152,7 +152,7 @@ export default function AIGenerateModal({ onClose }) {
             {/* ── Step 1: Format selection ── */}
             {step === STEP_FORMAT && (
               <motion.div key="format" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <p className="mb-5 text-sm text-muted dark:text-dark-muted">
+                <p className="mb-5 text-sm text-muted">
                   Pick the structure that best fits this project. Claude will shape the tone and narrative accordingly.
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -161,17 +161,17 @@ export default function AIGenerateModal({ onClose }) {
                       className={`flex items-start gap-3 rounded-xl border p-4 text-left transition-all ${
                         selectedFormat === f.id
                           ? 'border-accent bg-accent/5'
-                          : 'border-line bg-white/60 hover:border-accent/50 dark:border-dark-line dark:bg-white/[0.03]'
+                          : 'border-line bg-white/60 hover:border-accent/50'
                       }`}
                     >
-                      <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${selectedFormat === f.id ? 'bg-accent text-cream' : 'bg-line/60 text-muted dark:bg-dark-line dark:text-dark-muted'}`}>
+                      <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${selectedFormat === f.id ? 'bg-accent text-cream' : 'bg-line/60 text-muted'}`}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                           <path d={f.icon} strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </div>
                       <div>
-                        <div className={`text-sm font-medium ${selectedFormat === f.id ? 'text-accent' : 'text-ink dark:text-dark-ink'}`}>{f.name}</div>
-                        <div className="mt-0.5 text-xs text-muted dark:text-dark-muted">{f.description}</div>
+                        <div className={`text-sm font-medium ${selectedFormat === f.id ? 'text-accent' : 'text-ink'}`}>{f.name}</div>
+                        <div className="mt-0.5 text-xs text-muted">{f.description}</div>
                       </div>
                     </button>
                   ))}
@@ -200,20 +200,20 @@ export default function AIGenerateModal({ onClose }) {
                   <button onClick={() => setStep(STEP_FORMAT)} className="ml-1 text-[10px] text-muted underline hover:text-accent">change</button>
                 </div>
 
-                <p className="mb-3 text-sm text-muted dark:text-dark-muted">
+                <p className="mb-3 text-sm text-muted">
                   Describe the project in plain language. Include what was built, for whom, the core problem, and the results. More detail = better output.
                 </p>
                 <textarea
                   autoFocus
                   rows={8}
-                  className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink"
+                  className="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent"
                   placeholder={`e.g. Redesigned the onboarding flow for a Lagos-based fintech app called PocketPay. The app helps underbanked users send and receive money. Users were dropping off at 60% before completing sign-up because the form was too long and asked for documents they didn't have ready.\n\nWe simplified from 12 steps to 4, added a "save and continue later" option, and personalised the copy based on the user's stated goal. We ran usability tests with 12 users and iterated 3 times.\n\nResult: Drop-off fell from 60% to 18% within 2 weeks of launch. Sign-ups increased by 40%.`}
                   value={brief}
                   onChange={e => setBrief(e.target.value)}
                 />
                 {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
                 <div className="mt-5 flex items-center justify-between">
-                  <button onClick={() => setStep(STEP_FORMAT)} className="label text-sm text-muted hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink">
+                  <button onClick={() => setStep(STEP_FORMAT)} className="label text-sm text-muted hover:text-ink">
                     ← Back
                   </button>
                   <button
@@ -242,7 +242,7 @@ export default function AIGenerateModal({ onClose }) {
             {/* ── Step 3: Result preview ── */}
             {step === STEP_RESULT && generated && (
               <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <p className="mb-5 text-sm text-muted dark:text-dark-muted">
+                <p className="mb-5 text-sm text-muted">
                   Claude has drafted your case study. Review it below, then create the project — you can edit everything in the full editor.
                 </p>
                 <div className="space-y-4">
@@ -255,16 +255,16 @@ export default function AIGenerateModal({ onClose }) {
                     { label: 'Reflection', value: generated.reflection },
                     { label: 'Pull Quote', value: generated.pullQuote },
                   ].filter(f => f.value).map(f => (
-                    <div key={f.label} className="rounded-xl border border-line bg-white/60 p-4 dark:border-dark-line dark:bg-white/[0.03]">
-                      <div className="label mb-1.5 text-[10px] uppercase tracking-widest text-muted dark:text-dark-muted">{f.label}</div>
-                      <p className="text-sm leading-relaxed text-ink dark:text-dark-ink whitespace-pre-line">{f.value}</p>
+                    <div key={f.label} className="rounded-xl border border-line bg-white/60 p-4">
+                      <div className="label mb-1.5 text-[10px] uppercase tracking-widest text-muted">{f.label}</div>
+                      <p className="text-sm leading-relaxed text-ink whitespace-pre-line">{f.value}</p>
                     </div>
                   ))}
                 </div>
                 <div className="mt-6 flex items-center justify-between gap-3">
                   <button
                     onClick={() => { setGenerated(null); setStep(STEP_BRIEF) }}
-                    className="label text-sm text-muted hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink"
+                    className="label text-sm text-muted hover:text-ink"
                   >
                     ← Regenerate
                   </button>

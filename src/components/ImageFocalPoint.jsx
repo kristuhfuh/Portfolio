@@ -39,10 +39,10 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
 
   return (
     <div className="space-y-3">
-      <label className="label mb-1.5 block text-muted dark:text-dark-muted">{label}</label>
+      <label className="label mb-1.5 block text-muted">{label}</label>
 
       {/* Method tabs */}
-      <div className="flex gap-1 rounded-lg border border-line p-1 dark:border-dark-line w-fit">
+      <div className="flex gap-1 rounded-lg border border-line p-1 w-fit">
         {methods.map(m => (
           <button
             key={m.id}
@@ -51,7 +51,7 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
             className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
               uploadMethod === m.id
                 ? 'bg-accent text-cream'
-                : 'text-muted hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink'
+                : 'text-muted hover:text-ink'
             }`}
           >
             {m.label}
@@ -68,7 +68,7 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
             onChange={e => setUrlInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleUrlSubmit()}
             placeholder="https://example.com/image.jpg"
-            className="flex-1 rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink"
+            className="flex-1 rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent"
           />
           <button type="button" onClick={handleUrlSubmit}
             className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">
@@ -87,14 +87,14 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
               onChange={e => setUrlInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleDriveSubmit()}
               placeholder="https://drive.google.com/file/d/..."
-              className="flex-1 rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink"
+              className="flex-1 rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent"
             />
             <button type="button" onClick={handleDriveSubmit}
               className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">
               Set
             </button>
           </div>
-          <p className="text-xs text-muted dark:text-dark-muted">
+          <p className="text-xs text-muted">
             Paste a Google Drive share link. Make sure the file is set to "Anyone with the link".
           </p>
         </div>
@@ -106,14 +106,14 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
           type="file"
           accept="image/*"
           onChange={handleFileUpload}
-          className="w-full cursor-pointer rounded-lg border border-line bg-cream px-3 py-2 text-sm file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-3 file:py-1 file:text-xs file:font-medium file:text-cream dark:border-dark-line dark:bg-dark-bg"
+          className="w-full cursor-pointer rounded-lg border border-line bg-cream px-3 py-2 text-sm file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-3 file:py-1 file:text-xs file:font-medium file:text-cream"
         />
       )}
 
       {/* Image preview + focal point picker */}
       {imageValue && (
         <div className="space-y-2">
-          <p className="text-xs text-muted dark:text-dark-muted">
+          <p className="text-xs text-muted">
             Click or drag on the image to set the crop focus. Current: {focus.x}% {focus.y}%
           </p>
           <div

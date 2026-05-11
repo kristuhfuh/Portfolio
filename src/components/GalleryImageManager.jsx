@@ -113,7 +113,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
   };
   const onItemDragEnd = () => { setDragIdx(null); setDragOverIdx(null); };
 
-  const inputCls = 'w-full rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink';
+  const inputCls = 'w-full rounded-lg border border-line bg-cream px-3 py-2 text-sm text-ink outline-none focus:border-accent';
 
   return (
     <div className="space-y-4">
@@ -125,31 +125,31 @@ export default function GalleryImageManager({ images = [], onChange }) {
           onDragLeave={() => setDropHighlight(false)}
           onDrop={onZoneDrop}
           className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed py-10 transition-colors ${
-            dropHighlight ? 'border-accent bg-accent/5' : 'border-line dark:border-dark-line hover:border-accent/40'
+            dropHighlight ? 'border-accent bg-accent/5' : 'border-line hover:border-accent/40'
           }`}
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-line dark:bg-dark-line">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-muted dark:text-dark-muted">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-line">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-muted">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
           </div>
           <div className="text-center">
-            <p className="text-sm font-medium text-ink dark:text-dark-ink">Drop images or videos here</p>
-            <p className="mt-0.5 text-xs text-muted dark:text-dark-muted">Supports multiple files at once</p>
+            <p className="text-sm font-medium text-ink">Drop images or videos here</p>
+            <p className="mt-0.5 text-xs text-muted">Supports multiple files at once</p>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
             <button type="button" onClick={() => fileRef.current?.click()}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent dark:border-dark-line dark:bg-white/5 dark:text-dark-ink">
+              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               Upload Files
             </button>
             <button type="button" onClick={() => setMethod('url')}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent dark:border-dark-line dark:bg-white/5 dark:text-dark-ink">
+              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
               URL Links
             </button>
             <button type="button" onClick={() => setMethod('drive')}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent dark:border-dark-line dark:bg-white/5 dark:text-dark-ink">
+              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
               Google Drive
             </button>
@@ -160,16 +160,16 @@ export default function GalleryImageManager({ images = [], onChange }) {
 
       {/* ── URL ── */}
       {method === 'url' && (
-        <div className="rounded-xl border border-line p-4 dark:border-dark-line space-y-3">
+        <div className="rounded-xl border border-line p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-ink dark:text-dark-ink">Add from URLs</p>
-            <button type="button" onClick={() => setMethod(null)} className="text-xs text-muted hover:text-ink dark:text-dark-muted">← Back</button>
+            <p className="text-xs font-medium text-ink">Add from URLs</p>
+            <button type="button" onClick={() => setMethod(null)} className="text-xs text-muted hover:text-ink">← Back</button>
           </div>
           <textarea value={input} onChange={e => setInput(e.target.value)} rows={4} autoFocus
             placeholder={"https://example.com/image1.jpg\nhttps://example.com/video.mp4"}
             className={inputCls + ' resize-none'} />
           <div className="flex items-center justify-between">
-            <p className="text-[11px] text-muted dark:text-dark-muted">One URL per line.</p>
+            <p className="text-[11px] text-muted">One URL per line.</p>
             <button type="button" onClick={handleAdd} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">Add All</button>
           </div>
         </div>
@@ -177,16 +177,16 @@ export default function GalleryImageManager({ images = [], onChange }) {
 
       {/* ── Google Drive ── */}
       {method === 'drive' && (
-        <div className="rounded-xl border border-line p-4 dark:border-dark-line space-y-3">
+        <div className="rounded-xl border border-line p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-ink dark:text-dark-ink">Add from Google Drive</p>
-            <button type="button" onClick={() => setMethod(null)} className="text-xs text-muted hover:text-ink dark:text-dark-muted">← Back</button>
+            <p className="text-xs font-medium text-ink">Add from Google Drive</p>
+            <button type="button" onClick={() => setMethod(null)} className="text-xs text-muted hover:text-ink">← Back</button>
           </div>
           <textarea value={input} onChange={e => setInput(e.target.value)} rows={6} autoFocus
             placeholder={"https://drive.google.com/file/d/ABC123/view\nhttps://drive.google.com/file/d/DEF456/view\nhttps://drive.google.com/file/d/GHI789/view"}
             className={inputCls + ' resize-none'} />
           <div className="flex items-center justify-between">
-            <p className="text-[11px] text-muted dark:text-dark-muted">Paste one link per line — each link becomes one image. Set files to "Anyone with the link".</p>
+            <p className="text-[11px] text-muted">Paste one link per line — each link becomes one image. Set files to "Anyone with the link".</p>
             <button type="button" onClick={handleAdd} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">Add All</button>
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
       {images.length > 0 && (
         <div className="space-y-2">
           {images.length > 1 && (
-            <p className="text-[11px] text-muted dark:text-dark-muted px-1">Drag items to reorder</p>
+            <p className="text-[11px] text-muted px-1">Drag items to reorder</p>
           )}
           {images.map((item, i) => (
             <div
@@ -210,12 +210,12 @@ export default function GalleryImageManager({ images = [], onChange }) {
                 dragIdx === i
                   ? 'opacity-40 border-accent scale-[0.98]'
                   : dragOverIdx === i
-                  ? 'border-accent bg-accent/5 dark:bg-accent/10'
-                  : 'border-line bg-white/50 dark:border-dark-line dark:bg-white/[0.03]'
+                  ? 'border-accent bg-accent/5'
+                  : 'border-line bg-white/50'
               }`}
             >
               {/* Drag handle */}
-              <div className="flex items-center text-muted dark:text-dark-muted shrink-0">
+              <div className="flex items-center text-muted shrink-0">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" opacity="0.4">
                   <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
                   <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
@@ -224,7 +224,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
               </div>
 
               {/* Thumbnail */}
-              <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-lg border border-line dark:border-dark-line bg-line dark:bg-dark-line">
+              <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-lg border border-line bg-line">
                 {item.type === 'video' ? (
                   <>
                     <video src={item.url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
@@ -241,7 +241,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
               <div className="flex flex-1 flex-col gap-2" onMouseDown={e => e.stopPropagation()}>
                 <input type="text" value={item.caption || ''} onChange={e => updateCaption(i, e.target.value)}
                   placeholder="Image name / caption…"
-                  className="w-full rounded-lg border border-line bg-cream px-3 py-1.5 text-xs text-ink outline-none focus:border-accent dark:border-dark-line dark:bg-dark-bg dark:text-dark-ink cursor-text" />
+                  className="w-full rounded-lg border border-line bg-cream px-3 py-1.5 text-xs text-ink outline-none focus:border-accent cursor-text" />
 
                 {/* Inline URL editor */}
                 {editingUrlIdx === i ? (
@@ -253,19 +253,19 @@ export default function GalleryImageManager({ images = [], onChange }) {
                       onChange={e => setEditingUrlValue(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') commitEditUrl(i); if (e.key === 'Escape') setEditingUrlIdx(null); }}
                       placeholder="Paste new Drive link or URL…"
-                      className="min-w-0 flex-1 rounded-lg border border-accent bg-cream px-2 py-1 text-[11px] text-ink outline-none dark:bg-dark-bg dark:text-dark-ink"
+                      className="min-w-0 flex-1 rounded-lg border border-accent bg-cream px-2 py-1 text-[11px] text-ink outline-none"
                     />
                     <button type="button" onClick={() => commitEditUrl(i)}
                       className="rounded-md bg-accent px-2 py-1 text-[10px] font-medium text-cream">
                       Save
                     </button>
                     <button type="button" onClick={() => setEditingUrlIdx(null)}
-                      className="rounded-md border border-line px-2 py-1 text-[10px] text-muted dark:border-dark-line">
+                      className="rounded-md border border-line px-2 py-1 text-[10px] text-muted">
                       ✕
                     </button>
                   </div>
                 ) : (
-                  <p className="truncate text-[10px] text-muted dark:text-dark-muted cursor-default select-all" title={item.url}>
+                  <p className="truncate text-[10px] text-muted cursor-default select-all" title={item.url}>
                     {item.url}
                   </p>
                 )}
@@ -273,18 +273,18 @@ export default function GalleryImageManager({ images = [], onChange }) {
                 <div className="flex gap-1.5 items-center">
                   <span className={`rounded-md px-2 py-1 text-[10px] font-medium ${
                     item.type === 'video'
-                      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
-                      : 'bg-line text-muted dark:bg-dark-line dark:text-dark-muted'
+                      ? 'bg-blue-100 text-blue-600'
+                      : 'bg-black/[0.08] text-[#505050]'
                   }`}>
                     {item.type === 'video' ? '▶ Video' : '⬜ Image'}
                   </span>
                   <span className="flex-1" />
                   <button type="button" onClick={() => startEditUrl(i)}
-                    className="rounded-md border border-line px-2 py-1 text-[10px] text-ink hover:border-accent hover:text-accent dark:border-dark-line dark:text-dark-ink">
+                    className="rounded-md border border-line px-2 py-1 text-[10px] text-ink hover:border-accent hover:text-accent">
                     Edit URL
                   </button>
                   <button type="button" onClick={() => remove(i)}
-                    className="rounded-md border border-line px-2 py-1 text-[10px] text-red-500 hover:bg-red-50 dark:border-dark-line dark:hover:bg-red-900/20">
+                    className="rounded-md border border-line px-2 py-1 text-[10px] text-red-500 hover:bg-red-50">
                     Remove
                   </button>
                 </div>
