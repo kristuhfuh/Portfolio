@@ -25,7 +25,7 @@ export function AdminProjects() {
         <div>
           <h1 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
             className="text-2xl text-[#141414]">Case Studies</h1>
-          <p className="mt-1 text-sm text-[#141414]/50">
+          <p className="mt-1 text-sm text-[#141414]/60">
             {projects.length} projects · {projects.filter(p => !p.hidden).length} visible
           </p>
         </div>
@@ -48,7 +48,7 @@ export function AdminProjects() {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-xs text-[#141414]/40">{p.number}</span>
+                <span className="font-mono text-xs text-[#141414]/55">{p.number}</span>
                 <h3 className="truncate font-display text-xl text-[#141414]">{p.title}</h3>
                 {p.hidden && (
                   <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] text-gray-600 dark:bg-gray-700 dark:text-gray-400">Hidden</span>
@@ -56,7 +56,7 @@ export function AdminProjects() {
               </div>
               <div className="mt-1 flex gap-2">
                 {p.tags?.slice(0, 3).map(t => (
-                  <span key={t} className="rounded-full bg-black/6 px-2 py-0.5 text-[10px] text-[#141414]/50">{t}</span>
+                  <span key={t} className="rounded-full bg-black/6 px-2 py-0.5 text-[10px] text-[#141414]/60">{t}</span>
                 ))}
               </div>
             </div>
@@ -109,14 +109,14 @@ const emptyProject = {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="mb-1.5 block text-[10px] font-medium uppercase tracking-widest text-[#141414]/40"
+      <label className="mb-1.5 block text-[10px] font-medium uppercase tracking-widest text-[#141414]/55"
         style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</label>
       {children}
     </div>
   )
 }
 
-const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/30 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
+const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/40 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
 const textareaCls = inputCls + ' min-h-[120px] resize-y'
 
 export function AdminProjectEdit() {
