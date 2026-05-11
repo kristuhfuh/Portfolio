@@ -43,7 +43,7 @@ export function AdminProjects() {
             transition={{ duration: 0.3, delay: i * 0.04 }}
             className={`flex items-center gap-4 rounded-2xl border border-black/6 bg-white p-4 ${p.hidden ? 'opacity-50' : ''}`}
           >
-            <div className="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-line dark:bg-dark-line">
+            <div className="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-line">
               {p.cover && <img src={normalizeDriveUrl(p.cover)} alt="" className="h-full w-full object-cover" />}
             </div>
             <div className="min-w-0 flex-1">
@@ -51,7 +51,7 @@ export function AdminProjects() {
                 <span className="font-mono text-xs text-[#141414]/55">{p.number}</span>
                 <h3 className="truncate font-display text-xl text-[#141414]">{p.title}</h3>
                 {p.hidden && (
-                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] text-gray-600 dark:bg-gray-700 dark:text-gray-400">Hidden</span>
+                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] text-gray-600">Hidden</span>
                 )}
               </div>
               <div className="mt-1 flex gap-2">
@@ -219,10 +219,10 @@ export function AdminProjectEdit() {
         <div className="mx-auto max-w-2xl">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <Link to="/admin/projects" className="label mb-2 inline-flex items-center gap-1 text-muted hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink">
+              <Link to="/admin/projects" className="label mb-2 inline-flex items-center gap-1 text-muted hover:text-ink">
                 ← Back to Projects
               </Link>
-              <h1 className="font-display text-3xl text-ink dark:text-dark-ink">
+              <h1 className="font-display text-3xl text-ink">
                 {isNew ? 'New Case Study' : `Edit: ${project.title}`}
               </h1>
             </div>
@@ -232,7 +232,7 @@ export function AdminProjectEdit() {
             </button>
           </div>
 
-          <div className="space-y-6 rounded-2xl border border-line bg-white/60 p-6 backdrop-blur dark:border-dark-line dark:bg-white/[0.03] md:p-8">
+          <div className="space-y-6 rounded-2xl border border-line bg-white/60 p-6 backdrop-blur md:p-8">
             <div className="grid gap-6 md:grid-cols-2">
               <Field label="Title"><input className={inputCls} value={project.title} onChange={e => update('title', e.target.value)} /></Field>
               <Field label="Slug"><input className={inputCls} value={project.slug} onChange={e => update('slug', e.target.value)} placeholder="auto-generated" /></Field>
@@ -245,7 +245,7 @@ export function AdminProjectEdit() {
             <div className="grid gap-6 md:grid-cols-3">
               <Field label="Number"><input className={inputCls} value={project.number} onChange={e => update('number', e.target.value)} placeholder="01" /></Field>
               <Field label="Year"><input className={inputCls} value={project.year} onChange={e => update('year', e.target.value)} /></Field>
-              <Field label="Accent Color"><input type="color" value={project.accent} onChange={e => update('accent', e.target.value)} className="h-12 w-full cursor-pointer rounded-lg border border-line dark:border-dark-line" /></Field>
+              <Field label="Accent Color"><input type="color" value={project.accent} onChange={e => update('accent', e.target.value)} className="h-12 w-full cursor-pointer rounded-lg border border-line" /></Field>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -278,22 +278,22 @@ export function AdminProjectEdit() {
                 onChange={e => update('hoverVideo', e.target.value)}
                 placeholder="https://... (mp4, webm, or Google Drive link)"
               />
-              <p className="mt-1.5 text-[11px] text-muted dark:text-dark-muted">
+              <p className="mt-1.5 text-[11px] text-muted">
                 Optional. Loops silently on hover in the Selected Works grid.
               </p>
             </Field>
 
-            <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Metrics</h2>
+            <h2 className="pt-4 font-display text-xl text-ink">Metrics</h2>
             <div className="grid gap-6 md:grid-cols-2">
               {project.metrics.map((m, i) => (
-                <div key={i} className="space-y-3 rounded-xl border border-line p-4 dark:border-dark-line">
+                <div key={i} className="space-y-3 rounded-xl border border-line p-4">
                   <Field label={`Metric ${i + 1} — Value`}><input className={inputCls} value={m.value} onChange={e => updateMetric(i, 'value', e.target.value)} placeholder="94+" /></Field>
                   <Field label={`Metric ${i + 1} — Label`}><input className={inputCls} value={m.label} onChange={e => updateMetric(i, 'label', e.target.value)} placeholder="Screens designed" /></Field>
                 </div>
               ))}
             </div>
 
-            <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Story Elements</h2>
+            <h2 className="pt-4 font-display text-xl text-ink">Story Elements</h2>
             <Field label="Hook (big opening statement — one line, dramatic)">
               <RichTextField value={project.hook || ''} onChange={v => update('hook', v)} placeholder="e.g. Design 94 screens. Make them feel like one product." singleLine />
             </Field>
@@ -304,31 +304,31 @@ export function AdminProjectEdit() {
               <RichTextField value={project.reception || ''} onChange={v => update('reception', v)} placeholder="e.g. Adopted unchanged — in a project this size, that's the clearest signal the architecture worked." minHeight={100} />
             </Field>
 
-            <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Outcome Stats (By the Numbers grid)</h2>
-            <p className="text-sm text-muted dark:text-dark-muted">Animated counter stats shown in the dark hero strip. 3–6 recommended.</p>
+            <h2 className="pt-4 font-display text-xl text-ink">Outcome Stats (By the Numbers grid)</h2>
+            <p className="text-sm text-muted">Animated counter stats shown in the dark hero strip. 3–6 recommended.</p>
             <div className="space-y-3">
               {(project.outcomeStats || []).map((s, i) => (
-                <div key={i} className="grid grid-cols-12 gap-3 rounded-xl border border-line p-3 dark:border-dark-line">
+                <div key={i} className="grid grid-cols-12 gap-3 rounded-xl border border-line p-3">
                   <div className="col-span-3">
-                    <label className="label mb-1 block text-[10px] text-muted dark:text-dark-muted">Value</label>
+                    <label className="label mb-1 block text-[10px] text-muted">Value</label>
                     <input className={inputCls} value={s.value || ''} onChange={e => updateOutcomeStat(i, 'value', e.target.value)} placeholder="94" />
                   </div>
                   <div className="col-span-2">
-                    <label className="label mb-1 block text-[10px] text-muted dark:text-dark-muted">Suffix</label>
+                    <label className="label mb-1 block text-[10px] text-muted">Suffix</label>
                     <input className={inputCls} value={s.suffix || ''} onChange={e => updateOutcomeStat(i, 'suffix', e.target.value)} placeholder="+ / % / ×" />
                   </div>
                   <div className="col-span-6">
-                    <label className="label mb-1 block text-[10px] text-muted dark:text-dark-muted">Label</label>
+                    <label className="label mb-1 block text-[10px] text-muted">Label</label>
                     <input className={inputCls} value={s.label || ''} onChange={e => updateOutcomeStat(i, 'label', e.target.value)} placeholder="Screens designed" />
                   </div>
                   <div className="col-span-1 flex items-end">
                     <button type="button" onClick={() => removeOutcomeStat(i)}
-                      className="h-[46px] w-full rounded-lg border border-line text-red-500 hover:bg-red-50 dark:border-dark-line dark:hover:bg-red-900/20">×</button>
+                      className="h-[46px] w-full rounded-lg border border-line text-red-500 hover:bg-red-50">×</button>
                   </div>
                 </div>
               ))}
               <button type="button" onClick={addOutcomeStat}
-                className="label w-full rounded-lg border border-dashed border-line py-3 text-muted hover:border-accent hover:text-accent dark:border-dark-line dark:text-dark-muted">
+                className="label w-full rounded-lg border border-dashed border-line py-3 text-muted hover:border-accent hover:text-accent">
                 + Add outcome stat
               </button>
             </div>
@@ -343,7 +343,7 @@ export function AdminProjectEdit() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-accent"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 <span className="label text-accent">Generate with Claude</span>
               </div>
-              <p className="mb-3 text-xs text-muted dark:text-dark-muted">
+              <p className="mb-3 text-xs text-muted">
                 Describe the project in plain language — what was built, for whom, the problem, and the results. Claude will draft all narrative fields.
               </p>
               <textarea
@@ -372,11 +372,11 @@ export function AdminProjectEdit() {
                 )}
               </button>
               {!generating && !genError && (
-                <p className="mt-2 text-[10px] text-muted dark:text-dark-muted">Fields below will be overwritten. Review and edit after generating.</p>
+                <p className="mt-2 text-[10px] text-muted">Fields below will be overwritten. Review and edit after generating.</p>
               )}
             </div>
 
-            <h2 className="pt-4 font-display text-xl text-ink dark:text-dark-ink">Narrative Sections</h2>
+            <h2 className="pt-4 font-display text-xl text-ink">Narrative Sections</h2>
             <Field label="Overview">
               <RichTextField value={project.overview} onChange={v => update('overview', v)} placeholder="Project overview…" minHeight={200} />
             </Field>
@@ -404,22 +404,22 @@ export function AdminProjectEdit() {
       </div>
 
       {/* ── Preview panel ── */}
-      <div className="w-[420px] shrink-0 border-l border-line bg-cream/50 dark:border-dark-line dark:bg-dark-bg/50 overflow-y-auto sticky top-0" style={{ height: '100vh' }}>
-        <div className="border-b border-line px-5 py-4 dark:border-dark-line flex items-center justify-between">
-          <span className="label text-muted dark:text-dark-muted">Live Preview</span>
+      <div className="w-[420px] shrink-0 border-l border-line bg-cream/50 overflow-y-auto sticky top-0" style={{ height: '100vh' }}>
+        <div className="border-b border-line px-5 py-4 flex items-center justify-between">
+          <span className="label text-muted">Live Preview</span>
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] text-muted dark:text-dark-muted">Updates as you type</span>
+            <span className="text-[10px] text-muted">Updates as you type</span>
           </span>
         </div>
 
         <div className="p-5 space-y-5">
           {/* Project card preview */}
-          <div className="rounded-2xl overflow-hidden border border-line dark:border-dark-line bg-white dark:bg-white/[0.03]">
-            <div className="relative h-52 bg-line dark:bg-dark-line">
+          <div className="rounded-2xl overflow-hidden border border-line bg-white">
+            <div className="relative h-52 bg-line">
               {project.cover
                 ? <img src={project.cover} alt="" className="h-full w-full object-cover" />
-                : <div className="flex h-full items-center justify-center text-xs text-muted dark:text-dark-muted">No cover image</div>
+                : <div className="flex h-full items-center justify-center text-xs text-[#555555]">No cover image</div>
               }
               {project.accent && (
                 <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${project.accent}33, transparent)` }} />
@@ -429,12 +429,12 @@ export function AdminProjectEdit() {
               </div>
             </div>
             <div className="p-4">
-              <h3 className="font-display text-xl text-ink dark:text-dark-ink">{project.title || <span className="text-muted">Untitled project</span>}</h3>
-              {project.tagline && <p className="mt-1 text-sm text-muted dark:text-dark-muted">{project.tagline}</p>}
+              <h3 className="font-display text-xl text-ink">{project.title || <span className="text-muted">Untitled project</span>}</h3>
+              {project.tagline && <p className="mt-1 text-sm text-muted">{project.tagline}</p>}
               {previewTags.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {previewTags.map(t => (
-                    <span key={t} className="rounded-full border border-line px-2.5 py-0.5 text-[10px] text-muted dark:border-dark-line dark:text-dark-muted">{t}</span>
+                    <span key={t} className="rounded-full border border-line px-2.5 py-0.5 text-[10px] text-muted">{t}</span>
                   ))}
                 </div>
               )}
@@ -442,33 +442,33 @@ export function AdminProjectEdit() {
           </div>
 
           {/* Meta details */}
-          <div className="rounded-xl border border-line bg-white dark:border-dark-line dark:bg-white/[0.03] p-4 space-y-2.5">
-            <div className="label text-[10px] text-muted dark:text-dark-muted uppercase tracking-widest mb-3">Details</div>
+          <div className="rounded-xl border border-line bg-white p-4 space-y-2.5">
+            <div className="label text-[10px] text-muted uppercase tracking-widest mb-3">Details</div>
             {[['Client', project.client], ['Role', project.role], ['Timeline', project.timeline], ['Team', project.team], ['Location', project.location], ['Year', project.year]].map(([k, v]) => v ? (
               <div key={k} className="flex justify-between text-sm">
-                <span className="text-muted dark:text-dark-muted">{k}</span>
-                <span className="text-ink dark:text-dark-ink font-medium">{v}</span>
+                <span className="text-muted">{k}</span>
+                <span className="text-ink font-medium">{v}</span>
               </div>
             ) : null)}
           </div>
 
           {/* Hook */}
           {project.hook && (
-            <div className="rounded-xl border border-line bg-white dark:border-dark-line dark:bg-white/[0.03] p-4">
-              <div className="label text-[10px] text-muted dark:text-dark-muted uppercase tracking-widest mb-2">Hook</div>
-              <p className="font-display text-lg text-ink dark:text-dark-ink italic">{project.hook}</p>
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="label text-[10px] text-muted uppercase tracking-widest mb-2">Hook</div>
+              <p className="font-display text-lg text-ink italic">{project.hook}</p>
             </div>
           )}
 
           {/* Metrics */}
           {project.metrics.some(m => m.value) && (
-            <div className="rounded-xl border border-line bg-white dark:border-dark-line dark:bg-white/[0.03] p-4">
-              <div className="label text-[10px] text-muted dark:text-dark-muted uppercase tracking-widest mb-3">Metrics</div>
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="label text-[10px] text-muted uppercase tracking-widest mb-3">Metrics</div>
               <div className="grid grid-cols-2 gap-3">
                 {project.metrics.filter(m => m.value).map((m, i) => (
                   <div key={i} className="rounded-lg p-3" style={{ background: project.accent + '15' }}>
                     <div className="font-display text-2xl font-bold" style={{ color: project.accent }}>{m.value}</div>
-                    <div className="mt-0.5 text-[11px] text-muted dark:text-dark-muted">{m.label}</div>
+                    <div className="mt-0.5 text-[11px] text-muted">{m.label}</div>
                   </div>
                 ))}
               </div>
@@ -477,13 +477,13 @@ export function AdminProjectEdit() {
 
           {/* Outcome stats */}
           {(project.outcomeStats || []).length > 0 && (
-            <div className="rounded-xl border border-line bg-white dark:border-dark-line dark:bg-white/[0.03] p-4">
-              <div className="label text-[10px] text-muted dark:text-dark-muted uppercase tracking-widest mb-3">By the Numbers</div>
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="label text-[10px] text-muted uppercase tracking-widest mb-3">By the Numbers</div>
               <div className="grid grid-cols-2 gap-3">
                 {project.outcomeStats.map((s, i) => (
-                  <div key={i} className="rounded-lg bg-ink/5 p-3 dark:bg-white/5">
-                    <div className="font-display text-xl font-bold text-ink dark:text-dark-ink">{s.value}{s.suffix}</div>
-                    <div className="mt-0.5 text-[11px] text-muted dark:text-dark-muted">{s.label}</div>
+                  <div key={i} className="rounded-lg bg-ink/5 p-3">
+                    <div className="font-display text-xl font-bold text-ink">{s.value}{s.suffix}</div>
+                    <div className="mt-0.5 text-[11px] text-muted">{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -493,17 +493,17 @@ export function AdminProjectEdit() {
           {/* Pull quote */}
           {project.pullQuote && (
             <div className="rounded-xl border-l-4 pl-4 py-3 pr-4" style={{ borderColor: project.accent }}>
-              <p className="text-sm italic text-ink/80 dark:text-dark-ink/80">{project.pullQuote}</p>
+              <p className="text-sm italic text-ink/80">{project.pullQuote}</p>
             </div>
           )}
 
           {/* Deliverables */}
           {previewDeliverables.length > 0 && (
-            <div className="rounded-xl border border-line bg-white dark:border-dark-line dark:bg-white/[0.03] p-4">
-              <div className="label text-[10px] text-muted dark:text-dark-muted uppercase tracking-widest mb-3">Deliverables</div>
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="label text-[10px] text-muted uppercase tracking-widest mb-3">Deliverables</div>
               <ul className="space-y-1.5">
                 {previewDeliverables.map((d, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-ink dark:text-dark-ink">
+                  <li key={i} className="flex items-start gap-2 text-sm text-ink">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mt-0.5 shrink-0" style={{ color: project.accent }}><path d="M20 6L9 17l-5-5" /></svg>
                     {d}
                   </li>
@@ -514,19 +514,19 @@ export function AdminProjectEdit() {
 
           {/* Narrative preview */}
           {project.overview && (
-            <div className="rounded-xl border border-line bg-white dark:border-dark-line dark:bg-white/[0.03] p-4">
-              <div className="label text-[10px] text-muted dark:text-dark-muted uppercase tracking-widest mb-2">Overview</div>
-              <p className="text-sm leading-relaxed text-ink/80 dark:text-dark-ink/80 line-clamp-5">{project.overview}</p>
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="label text-[10px] text-muted uppercase tracking-widest mb-2">Overview</div>
+              <p className="text-sm leading-relaxed text-ink/80 line-clamp-5">{project.overview}</p>
             </div>
           )}
 
           {previewApproach.length > 0 && (
-            <div className="rounded-xl border border-line bg-white dark:border-dark-line dark:bg-white/[0.03] p-4">
-              <div className="label text-[10px] text-muted dark:text-dark-muted uppercase tracking-widest mb-3">Approach ({previewApproach.length} steps)</div>
+            <div className="rounded-xl border border-line bg-white p-4">
+              <div className="label text-[10px] text-muted uppercase tracking-widest mb-3">Approach ({previewApproach.length} steps)</div>
               {previewApproach.map((step, i) => (
                 <div key={i} className="mb-2 flex gap-2">
-                  <span className="font-mono text-[10px] text-muted dark:text-dark-muted mt-1 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                  <p className="text-sm text-ink/80 dark:text-dark-ink/80 line-clamp-2">{step}</p>
+                  <span className="font-mono text-[10px] text-muted mt-1 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                  <p className="text-sm text-ink/80 line-clamp-2">{step}</p>
                 </div>
               ))}
             </div>
