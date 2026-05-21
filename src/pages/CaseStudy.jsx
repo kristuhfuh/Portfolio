@@ -292,8 +292,8 @@ function ImageGallery({ images: rawImages, title, accent }) {
 
       {/* Main viewer */}
       <div
-        className="relative mb-4 overflow-hidden rounded-3xl border border-line bg-black/5 dark:border-dark-line dark:bg-white/[0.02]"
-        style={{ minHeight: 340 }}
+        className="relative mb-4 mx-auto overflow-hidden rounded-3xl border border-line bg-black/5 dark:border-dark-line dark:bg-white/[0.02]"
+        style={{ minHeight: 340, width: 'fit-content', maxWidth: '100%' }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -306,7 +306,6 @@ function ImageGallery({ images: rawImages, title, accent }) {
             animate="center"
             exit="exit"
             transition={{ duration: 0.38, ease: [0.25, 1, 0.5, 1] }}
-            className="w-full"
           >
             {isVideo ? (
               <video
@@ -315,14 +314,14 @@ function ImageGallery({ images: rawImages, title, accent }) {
                 controls
                 playsInline
                 preload="metadata"
-                className="h-auto max-h-[75vh] w-full bg-black"
+                className="block h-auto max-h-[75vh] max-w-full bg-black"
                 onEnded={() => { if (!paused) advance() }}
               />
             ) : (
               <img
                 src={active.url}
                 alt={`${title} — visual ${activeIdx + 1}`}
-                className="h-auto max-h-[75vh] w-full object-contain"
+                className="block h-auto max-h-[75vh] max-w-full"
               />
             )}
           </motion.div>
