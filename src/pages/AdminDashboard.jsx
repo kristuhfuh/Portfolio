@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getProjects, getContacts } from '../lib/cms.js'
+import { fetchAnalytics } from '../lib/analytics.js'
 import AIGenerateModal from '../components/AIGenerateModal.jsx'
 
 function greeting() {
@@ -55,11 +56,116 @@ function QuickAction({ to, icon, title, desc, accent }) {
   )
 }
 
+function DeviceIcon({ ua }) {
+  const isMobile = /Mobile|Android|iPhone|iPad/i.test(ua)
+  return isMobile
+    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="5" y="2" width="14" height="20" rx="2" /><line x1="12" y1="18" x2="12" y2="18.01" /></svg>
+    : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+}
+
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const m = Math.floor(diff / 60000)
+  if (m < 1) return 'just now'
+  if (m < 60) return `${m}m ago`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}h ago`
+  return `${Math.floor(h / 24)}d ago`
+}
+
+function AnalyticsSection({ data }) {
+  if (!data) {
+    return (
+      <motion.div {...fadeUp(7)} className="mt-8">
+        <p className="mb-3 text-xs text-[#141414]/55 uppercase tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Site Analytics · Last 30 days</p>
+        <div className="rounded-2xl border border-black/6 bg-white p-6 text-center text-sm text-[#141414]/40">Loading analytics…</div>
+      </motion.div>
+    )
+  }
+
+  const { totalViews, viewsToday, uniqueVisitors, topPages, topClicks, recent } = data
+
+  return (
+    <motion.div {...fadeUp(7)} className="mt-8">
+      <p className="mb-3 text-xs text-[#141414]/55 uppercase tracking-widest" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Site Analytics · Last 30 days</p>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { value: totalViews, label: 'Page views' },
+          { value: uniqueVisitors, label: 'Unique visitors' },
+          { value: viewsToday, label: 'Views today' },
+        ].map(({ value, label }, i) => (
+          <div key={label} className="rounded-2xl border border-black/6 bg-white p-5">
+            <span style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800 }}
+              className="text-4xl leading-none text-[#141414]">{value}</span>
+            <p className="mt-2 text-xs text-[#141414]/55">{label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Top pages + top clicks */}
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="rounded-2xl border border-black/6 bg-white p-5">
+          <p className="mb-3 text-xs font-medium text-[#141414]/55" style={{ fontFamily: "'JetBrains Mono', monospace" }}>TOP PAGES</p>
+          {topPages.length === 0
+            ? <p className="text-xs text-[#141414]/40">No data yet</p>
+            : topPages.map(({ page, count }) => (
+              <div key={page} className="flex items-center justify-between py-1.5 text-sm">
+                <span className="min-w-0 truncate text-[#141414]">{page}</span>
+                <span className="ml-3 shrink-0 rounded-full bg-[#6D28D9]/10 px-2 py-0.5 text-xs text-[#6D28D9]"
+                  style={{ fontFamily: "'JetBrains Mono', monospace" }}>{count}</span>
+              </div>
+            ))}
+        </div>
+        <div className="rounded-2xl border border-black/6 bg-white p-5">
+          <p className="mb-3 text-xs font-medium text-[#141414]/55" style={{ fontFamily: "'JetBrains Mono', monospace" }}>TOP CLICKS</p>
+          {topClicks.length === 0
+            ? <p className="text-xs text-[#141414]/40">No data yet</p>
+            : topClicks.map(({ element, count }) => (
+              <div key={element} className="flex items-center justify-between py-1.5 text-sm">
+                <span className="min-w-0 truncate text-[#141414]">{element}</span>
+                <span className="ml-3 shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-600"
+                  style={{ fontFamily: "'JetBrains Mono', monospace" }}>{count}</span>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* Recent visits */}
+      {recent.length > 0 && (
+        <div className="mt-4 rounded-2xl border border-black/6 bg-white">
+          <div className="border-b border-black/5 px-5 py-4">
+            <p className="text-xs font-medium text-[#141414]/55" style={{ fontFamily: "'JetBrains Mono', monospace" }}>RECENT VISITS</p>
+          </div>
+          <div className="divide-y divide-black/5">
+            {recent.map(v => (
+              <div key={v.id} className="flex items-center gap-3 px-5 py-3 text-xs">
+                <span className="text-[#141414]/40"><DeviceIcon ua={v.user_agent || ''} /></span>
+                <span className="min-w-0 flex-1 truncate font-medium text-[#141414]">{v.page}</span>
+                {(v.city || v.country) && (
+                  <span className="shrink-0 text-[#141414]/45">{[v.city, v.country].filter(Boolean).join(', ')}</span>
+                )}
+                <span className="shrink-0 text-[#141414]/35" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{timeAgo(v.created_at)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </motion.div>
+  )
+}
+
 export default function AdminDashboard() {
   const projects = getProjects()
   const contacts = getContacts()
   const unread   = contacts.filter(c => !c.read).length
   const [showAI, setShowAI] = useState(false)
+  const [analytics, setAnalytics] = useState(null)
+
+  useEffect(() => {
+    fetchAnalytics().then(setAnalytics).catch(() => setAnalytics(false))
+  }, [])
 
   return (
     <div className="max-w-3xl">
@@ -136,6 +242,8 @@ export default function AdminDashboard() {
           />
         </div>
       </motion.div>
+
+      <AnalyticsSection data={analytics} />
 
       {/* Recent messages */}
       {contacts.length > 0 && (

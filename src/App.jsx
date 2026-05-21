@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { ThemeProvider } from './lib/theme.jsx'
 import { AuthProvider, useAuth } from './lib/auth.jsx'
+import { trackPageView, trackClick } from './lib/analytics.js'
 import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
 import PageLoader from './components/PageLoader.jsx'
@@ -44,6 +45,22 @@ function PublicOnlyRoute({ children }) {
 function AppRoutes() {
   const { pathname } = useLocation()
   const isAdmin = pathname.startsWith('/admin')
+  const prevPath = useRef(null)
+
+  useEffect(() => {
+    if (pathname === prevPath.current) return
+    prevPath.current = pathname
+    trackPageView(pathname)
+  }, [pathname])
+
+  useEffect(() => {
+    function handleClick(e) {
+      const el = e.target.closest('[data-track]')
+      if (el) trackClick(el.dataset.track, pathname)
+    }
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [pathname])
 
   if (isAdmin) {
     return (

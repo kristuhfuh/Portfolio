@@ -132,6 +132,7 @@ export default function Hero() {
             >
               <a
                 href="#contact"
+                data-track="hero-get-in-touch"
                 className="label inline-flex items-center gap-2.5 rounded-full bg-ink px-6 py-3.5 text-cream transition-[background-color,transform] duration-200 hover:bg-accent active:scale-[0.96] dark:bg-cream dark:text-ink dark:hover:bg-accent dark:hover:text-cream"
               >
                 Get in Touch
@@ -145,6 +146,7 @@ export default function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   download
+                  data-track="hero-download-cv"
                   className="link-underline text-sm text-ink/60 transition-opacity hover:opacity-70 dark:text-dark-ink/60"
                 >
                   Download CV

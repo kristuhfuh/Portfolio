@@ -28,7 +28,7 @@ function FeaturedCard({ project }) {
       viewport={{ once: true, margin: '-5%' }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Link to={`/work/${slug}`} className="group block"
+      <Link to={`/work/${slug}`} className="group block" data-track={`project-${slug}`}
         onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         {/* Wide image */}
         <div className="relative overflow-hidden rounded-2xl bg-ink/5 dark:bg-white/5" style={{ aspectRatio: '16/7' }}>
@@ -102,7 +102,7 @@ function SmallCard({ project, index }) {
       viewport={{ once: true, margin: '-5%' }}
       transition={{ duration: 0.65, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Link to={`/work/${slug}`} className="group block"
+      <Link to={`/work/${slug}`} className="group block" data-track={`project-${slug}`}
         onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         <div className="relative overflow-hidden rounded-2xl bg-ink/5 dark:bg-white/5" style={{ aspectRatio: '4/3' }}>
           {cover ? (

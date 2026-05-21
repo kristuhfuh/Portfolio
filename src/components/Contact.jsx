@@ -234,6 +234,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === 'sending'}
+                  data-track="contact-send-message"
                   className="label mt-2 inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-cream transition-[background-color,transform,box-shadow] duration-200 active:scale-[0.97] disabled:opacity-70 hover:shadow-[0_8px_28px_rgba(109,40,217,0.35)]"
                 >
                   {status === 'sending' && (
