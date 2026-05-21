@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { normalizeDriveUrl } from '../lib/cms.js';
+import { supabase } from '../lib/supabase.js';
 
 function convertDrive(raw) {
   return normalizeDriveUrl(raw);
@@ -37,14 +38,38 @@ export default function GalleryImageManager({ images = [], onChange }) {
   const [dragOverIdx, setDragOverIdx] = useState(null);
   const [editingUrlIdx, setEditingUrlIdx] = useState(null);
   const [editingUrlValue, setEditingUrlValue] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const fileRef = useRef(null);
 
   // ── Add helpers ──────────────────────────────────────────────
-  const addFromFiles = (files) => {
-    const items = Array.from(files)
-      .filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'))
-      .map(f => ({ url: URL.createObjectURL(f), caption: '', type: f.type.startsWith('video/') ? 'video' : 'image' }));
-    if (items.length) { onChange([...images, ...items]); setMethod(null); }
+  const addFromFiles = async (files) => {
+    const valid = Array.from(files).filter(
+      f => f.type.startsWith('image/') || f.type.startsWith('video/')
+    );
+    if (!valid.length) return;
+    setUploading(true);
+    setUploadError('');
+    try {
+      const items = await Promise.all(valid.map(async f => {
+        const ext = f.name.split('.').pop().toLowerCase();
+        const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error } = await supabase.storage.from('media').upload(filename, f, { upsert: false });
+        if (error) throw error;
+        const { data } = supabase.storage.from('media').getPublicUrl(filename);
+        return {
+          url: data.publicUrl,
+          caption: f.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
+          type: f.type.startsWith('video/') ? 'video' : 'image',
+        };
+      }));
+      onChange([...images, ...items]);
+      setMethod(null);
+    } catch {
+      setUploadError('Upload failed — check that your Supabase "media" bucket exists and is public.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const addFromUrls = (items) => {
@@ -125,35 +150,47 @@ export default function GalleryImageManager({ images = [], onChange }) {
           onDragLeave={() => setDropHighlight(false)}
           onDrop={onZoneDrop}
           className={`flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed py-10 transition-colors ${
-            dropHighlight ? 'border-accent bg-accent/5' : 'border-line hover:border-accent/40'
+            uploading ? 'border-accent/40 bg-accent/5' : dropHighlight ? 'border-accent bg-accent/5' : 'border-line hover:border-accent/40'
           }`}
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-line">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-muted">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-medium text-ink">Drop images or videos here</p>
-            <p className="mt-0.5 text-xs text-muted">Supports multiple files at once</p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            <button type="button" onClick={() => fileRef.current?.click()}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              Upload Files
-            </button>
-            <button type="button" onClick={() => setMethod('url')}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-              URL Links
-            </button>
-            <button type="button" onClick={() => setMethod('drive')}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
-              Google Drive
-            </button>
-          </div>
+          {uploading ? (
+            <>
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent/30 border-t-accent" />
+              <p className="text-sm text-muted">Uploading to Supabase…</p>
+            </>
+          ) : (
+            <>
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-line">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-muted">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-medium text-ink">Drop images or videos here</p>
+                <p className="mt-0.5 text-xs text-muted">Supports multiple files at once</p>
+              </div>
+              {uploadError && (
+                <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{uploadError}</p>
+              )}
+              <div className="flex flex-wrap justify-center gap-2">
+                <button type="button" onClick={() => fileRef.current?.click()}
+                  className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  Upload Files
+                </button>
+                <button type="button" onClick={() => setMethod('url')}
+                  className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                  URL Links
+                </button>
+                <button type="button" onClick={() => setMethod('drive')}
+                  className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-2 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
+                  Google Drive
+                </button>
+              </div>
+            </>
+          )}
           <input ref={fileRef} type="file" accept="image/*,video/*" multiple onChange={e => addFromFiles(e.target.files)} className="hidden" />
         </div>
       )}
