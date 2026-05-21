@@ -263,9 +263,9 @@ function ImageGallery({ images: rawImages, title, accent }) {
   if (!images || images.length === 0) return null
 
   const variants = {
-    enter: (d) => ({ opacity: 0, x: d > 0 ? 80 : -80, scale: 0.96 }),
-    center: { opacity: 1, x: 0, scale: 1 },
-    exit:  (d) => ({ opacity: 0, x: d > 0 ? -80 : 80, scale: 0.96 }),
+    enter: (d) => ({ x: d > 0 ? '100%' : '-100%' }),
+    center: { x: 0 },
+    exit:  (d) => ({ x: d > 0 ? '-100%' : '100%' }),
   }
 
   return (
@@ -305,7 +305,7 @@ function ImageGallery({ images: rawImages, title, accent }) {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.38, ease: [0.25, 1, 0.5, 1] }}
             className="w-full"
           >
             {isVideo ? (
