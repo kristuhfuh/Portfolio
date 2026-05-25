@@ -129,6 +129,7 @@ export function AdminProjectEdit() {
   const [approachStr, setApproachStr] = useState('')
   const [deliverablesStr, setDeliverablesStr] = useState('')
   const [saved, setSaved] = useState(false)
+  const [syncFailed, setSyncFailed] = useState(false)
   const [brief, setBrief] = useState('')
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError] = useState('')
@@ -192,7 +193,7 @@ export function AdminProjectEdit() {
     }
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const final = {
       ...project,
       slug: project.slug || project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
@@ -202,9 +203,16 @@ export function AdminProjectEdit() {
       approach: approachStr.split('\n---\n').map(s => s.trim()).filter(Boolean),
       deliverables: deliverablesStr.split('\n').map(s => s.trim()).filter(Boolean),
     }
-    saveProject(final)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    const { cloudSynced } = await saveProject(final)
+    if (cloudSynced) {
+      setSaved(true)
+      setSyncFailed(false)
+      setTimeout(() => setSaved(false), 2500)
+    } else {
+      setSyncFailed(true)
+      setSaved(false)
+      setTimeout(() => setSyncFailed(false), 6000)
+    }
     if (isNew) navigate(`/admin/projects/${final.slug}`, { replace: true })
   }
 
@@ -226,10 +234,17 @@ export function AdminProjectEdit() {
                 {isNew ? 'New Case Study' : `Edit: ${project.title}`}
               </h1>
             </div>
-            <button onClick={handleSave}
-              className={`label rounded-lg px-5 py-2.5 text-cream transition-all ${saved ? 'bg-emerald-500' : 'bg-accent hover:scale-[1.02]'}`}>
-              {saved ? '✓ Saved' : 'Save'}
-            </button>
+            <div className="flex flex-col items-end gap-1">
+              <button onClick={handleSave}
+                className={`label rounded-lg px-5 py-2.5 text-cream transition-all ${saved ? 'bg-emerald-500' : syncFailed ? 'bg-amber-500' : 'bg-accent hover:scale-[1.02]'}`}>
+                {saved ? '✓ Saved to cloud' : syncFailed ? '⚠ Saved locally only' : 'Save'}
+              </button>
+              {syncFailed && (
+                <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                  Cloud sync failed — check Supabase permissions
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="space-y-6 rounded-2xl border border-line bg-white/60 p-6 backdrop-blur md:p-8">
@@ -394,11 +409,16 @@ export function AdminProjectEdit() {
             </Field>
           </div>
 
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex flex-col items-end gap-1">
             <button onClick={handleSave}
-              className={`label rounded-lg px-6 py-3 text-cream transition-all ${saved ? 'bg-emerald-500' : 'bg-accent hover:scale-[1.02]'}`}>
-              {saved ? '✓ Saved' : 'Save Changes'}
+              className={`label rounded-lg px-6 py-3 text-cream transition-all ${saved ? 'bg-emerald-500' : syncFailed ? 'bg-amber-500' : 'bg-accent hover:scale-[1.02]'}`}>
+              {saved ? '✓ Saved to cloud' : syncFailed ? '⚠ Saved locally only' : 'Save Changes'}
             </button>
+            {syncFailed && (
+              <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                Cloud sync failed — check Supabase permissions
+              </p>
+            )}
           </div>
         </div>
       </div>

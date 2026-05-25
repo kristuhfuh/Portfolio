@@ -1,6 +1,7 @@
+import { useEffect } from 'react'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../lib/auth.jsx'
-import { getContacts } from '../lib/cms.js'
+import { getContacts, pendingSaves } from '../lib/cms.js'
 
 const nav = [
   {
@@ -26,6 +27,17 @@ export default function AdminLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const unread = getContacts().filter(c => !c.read).length
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (pendingSaves > 0) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [])
 
   const handleLogout = () => { logout(); navigate('/admin/login') }
 

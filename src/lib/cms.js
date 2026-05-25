@@ -25,6 +25,9 @@ function lsSet(key, val) {
   localStorage.setItem(key, JSON.stringify(val))
 }
 
+// ─── Pending saves counter (used by AdminLayout to warn on tab close) ─────────
+export let pendingSaves = 0
+
 // ─── Supabase helpers (async, fire-and-forget on writes) ──────────────────────
 async function dbGet(key) {
   const { data, error } = await supabase
@@ -37,10 +40,19 @@ async function dbGet(key) {
 }
 
 async function dbSet(key, val) {
-  const { error } = await supabase
-    .from('settings')
-    .upsert({ key, value: val }, { onConflict: 'key' })
-  if (error) console.error('[Supabase] write failed:', error.message, error)
+  pendingSaves++
+  try {
+    const { error } = await supabase
+      .from('settings')
+      .upsert({ key, value: val }, { onConflict: 'key' })
+    if (error) {
+      console.error('[Supabase] write failed:', error.message, error)
+      return false
+    }
+    return true
+  } finally {
+    pendingSaves--
+  }
 }
 
 // ─── Boot: pull latest data from Supabase into localStorage ───────────────────
@@ -99,14 +111,14 @@ export function getProjects() {
 
 export function getProjectBySlug(slug) { return getProjects().find(p => p.slug === slug) }
 
-export function saveProject(project) {
+export async function saveProject(project) {
   const all = getProjects()
   const idx = all.findIndex(p => p.slug === project.slug)
   if (idx >= 0) all[idx] = project
   else all.push(project)
   lsSet(PROJECTS_KEY, all)
-  dbSet(PROJECTS_KEY, all)
-  return all
+  const cloudSynced = await dbSet(PROJECTS_KEY, all)
+  return { data: all, cloudSynced }
 }
 
 export function deleteProject(slug) {
@@ -207,12 +219,12 @@ export function getPageContent(page) {
   return lsGet(PAGES_KEY, defaultPages)[page] || defaultPages[page] || {}
 }
 
-export function savePageContent(page, content) {
+export async function savePageContent(page, content) {
   const all = lsGet(PAGES_KEY, defaultPages)
   all[page] = content
   lsSet(PAGES_KEY, all)
-  dbSet(PAGES_KEY, all)
-  return all
+  const cloudSynced = await dbSet(PAGES_KEY, all)
+  return { data: all, cloudSynced }
 }
 
 // ─── Contact Gallery ──────────────────────────────────────────────────────────
@@ -227,10 +239,10 @@ const defaultGallery = [
 ]
 
 export function getContactGallery() { return lsGet(GALLERY_KEY, defaultGallery) }
-export function saveContactGallery(items) {
+export async function saveContactGallery(items) {
   lsSet(GALLERY_KEY, items)
-  dbSet(GALLERY_KEY, items)
-  return items
+  const cloudSynced = await dbSet(GALLERY_KEY, items)
+  return { data: items, cloudSynced }
 }
 
 // ─── Beyond Pixels ────────────────────────────────────────────────────────────
@@ -242,8 +254,8 @@ const defaultBeyond = [
 ]
 
 export function getBeyondPixels() { return lsGet(BEYOND_KEY, defaultBeyond) }
-export function saveBeyondPixels(items) {
+export async function saveBeyondPixels(items) {
   lsSet(BEYOND_KEY, items)
-  dbSet(BEYOND_KEY, items)
-  return items
+  const cloudSynced = await dbSet(BEYOND_KEY, items)
+  return { data: items, cloudSynced }
 }

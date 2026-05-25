@@ -43,13 +43,22 @@ export default function AdminPages() {
   const [beyond, setBeyond] = useState(getBeyondPixels())
   const [gallery, setGallery] = useState(getContactGallery())
   const [saved, setSaved] = useState('')
+  const [syncFailed, setSyncFailed] = useState('')
 
-  const save = (page, data) => {
-    if (page === 'beyond') saveBeyondPixels(data)
-    else if (page === 'gallery') saveContactGallery(data)
-    else savePageContent(page, data)
-    setSaved(page)
-    setTimeout(() => setSaved(''), 2000)
+  const save = async (page, data) => {
+    let result
+    if (page === 'beyond') result = await saveBeyondPixels(data)
+    else if (page === 'gallery') result = await saveContactGallery(data)
+    else result = await savePageContent(page, data)
+    if (result.cloudSynced) {
+      setSaved(page)
+      setSyncFailed('')
+      setTimeout(() => setSaved(''), 2500)
+    } else {
+      setSyncFailed(page)
+      setSaved('')
+      setTimeout(() => setSyncFailed(''), 5000)
+    }
   }
 
   const updateGalleryItem = (idx, key, val) => {
@@ -69,11 +78,18 @@ export default function AdminPages() {
   }
 
   const SaveBtn = ({ page, label }) => (
-    <button onClick={() => save(page, page === 'beyond' ? beyond : page === 'gallery' ? gallery : page === 'hero' ? hero : page === 'about' ? about : contact)}
-      className={`mt-2 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 ${saved === page ? 'bg-emerald-500' : 'bg-[#141414] hover:shadow-lg hover:shadow-black/15'}`}
-      style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-      {saved === page ? '✓ Saved' : label}
-    </button>
+    <div className="mt-2 flex flex-col gap-1.5">
+      <button onClick={() => save(page, page === 'beyond' ? beyond : page === 'gallery' ? gallery : page === 'hero' ? hero : page === 'about' ? about : contact)}
+        className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 ${saved === page ? 'bg-emerald-500' : syncFailed === page ? 'bg-amber-500' : 'bg-[#141414] hover:shadow-lg hover:shadow-black/15'}`}
+        style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+        {saved === page ? '✓ Saved to cloud' : syncFailed === page ? '⚠ Saved locally only' : label}
+      </button>
+      {syncFailed === page && (
+        <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+          Cloud sync failed — data saved in this browser only. Check your Supabase settings table permissions.
+        </p>
+      )}
+    </div>
   )
 
   return (
