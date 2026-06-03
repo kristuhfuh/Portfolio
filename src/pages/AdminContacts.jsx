@@ -14,12 +14,24 @@ export default function AdminContacts() {
   const [contacts, setContacts] = useState([])
   const [selected, setSelected] = useState(null)
   const [loading, setLoading]   = useState(true)
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     loadContacts().then(data => { setContacts(data); setLoading(false) })
   }, [])
 
   const unread = contacts.filter(c => !c.read).length
+
+  const filtered = query.trim()
+    ? contacts.filter(c => {
+        const q = query.toLowerCase()
+        return (
+          c.name?.toLowerCase().includes(q) ||
+          c.email?.toLowerCase().includes(q) ||
+          c.message?.toLowerCase().includes(q)
+        )
+      })
+    : contacts
 
   const handleSelect = (c) => {
     setSelected(c)
@@ -45,12 +57,31 @@ export default function AdminContacts() {
   return (
     <div className="max-w-4xl">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <p className="text-[#141414]/40 text-sm">{contacts.length} total</p>
           {unread > 0 && (
             <span className="rounded-full bg-[#6D28D9]/10 px-2.5 py-0.5 text-xs text-[#6D28D9]"
               style={{ fontFamily: "'JetBrains Mono', monospace" }}>{unread} unread</span>
+          )}
+        </div>
+        <div className="relative">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            strokeLinecap="round" className="absolute left-3 top-1/2 -translate-y-1/2 text-[#141414]/30">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search name, email, message…"
+            className="w-full rounded-xl border border-black/8 bg-white py-2 pl-9 pr-4 text-sm text-[#141414] placeholder-[#141414]/30 outline-none focus:border-[#6D28D9]/40 focus:ring-2 focus:ring-[#6D28D9]/10 sm:w-64"
+          />
+          {query && (
+            <button onClick={() => setQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#141414]/30 hover:text-[#141414]/60">
+              ✕
+            </button>
           )}
         </div>
       </motion.div>
@@ -72,7 +103,13 @@ export default function AdminContacts() {
 
           {/* ── Message list ── */}
           <div className="space-y-2">
-            {contacts.map((c, i) => (
+            {filtered.length === 0 && query && (
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white py-16 text-center">
+                <p className="font-medium text-[#141414]">No results for "{query}"</p>
+                <p className="mt-1 text-sm text-[#141414]/40">Try a different name, email, or keyword.</p>
+              </div>
+            )}
+            {filtered.map((c, i) => (
               <motion.button key={c.id}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.04 }}
