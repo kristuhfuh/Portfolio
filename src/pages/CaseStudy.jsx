@@ -434,7 +434,7 @@ export default function CaseStudy() {
         <motion.div style={{ opacity: heroOpacity, y: heroY }} className="relative mx-auto max-w-[1400px] px-6 md:px-10">
           <motion.div initial="hidden" animate="show" variants={fadeUp}>
             <div className="label mb-6 flex items-center gap-3 text-muted dark:text-dark-muted">
-              <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+              {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
               Case study {project.number} · {project.year}
             </div>
 
