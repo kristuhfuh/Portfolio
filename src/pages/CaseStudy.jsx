@@ -35,7 +35,7 @@ function StoryBlock({ label, heading, accent, children }) {
         <div className="md:col-span-4">
           <div className="sticky top-32">
             <div className="label mb-4 flex items-center gap-2 text-muted dark:text-dark-muted">
-              <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+              {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
               {label}
             </div>
             <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
@@ -127,7 +127,7 @@ function Deliverables({ items, accent }) {
           <div className="md:col-span-4">
             <div className="sticky top-32">
               <div className="label mb-4 flex items-center gap-2 text-muted dark:text-dark-muted">
-                <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+                {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
                 Deliverables
               </div>
               <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
@@ -273,7 +273,7 @@ function ImageGallery({ images: rawImages, title, accent }) {
       {/* Header */}
       <div className="label mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2 text-muted dark:text-dark-muted">
-          <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+          {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
           Visual work
           {images.length > 1 && (
             <span className="text-muted/50 dark:text-dark-muted/50">{activeIdx + 1} / {images.length}</span>
@@ -475,7 +475,7 @@ export default function CaseStudy() {
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="label mb-6 flex items-center gap-2 text-muted dark:text-dark-muted">
-                <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+                {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
                 The brief, in one line
               </div>
               <p className="display-hero max-w-5xl text-[clamp(2.5rem,7vw,6.5rem)] text-ink dark:text-dark-ink">
@@ -515,7 +515,7 @@ export default function CaseStudy() {
           />
           {/* Accent corner mark */}
           <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full bg-cream/90 px-3 py-1.5 backdrop-blur">
-            <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+            {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
             <span className="label text-ink">{project.client}</span>
           </div>
         </motion.div>
@@ -590,7 +590,7 @@ export default function CaseStudy() {
           <div className="mx-auto max-w-[1400px] px-6 py-20 md:px-10 md:py-28">
             <div className="mx-auto max-w-3xl">
               <div className="label mb-6 flex items-center gap-2 text-muted dark:text-dark-muted">
-                <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+                {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
                 Reflection
               </div>
               <div
