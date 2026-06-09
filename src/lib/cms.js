@@ -259,3 +259,14 @@ export async function saveBeyondPixels(items) {
   const cloudSynced = await dbSet(BEYOND_KEY, items)
   return { data: items, cloudSynced }
 }
+
+// ─── Other Designs ────────────────────────────────────────────────────────────
+const OTHER_DESIGNS_KEY = 'cms_other_designs'
+const defaultOtherDesigns = []
+
+export function getOtherDesigns() { return lsGet(OTHER_DESIGNS_KEY, defaultOtherDesigns) }
+export async function saveOtherDesigns(items) {
+  lsSet(OTHER_DESIGNS_KEY, items)
+  const cloudSynced = await dbSet(OTHER_DESIGNS_KEY, items)
+  return { data: items, cloudSynced }
+}

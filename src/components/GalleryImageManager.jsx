@@ -51,10 +51,10 @@ export default function GalleryImageManager({ images = [], onChange }) {
     setUploading(true);
     setUploadError('');
     try {
-      const items = await Promise.all(valid.map(async f => {
+      const items = await Promise.all(valid.map(async (f, i) => {
         const ext = f.name.split('.').pop().toLowerCase();
         const base = f.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-        const filename = `${Date.now()}-${base}.${ext}`;
+        const filename = `${Date.now()}-${i}-${Math.random().toString(36).slice(2, 7)}-${base}.${ext}`;
         const { error } = await supabase.storage.from('media').upload(filename, f, { upsert: false });
         if (error) throw error;
         const { data } = supabase.storage.from('media').getPublicUrl(filename);

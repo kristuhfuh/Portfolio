@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels, getContactGallery, saveContactGallery } from '../lib/cms.js'
+import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels, getContactGallery, saveContactGallery, getOtherDesigns, saveOtherDesigns } from '../lib/cms.js'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 import RichTextField from '../components/RichTextField.jsx'
 import MediaUpload from '../components/MediaUpload.jsx'
@@ -42,6 +42,7 @@ export default function AdminPages() {
   const [contact, setContact] = useState(getPageContent('contact'))
   const [beyond, setBeyond] = useState(getBeyondPixels())
   const [gallery, setGallery] = useState(getContactGallery())
+  const [otherDesigns, setOtherDesigns] = useState(getOtherDesigns())
   const [saved, setSaved] = useState('')
   const [syncFailed, setSyncFailed] = useState('')
 
@@ -49,6 +50,7 @@ export default function AdminPages() {
     let result
     if (page === 'beyond') result = await saveBeyondPixels(data)
     else if (page === 'gallery') result = await saveContactGallery(data)
+    else if (page === 'otherDesigns') result = await saveOtherDesigns(data)
     else result = await savePageContent(page, data)
     if (result.cloudSynced) {
       setSaved(page)
@@ -79,11 +81,12 @@ export default function AdminPages() {
 
   const SaveBtn = ({ page, label }) => (
     <div className="mt-2 flex flex-col gap-1.5">
-      <button onClick={() => save(page, page === 'beyond' ? beyond : page === 'gallery' ? gallery : page === 'hero' ? hero : page === 'about' ? about : contact)}
+      <button onClick={() => save(page, page === 'beyond' ? beyond : page === 'gallery' ? gallery : page === 'otherDesigns' ? otherDesigns : page === 'hero' ? hero : page === 'about' ? about : contact)}
         className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 ${saved === page ? 'bg-emerald-500' : syncFailed === page ? 'bg-amber-500' : 'bg-[#141414] hover:shadow-lg hover:shadow-black/15'}`}
         style={{ fontFamily: "'JetBrains Mono', monospace" }}>
         {saved === page ? '✓ Saved to cloud' : syncFailed === page ? '⚠ Saved locally only' : label}
       </button>
+
       {syncFailed === page && (
         <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
           Cloud sync failed — data saved in this browser only. Check your Supabase settings table permissions.
@@ -191,6 +194,60 @@ export default function AdminPages() {
             <Field label="Dribbble URL"><input className={inputCls} value={contact.dribbble} onChange={e => setContact({ ...contact, dribbble: e.target.value })} /></Field>
           </div>
           <SaveBtn page="contact" label="Save Contact" />
+        </Section>
+
+        {/* Other Designs */}
+        <Section title="Other Designs">
+          <p className="text-sm text-[#141414]/50">Design screenshots or images shown in a grid on the home page. Add an optional link to open the project.</p>
+          <div className="space-y-3">
+            {otherDesigns.map((item, i) => (
+              <div key={item.id} className="rounded-xl border border-black/6 bg-[#f5f3ee] p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>Design {i + 1}</p>
+                  <button onClick={() => setOtherDesigns(otherDesigns.filter((_, idx) => idx !== i))}
+                    className="text-xs text-red-400 hover:text-red-500">Remove</button>
+                </div>
+                <div className="space-y-4">
+                  <Field label="Image">
+                    <MediaUpload
+                      accept="image/*"
+                      value={item.image}
+                      onChange={v => {
+                        const next = [...otherDesigns]
+                        next[i] = { ...next[i], image: v }
+                        setOtherDesigns(next)
+                      }}
+                    />
+                  </Field>
+                  <Field label="Title (optional)">
+                    <input className={inputCls} value={item.title || ''} placeholder="Design name or short description"
+                      onChange={e => {
+                        const next = [...otherDesigns]
+                        next[i] = { ...next[i], title: e.target.value }
+                        setOtherDesigns(next)
+                      }} />
+                  </Field>
+                  <Field label="Link (optional)">
+                    <input className={inputCls} value={item.link || ''} placeholder="https://... or /work/slug"
+                      onChange={e => {
+                        const next = [...otherDesigns]
+                        next[i] = { ...next[i], link: e.target.value }
+                        setOtherDesigns(next)
+                      }} />
+                    <p className="mt-1.5 text-[11px] text-[#141414]/40">Use a full URL for external sites or a path like /work/my-project for internal pages.</p>
+                  </Field>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => setOtherDesigns([...otherDesigns, { id: Date.now().toString(), image: '', title: '', link: '' }])}
+            className="mt-1 inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm text-[#141414] transition-colors hover:bg-black/5"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
+            Add Design
+          </button>
+          <SaveBtn page="otherDesigns" label="Save Other Designs" />
         </Section>
 
         {/* Gallery */}

@@ -7,7 +7,7 @@ const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 te
 async function uploadToSupabase(file) {
   const ext = file.name.split('.').pop().toLowerCase()
   const base = file.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-  const filename = `${Date.now()}-${base}.${ext}`
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${base}.${ext}`
   const { error } = await supabase.storage.from('media').upload(filename, file, { upsert: false })
   if (error) throw error
   const { data } = supabase.storage.from('media').getPublicUrl(filename)
