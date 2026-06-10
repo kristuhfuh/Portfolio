@@ -157,17 +157,33 @@ export default function WorkGallery() {
   const LOOP_W = total * STRIDE
   const loopItems = [...rawItems, ...rawItems, ...rawItems]
 
-  const containerRef   = useRef(null)
-  const outerRefs      = useRef([])
-  const innerRefs      = useRef([])
-  const offsetRef      = useRef(0)
-  const speedRef       = useRef(SPD_NORM)
-  const targetSpeedRef = useRef(SPD_NORM)
-  const cursorXRef     = useRef(null)
-  const rafRef         = useRef(null)
-  const touchLastXRef  = useRef(null)
+  const containerRef      = useRef(null)
+  const outerRefs         = useRef([])
+  const innerRefs         = useRef([])
+  const offsetRef         = useRef(0)
+  const speedRef          = useRef(SPD_NORM)
+  const targetSpeedRef    = useRef(SPD_NORM)
+  const cursorXRef        = useRef(null)
+  const rafRef            = useRef(null)
+  const touchLastXRef     = useRef(null)
+  const containerWidthRef = useRef(0)
+  const containerRectRef  = useRef(null)
   const [selected, setSelected] = useState(null)
 
+  // Cache container width — only update on resize, never inside RAF
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    containerWidthRef.current = container.clientWidth
+    const ro = new ResizeObserver(() => {
+      containerWidthRef.current = container.clientWidth
+      containerRectRef.current = null
+    })
+    ro.observe(container)
+    return () => ro.disconnect()
+  }, [])
+
+  // RAF loop — pauses automatically when gallery is off-screen
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -176,7 +192,7 @@ export default function WorkGallery() {
       speedRef.current = lerp(speedRef.current, targetSpeedRef.current, 0.05)
       offsetRef.current = (offsetRef.current + speedRef.current) % LOOP_W
 
-      const W = container.clientWidth
+      const W = containerWidthRef.current
 
       outerRefs.current.forEach((outer, i) => {
         if (!outer) return
@@ -203,17 +219,32 @@ export default function WorkGallery() {
       rafRef.current = requestAnimationFrame(tick)
     }
 
-    rafRef.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafRef.current)
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        rafRef.current = requestAnimationFrame(tick)
+      } else {
+        cancelAnimationFrame(rafRef.current)
+      }
+    }, { threshold: 0 })
+    io.observe(container)
+
+    return () => {
+      io.disconnect()
+      cancelAnimationFrame(rafRef.current)
+    }
   }, [total, LOOP_W])
 
+  const onMouseEnter = () => {
+    containerRectRef.current = containerRef.current?.getBoundingClientRect()
+  }
   const onMouseMove = (e) => {
-    const rect = containerRef.current?.getBoundingClientRect()
+    const rect = containerRectRef.current
     if (rect) cursorXRef.current = e.clientX - rect.left
     targetSpeedRef.current = SPD_SLOW
   }
   const onMouseLeave = () => {
     cursorXRef.current = null
+    containerRectRef.current = null
     targetSpeedRef.current = SPD_NORM
   }
 
@@ -256,6 +287,7 @@ export default function WorkGallery() {
           ref={containerRef}
           className="relative w-full [overflow-x:clip]"
           style={{ height: CARD_H + WAVE_AMP + 48 }}
+          onMouseEnter={onMouseEnter}
           onMouseMove={onMouseMove}
           onMouseLeave={onMouseLeave}
           onTouchStart={onTouchStart}

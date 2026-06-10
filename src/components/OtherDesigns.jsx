@@ -8,19 +8,21 @@ function DesignCard({ item, index }) {
   const isExternal = item.link && /^https?:\/\//.test(item.link)
 
   const cardContent = (
-    <motion.div
+    <div
       className="group relative overflow-hidden rounded-2xl bg-ink/5 dark:bg-white/5 cursor-pointer"
       style={{ aspectRatio: '4/3' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {src ? (
-        <motion.img
+        <img
           src={src}
           alt={item.title || 'Design'}
           className="h-full w-full object-cover"
-          animate={{ scale: hovered ? 1.05 : 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            transform: hovered ? 'scale(1.05)' : 'scale(1)',
+            transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+          }}
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-ink/5 dark:bg-white/5">
@@ -34,39 +36,51 @@ function DesignCard({ item, index }) {
       )}
 
       {/* Hover overlay */}
-      <motion.div
-        animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.25 }}
+      <div
         className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5"
+        style={{
+          opacity: hovered ? 1 : 0,
+          transition: 'opacity 0.25s',
+        }}
       >
         {item.title && (
-          <motion.p
-            animate={{ y: hovered ? 0 : 6, opacity: hovered ? 1 : 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          <p
             className="text-sm font-medium text-cream leading-snug"
+            style={{
+              transform: hovered ? 'translateY(0)' : 'translateY(6px)',
+              opacity: hovered ? 1 : 0,
+              transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
           >
             {item.title}
-          </motion.p>
+          </p>
         )}
         {item.link && (
-          <motion.span
-            animate={{ y: hovered ? 0 : 6, opacity: hovered ? 1 : 0 }}
-            transition={{ duration: 0.3, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
+          <span
             className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-medium text-cream/70"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              transform: hovered ? 'translateY(0)' : 'translateY(6px)',
+              opacity: hovered ? 1 : 0,
+              transition: 'transform 0.3s 0.04s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s 0.04s cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
           >
             View design
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-              className="transition-transform duration-200 group-hover:-rotate-45">
+              style={{
+                transform: hovered ? 'rotate(-45deg)' : 'rotate(0deg)',
+                transition: 'transform 0.2s',
+              }}
+            >
               <path d="M5 12h14M13 5l7 7-7 7" />
             </svg>
-          </motion.span>
+          </span>
         )}
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   )
 
-  const wrapper = (
+  return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -88,8 +102,6 @@ function DesignCard({ item, index }) {
       )}
     </motion.div>
   )
-
-  return wrapper
 }
 
 export default function OtherDesigns() {
