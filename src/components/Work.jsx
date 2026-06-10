@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useState, useRef, useEffect } from 'react'
 import { getProjects, normalizeDriveUrl } from '../lib/cms.js'
+import { projects as staticProjects } from '../data/projects.js'
 
 // ─── Shared hover video logic ──────────────────────────────────────────────────
 function useHoverVideo(hovered, hoverVideoSrc) {
@@ -20,6 +21,7 @@ function FeaturedCard({ project }) {
   const [hovered, setHovered] = useState(false)
   const cover = project.cover ? normalizeDriveUrl(project.cover) : null
   const videoRef = useHoverVideo(hovered, project.hoverVideo)
+  const staticCover = staticProjects.find(p => p.slug === slug)?.cover
 
   return (
     <motion.div
@@ -36,7 +38,8 @@ function FeaturedCard({ project }) {
             <>
               <motion.img src={cover} alt={title} className="h-full w-full object-cover"
                 animate={{ scale: hovered ? 1.04 : 1 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} />
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                onError={staticCover ? e => { if (e.target.src !== staticCover) e.target.src = staticCover } : undefined} />
               {project.hoverVideo && (
                 <motion.video ref={videoRef} src={normalizeDriveUrl(project.hoverVideo)}
                   muted loop playsInline className="absolute inset-0 h-full w-full object-cover"
@@ -94,6 +97,7 @@ function SmallCard({ project, index }) {
   const [hovered, setHovered] = useState(false)
   const cover = project.cover ? normalizeDriveUrl(project.cover) : null
   const videoRef = useHoverVideo(hovered, project.hoverVideo)
+  const staticCover = staticProjects.find(p => p.slug === slug)?.cover
 
   return (
     <motion.div
@@ -109,7 +113,8 @@ function SmallCard({ project, index }) {
             <>
               <motion.img src={cover} alt={title} className="h-full w-full object-cover"
                 animate={{ scale: hovered ? 1.05 : 1 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} />
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                onError={staticCover ? e => { if (e.target.src !== staticCover) e.target.src = staticCover } : undefined} />
               {project.hoverVideo && (
                 <motion.video ref={videoRef} src={normalizeDriveUrl(project.hoverVideo)}
                   muted loop playsInline className="absolute inset-0 h-full w-full object-cover"

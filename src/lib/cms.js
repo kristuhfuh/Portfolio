@@ -41,10 +41,17 @@ async function dbGet(key) {
 
 async function dbSet(key, val) {
   pendingSaves++
+  const ts = Date.now()
+  // Record the save time locally immediately — even if Supabase fails, local
+  // data will be considered newer so initCMS won't overwrite it on next load.
+  localStorage.setItem(`${key}_ts`, ts)
   try {
     const { error } = await supabase
       .from('settings')
-      .upsert({ key, value: val }, { onConflict: 'key' })
+      .upsert(
+        [{ key, value: val }, { key: `${key}_ts`, value: ts }],
+        { onConflict: 'key' }
+      )
     if (error) {
       console.error('[Supabase] write failed:', error.message, error)
       return false
@@ -66,8 +73,21 @@ export async function initCMS() {
     if (error) { console.warn('[Supabase] read failed:', error); return }
     if (!data) return
 
-    data.forEach(({ key, value }) => {
-      lsSet(key, value)
+    // Build a map of all remote values (including _ts timestamp keys)
+    const remote = {}
+    data.forEach(({ key, value }) => { remote[key] = value })
+
+    Object.keys(remote).forEach(key => {
+      if (key.endsWith('_ts')) return // handled via the data key loop
+      const remoteTs = typeof remote[`${key}_ts`] === 'number' ? remote[`${key}_ts`] : -1
+      const localTs = Number(localStorage.getItem(`${key}_ts`) || -1)
+      // Only overwrite local data if Supabase has an equal or newer version.
+      // This prevents a stale Supabase copy from clobbering a fresh local save
+      // when the Supabase sync previously failed.
+      if (remoteTs >= localTs) {
+        lsSet(key, remote[key])
+        if (remoteTs > 0) localStorage.setItem(`${key}_ts`, remoteTs)
+      }
     })
   } catch (e) {
     console.warn('[Supabase] initCMS error:', e)

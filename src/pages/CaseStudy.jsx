@@ -2,6 +2,7 @@ import { useParams, Link, Navigate } from 'react-router-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useEffect, useState, useRef } from 'react'
 import { getProjectBySlug as getProject, getProjects, normalizeDriveUrl } from '../lib/cms.js'
+import { projects as staticProjects } from '../data/projects.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
 
 // Renders CMS text that may be plain (uses \n\n) or HTML (from RichTextField)
@@ -512,6 +513,10 @@ export default function CaseStudy() {
             alt={project.title}
             className="h-auto w-full object-cover"
             loading="eager"
+            onError={(() => {
+              const staticCover = staticProjects.find(p => p.slug === project.slug)?.cover
+              return staticCover ? e => { if (e.target.src !== staticCover) e.target.src = staticCover } : undefined
+            })()}
           />
           {/* Accent corner mark */}
           <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full bg-cream/90 px-3 py-1.5 backdrop-blur">
