@@ -17,7 +17,7 @@ export const projects = [
     timeline: '6 weeks',
     team: 'Project Manager, Developer, 2 Data Analysts',
     cover: 'https://framerusercontent.com/images/A96w4ZpC5F1QA39OE7wySL4yBg4.webp?width=2400&height=1800',
-    /*accent: '#FF8C42'*/,
+    accent: '#FF8C42',
     accentSoft: '#FFB380',
 
     hook: `Make the complete ecosystem feel like one intuitive experience.`,
