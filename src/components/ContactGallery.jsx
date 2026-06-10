@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { getContactGallery } from '../lib/cms.js'
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
-const CARD_W   = 155
+const CARD_W   = 280
 const CARD_H   = 330
 const GAP      = 18
 const STRIDE   = CARD_W + GAP
