@@ -1,18 +1,35 @@
 import { useState, useRef } from 'react';
 import { normalizeDriveUrl } from '../lib/cms.js';
+import { supabase } from '../lib/supabase.js';
 
 export default function ImageFocalPoint({ label, imageValue, focusValue, onImageChange, onFocusChange }) {
   const [uploadMethod, setUploadMethod] = useState('url');
   const [urlInput, setUrlInput] = useState('');
   const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const containerRef = useRef(null);
 
   const focus = focusValue || { x: 50, y: 50 };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    onImageChange(URL.createObjectURL(file));
+    setUploading(true);
+    setUploadError('');
+    try {
+      const ext = file.name.split('.').pop().toLowerCase();
+      const base = file.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}-${base}.${ext}`;
+      const { error } = await supabase.storage.from('media').upload(filename, file, { upsert: false });
+      if (error) throw error;
+      const { data } = supabase.storage.from('media').getPublicUrl(filename);
+      onImageChange(data.publicUrl);
+    } catch {
+      setUploadError('Upload failed — check that your Supabase "media" bucket exists and is public.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleUrlSubmit = () => {
@@ -102,12 +119,17 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
 
       {/* File upload */}
       {uploadMethod === 'file' && (
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileUpload}
-          className="w-full cursor-pointer rounded-lg border border-line bg-cream px-3 py-2 text-sm file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-3 file:py-1 file:text-xs file:font-medium file:text-cream"
-        />
+        <div className="space-y-2">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileUpload}
+            disabled={uploading}
+            className="w-full cursor-pointer rounded-lg border border-line bg-cream px-3 py-2 text-sm file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-3 file:py-1 file:text-xs file:font-medium file:text-cream disabled:opacity-50"
+          />
+          {uploading && <p className="text-xs text-muted">Uploading to Supabase…</p>}
+          {uploadError && <p className="text-xs text-red-500">{uploadError}</p>}
+        </div>
       )}
 
       {/* Image preview + focal point picker */}
