@@ -298,6 +298,18 @@ export function AdminProjectEdit() {
               </p>
             </Field>
 
+            <Field label="Live Project URL">
+              <input
+                className={inputCls}
+                value={project.link || ''}
+                onChange={e => update('link', e.target.value || null)}
+                placeholder="https://..."
+              />
+              <p className="mt-1.5 text-[11px] text-muted">
+                Optional. Shown as a "View live" link in the case study metadata.
+              </p>
+            </Field>
+
             <h2 className="pt-4 font-display text-xl text-ink">Metrics</h2>
             <div className="grid gap-6 md:grid-cols-2">
               {project.metrics.map((m, i) => (
