@@ -448,38 +448,47 @@ export default function CaseStudy() {
           </motion.div>
 
           {/* Meta grid */}
-          <dl className={`mt-14 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-8 dark:border-dark-line ${project.link ? 'md:grid-cols-6' : 'md:grid-cols-5'}`}>
-            {[
-              ['Client', project.client],
-              ['Role', project.role],
-              ['Timeline', project.timeline],
-              ['Team', project.team],
-              ['Location', project.location],
-            ].map(([label, value]) => (
-              <div key={label}>
-                <dt className="label text-muted dark:text-dark-muted">{label}</dt>
-                <dd className="mt-2 text-ink dark:text-dark-ink">{value}</dd>
-              </div>
-            ))}
-            {project.link && (
-              <div>
-                <dt className="label text-muted dark:text-dark-muted">Project Link</dt>
-                <dd className="mt-2">
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-ink underline underline-offset-2 hover:opacity-60 dark:text-dark-ink"
-                  >
-                    View live
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 shrink-0">
-                      <path fillRule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H2.25a.75.75 0 0 1 0-1.5h8.5a.75.75 0 0 1 .75.75v8.5a.75.75 0 0 1-1.5 0V6.06l-5.22 5.22a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
-                    </svg>
-                  </a>
-                </dd>
-              </div>
-            )}
-          </dl>
+          {(() => {
+            const links = project.links?.filter(l => l.url) ?? []
+            const colCount = 5 + (links.length > 0 ? 1 : 0)
+            return (
+              <dl className={`mt-14 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-8 dark:border-dark-line md:grid-cols-${colCount}`}>
+                {[
+                  ['Client', project.client],
+                  ['Role', project.role],
+                  ['Timeline', project.timeline],
+                  ['Team', project.team],
+                  ['Location', project.location],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <dt className="label text-muted dark:text-dark-muted">{label}</dt>
+                    <dd className="mt-2 text-ink dark:text-dark-ink">{value}</dd>
+                  </div>
+                ))}
+                {links.length > 0 && (
+                  <div>
+                    <dt className="label text-muted dark:text-dark-muted">Links</dt>
+                    <dd className="mt-2 flex flex-col gap-1.5">
+                      {links.map((link, i) => (
+                        <a
+                          key={i}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-ink underline underline-offset-2 hover:opacity-60 dark:text-dark-ink"
+                        >
+                          {link.name || 'View'}
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 shrink-0">
+                            <path fillRule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H2.25a.75.75 0 0 1 0-1.5h8.5a.75.75 0 0 1 .75.75v8.5a.75.75 0 0 1-1.5 0V6.06l-5.22 5.22a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+                          </svg>
+                        </a>
+                      ))}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            )
+          })()}
         </motion.div>
       </section>
 

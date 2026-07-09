@@ -123,7 +123,7 @@ The design decisions made here — Plus Jakarta Sans over Nunito, illustrated sp
 
 If I were to revisit this, I'd push for A/B testing on the rewards gamification earlier. We built the entire system based on research and best practices, but live testing with real transaction data would have validated (or challenged) our assumptions faster.`,
 
-    link: null,
+    links: [],
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -251,7 +251,7 @@ All findings were categorized into core operational needs (blocking current even
 
     reflection: `The biggest lesson was understanding that B2B and B2C flows can coexist in the same platform without compromising either — but only if you design them as separate products from the start, not as variations of the same flow. The structured event creation flow and modular dashboard architecture became repeatable patterns I applied to other Landmark ecosystem tools.`,
 
-    link: null,
+    links: [],
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -358,7 +358,7 @@ If I were to revisit this, I'd push harder on the carbon calculator UI earlier i
 
 Working collaboratively with Salem, Umaru TOBI, and the team taught me the value of iterative design feedback — the "Vogue text" discussion and styling screen debates made the final product stronger because we challenged each other's assumptions.`,
 
-    link: null,
+    links: [],
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -456,7 +456,7 @@ The 6-step booking flow handles 4 branching paths through a single progressive i
 
 The biggest lesson was about navigation architecture. Each portal's sidebar tells a different story about what matters: the customer sidebar leads with "Book a Drone Delivery" (action-first), the merchant sidebar leads with "Order Management" (operations-first), and the admin sidebar leads with "Drone Management" (infrastructure-first). Getting those hierarchies right was more important than any individual screen design.`,
 
-    link: null,
+    links: [],
   },
 
   // ─────────────────────────────────────────────────────────────
@@ -543,7 +543,7 @@ Brand consistency across platforms — social media, proposals, and print materi
 
     reflection: `Brand projects are where I learned that constraints create better work. The 6-week timeline forced disciplined decision-making — we couldn't afford to explore 10 directions. Three was the right number: enough choice to feel considered, few enough to compare meaningfully.`,
 
-    link: null,
+    links: [],
   },
 ]
 

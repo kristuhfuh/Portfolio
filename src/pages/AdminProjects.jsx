@@ -103,7 +103,7 @@ const emptyProject = {
   outcomeStats: [],
   deliverables: [],
   overview: '', challenge: '', pullQuote: '', approach: [], outcome: '',
-  reception: '', reflection: '', link: null,
+  reception: '', reflection: '', links: [],
 }
 
 function Field({ label, children }) {
@@ -298,15 +298,51 @@ export function AdminProjectEdit() {
               </p>
             </Field>
 
-            <Field label="Live Project URL">
-              <input
-                className={inputCls}
-                value={project.link || ''}
-                onChange={e => update('link', e.target.value || null)}
-                placeholder="https://..."
-              />
+            <Field label="Project Links">
+              <div className="space-y-2">
+                {(project.links || []).map((link, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input
+                      className={inputCls}
+                      style={{ maxWidth: '180px' }}
+                      value={link.name}
+                      onChange={e => {
+                        const next = [...(project.links || [])]
+                        next[i] = { ...next[i], name: e.target.value }
+                        update('links', next)
+                      }}
+                      placeholder="Label (e.g. Figma, Live Site)"
+                    />
+                    <input
+                      className={inputCls}
+                      value={link.url}
+                      onChange={e => {
+                        const next = [...(project.links || [])]
+                        next[i] = { ...next[i], url: e.target.value }
+                        update('links', next)
+                      }}
+                      placeholder="https://..."
+                    />
+                    <button
+                      type="button"
+                      onClick={() => update('links', (project.links || []).filter((_, j) => j !== i))}
+                      className="shrink-0 rounded-xl border border-black/10 px-3 text-sm text-red-400 hover:bg-red-50"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => update('links', [...(project.links || []), { name: '', url: '' }])}
+                  className="label mt-1 inline-flex items-center gap-1.5 rounded-lg border border-black/10 px-3 py-2 text-[#141414] hover:bg-black/5"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
+                  Add link
+                </button>
+              </div>
               <p className="mt-1.5 text-[11px] text-muted">
-                Optional. Shown as a "View live" link in the case study metadata.
+                Each link appears by name in the case study metadata.
               </p>
             </Field>
 

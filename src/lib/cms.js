@@ -101,7 +101,7 @@ const PAGES_KEY     = 'cms_pages'
 const BEYOND_KEY    = 'cms_beyond_pixels'
 const GALLERY_KEY   = 'cms_contact_gallery'
 const VERSION_KEY   = 'cms_schema_version'
-const SCHEMA_VERSION = 'v3'
+const SCHEMA_VERSION = 'v4'
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 export function getProjects() {
