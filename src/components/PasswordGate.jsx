@@ -53,19 +53,34 @@ export default function PasswordGate({ storageKey, title, subtitle, accent = '#F
           <h3 className="font-display text-2xl text-ink dark:text-dark-ink md:text-3xl">{title}</h3>
           {subtitle && <p className="mt-3 text-muted dark:text-dark-muted">{subtitle}</p>}
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3">
+            <label htmlFor="preview-password" className="sr-only">Preview password</label>
             <input
+              id="preview-password"
               type="password"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Enter preview password"
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              aria-invalid={error ? 'true' : 'false'}
+              aria-describedby={error ? 'preview-password-error' : undefined}
               className="rounded-xl border border-line bg-white px-4 py-3 text-center text-ink outline-none transition dark:border-dark-line dark:bg-black/30 dark:text-dark-ink"
               onFocus={(e) => { e.currentTarget.style.boxShadow = `0 0 0 2px ${accent}` }}
               onBlur={(e) => { e.currentTarget.style.boxShadow = '' }}
             />
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            <p
+              id="preview-password-error"
+              role="status"
+              aria-live="polite"
+              className="min-h-[1.25rem] text-sm text-red-500"
+            >
+              {error}
+            </p>
             <button
               type="submit"
-              className="rounded-xl px-5 py-3 font-medium text-cream transition hover:opacity-90"
+              className="rounded-xl px-5 py-3 font-medium text-cream transition hover:opacity-90 focus-visible:outline-none"
               style={{ background: accent }}
             >
               Unlock preview
@@ -73,6 +88,17 @@ export default function PasswordGate({ storageKey, title, subtitle, accent = '#F
           </form>
           <p className="label mt-6 text-xs text-muted dark:text-dark-muted">
             Unreleased screens. Access limited to invited reviewers.
+          </p>
+          <p className="mt-3 text-xs text-muted dark:text-dark-muted">
+            Need the password?{' '}
+            <a
+              href="mailto:akpogumachristopher@gmail.com?subject=LCA%203.0%20preview%20access"
+              className="underline underline-offset-2 transition hover:opacity-70"
+              style={{ color: accent }}
+            >
+              Email Christopher
+            </a>
+            .
           </p>
         </motion.div>
       </div>

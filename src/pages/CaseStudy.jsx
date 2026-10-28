@@ -37,8 +37,7 @@ function StoryBlock({ label, heading, accent, children }) {
         <div className="md:col-span-4">
           <div className="sticky top-32">
             <div className="label mb-4 flex items-center gap-2 text-muted dark:text-dark-muted">
-              {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
-              {label}
+{label}
             </div>
             <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
               {heading}
@@ -136,8 +135,7 @@ function Deliverables({ items, accent }) {
           <div className="md:col-span-4">
             <div className="sticky top-32">
               <div className="label mb-4 flex items-center gap-2 text-muted dark:text-dark-muted">
-                {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
-                Deliverables
+    Deliverables
               </div>
               <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
                 What <em className="italic" style={{ color: accent }}>shipped</em>.
@@ -223,15 +221,24 @@ function Principles({ principles, accent }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
               transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="rounded-3xl border border-line p-6 dark:border-dark-line md:p-8"
+              className="group relative overflow-hidden rounded-3xl border border-line p-6 transition-colors duration-300 dark:border-dark-line md:p-8"
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${accent}80` }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = '' }}
             >
-              <div className="label mb-3 tabular-nums" style={{ color: accent }}>
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-6 -top-6 font-display font-bold leading-none tracking-tightest opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{ fontSize: '7rem', color: `${accent}10` }}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div className="label relative mb-3 tabular-nums" style={{ color: accent }}>
                 {String(i + 1).padStart(2, '0')}
               </div>
-              <h3 className="font-display text-xl text-ink dark:text-dark-ink md:text-2xl">
+              <h3 className="relative font-display text-xl text-ink dark:text-dark-ink md:text-2xl">
                 {p.title}
               </h3>
-              <p className="mt-3 text-ink/80 dark:text-dark-ink/80">{p.body}</p>
+              <p className="relative mt-3 text-ink/80 dark:text-dark-ink/80">{p.body}</p>
             </motion.div>
           ))}
         </div>
@@ -285,11 +292,25 @@ function Chapters({ chapters, accent, projectTitle }) {
                     <video src={chapter.video} controls playsInline className="h-auto w-full" />
                   </div>
                 ) : (
+                  // Decorative numbered placeholder — reads as intentional composition
+                  // rather than "upload here" admin UI when imagery hasn't shipped yet.
                   <div
-                    className="flex min-h-[220px] items-center justify-center rounded-3xl border border-dashed p-6 text-center text-sm text-muted dark:text-dark-muted md:min-h-[320px]"
-                    style={{ borderColor: `${accent}50` }}
+                    aria-hidden="true"
+                    className="relative flex min-h-[260px] items-center justify-center overflow-hidden rounded-3xl border border-line dark:border-dark-line md:min-h-[360px]"
+                    style={{ background: `linear-gradient(135deg, ${accent}10, ${accent}04)` }}
                   >
-                    Media slot — upload the chapter image or prototype clip in the admin.
+                    <span
+                      className="font-display font-bold leading-none tracking-tightest"
+                      style={{ fontSize: 'clamp(5rem, 14vw, 11rem)', color: `${accent}30` }}
+                    >
+                      {chapter.number}
+                    </span>
+                    <span
+                      className="label absolute bottom-5 right-6 text-muted dark:text-dark-muted"
+                      style={{ color: `${accent}80` }}
+                    >
+                      Chapter {chapter.number}
+                    </span>
                   </div>
                 )}
                 {chapter.caption && (
@@ -329,7 +350,9 @@ function DecisionsTable({ decisions, accent }) {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: '-5%' }}
               transition={{ duration: 0.4, delay: i * 0.04 }}
-              className="grid grid-cols-1 gap-3 border-b border-line px-6 py-6 last:border-b-0 dark:border-dark-line md:grid-cols-12 md:gap-6"
+              className={`grid grid-cols-1 gap-3 border-b border-line px-6 py-6 transition-colors last:border-b-0 hover:bg-ink/[0.03] dark:border-dark-line dark:hover:bg-cream/[0.03] md:grid-cols-12 md:gap-6 ${
+                i % 2 === 1 ? 'bg-ink/[0.015] dark:bg-cream/[0.015]' : ''
+              }`}
             >
               <div className="md:col-span-3">
                 <div className="label mb-1 text-muted dark:text-dark-muted md:hidden">We chose</div>
@@ -337,7 +360,16 @@ function DecisionsTable({ decisions, accent }) {
               </div>
               <div className="md:col-span-3">
                 <div className="label mb-1 text-muted dark:text-dark-muted md:hidden">Over</div>
-                <div className="text-ink/70 dark:text-dark-ink/70">{d.over}</div>
+                <div className="flex items-start gap-2 text-ink/70 dark:text-dark-ink/70">
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.4em] hidden text-xs opacity-50 md:inline"
+                    style={{ color: accent }}
+                  >
+                    ←
+                  </span>
+                  <span>{d.over}</span>
+                </div>
               </div>
               <div className="md:col-span-6">
                 <div className="label mb-1 text-muted dark:text-dark-muted md:hidden">Because</div>
@@ -350,8 +382,6 @@ function DecisionsTable({ decisions, accent }) {
     </section>
   )
 }
-
-const THUMB_THRESHOLD = 5
 
 // Normalize images — handles both old string[] and new {url,caption}[] formats, fixes Drive URLs
 function normalizeImages(images) {
@@ -591,8 +621,7 @@ export default function CaseStudy() {
         <motion.div style={{ opacity: heroOpacity, y: heroY }} className="relative mx-auto max-w-[1400px] px-6 md:px-10">
           <motion.div initial="hidden" animate="show" variants={fadeUp}>
             <div className="label mb-6 flex items-center gap-3 text-muted dark:text-dark-muted">
-              {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
-              Case study {project.number} · {project.year}
+Case study {project.number} · {project.year}
             </div>
 
             <h1 className="display-hero text-[clamp(2.8rem,9vw,8rem)] text-ink dark:text-dark-ink">
@@ -669,8 +698,7 @@ export default function CaseStudy() {
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="label mb-6 flex items-center gap-2 text-muted dark:text-dark-muted">
-                {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
-                The brief, in one line
+    The brief, in one line
               </div>
               <p className="display-hero max-w-5xl text-[clamp(1.75rem,3.5vw,3.25rem)] leading-[1.15] text-ink dark:text-dark-ink">
                 {project.hook.split(' ').map((word, i) => {
@@ -817,8 +845,7 @@ export default function CaseStudy() {
           <div className="mx-auto max-w-[1400px] px-6 py-20 md:px-10 md:py-28">
             <div className="mx-auto max-w-3xl">
               <div className="label mb-6 flex items-center gap-2 text-muted dark:text-dark-muted">
-                {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
-                Reflection
+    Reflection
               </div>
               <div
                 className="text-lg leading-relaxed text-ink/90 dark:text-dark-ink/90 [&>p]:mb-5 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
