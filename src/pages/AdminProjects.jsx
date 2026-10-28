@@ -97,10 +97,14 @@ export function AdminProjects() {
 // ─── Project Editor ───
 const emptyProject = {
   slug: '', number: '', title: '', tagline: '', tags: [], client: '', year: new Date().getFullYear().toString(),
-  location: '', role: '', timeline: '', team: '', cover: '', accent: '#6D28D9', accentSoft: '#A78BFA',
+  location: '', role: '', timeline: '', team: '', status: '', cover: '', accent: '#6D28D9', accentSoft: '#A78BFA',
   hook: '',
   images: [], metrics: [{ value: '', label: '' }, { value: '', label: '' }],
   outcomeStats: [],
+  statusNote: '',
+  principles: [],
+  chapters: [],
+  decisions: [],
   deliverables: [],
   overview: '', challenge: '', pullQuote: '', approach: [], outcome: '',
   reception: '', reflection: '', links: [],
@@ -166,6 +170,36 @@ export function AdminProjectEdit() {
   const removeOutcomeStat = (idx) => {
     update('outcomeStats', (project.outcomeStats || []).filter((_, i) => i !== idx))
   }
+
+  // ── Principles ──
+  const updatePrinciple = (idx, key, value) => {
+    const next = [...(project.principles || [])]
+    next[idx] = { ...next[idx], [key]: value }
+    update('principles', next)
+  }
+  const addPrinciple = () => update('principles', [...(project.principles || []), { title: '', body: '' }])
+  const removePrinciple = (idx) => update('principles', (project.principles || []).filter((_, i) => i !== idx))
+
+  // ── Chapters ──
+  const updateChapter = (idx, key, value) => {
+    const next = [...(project.chapters || [])]
+    next[idx] = { ...next[idx], [key]: value }
+    update('chapters', next)
+  }
+  const addChapter = () => {
+    const num = String((project.chapters || []).length + 1).padStart(2, '0')
+    update('chapters', [...(project.chapters || []), { number: num, title: '', body: '', image: '', video: '', caption: '' }])
+  }
+  const removeChapter = (idx) => update('chapters', (project.chapters || []).filter((_, i) => i !== idx))
+
+  // ── Decisions ──
+  const updateDecision = (idx, key, value) => {
+    const next = [...(project.decisions || [])]
+    next[idx] = { ...next[idx], [key]: value }
+    update('decisions', next)
+  }
+  const addDecision = () => update('decisions', [...(project.decisions || []), { chose: '', over: '', because: '' }])
+  const removeDecision = (idx) => update('decisions', (project.decisions || []).filter((_, i) => i !== idx))
 
   const handleGenerate = async () => {
     if (!brief.trim()) return
@@ -269,6 +303,9 @@ export function AdminProjectEdit() {
               <Field label="Timeline"><input className={inputCls} value={project.timeline} onChange={e => update('timeline', e.target.value)} /></Field>
               <Field label="Team"><input className={inputCls} value={project.team} onChange={e => update('team', e.target.value)} /></Field>
               <Field label="Location"><input className={inputCls} value={project.location} onChange={e => update('location', e.target.value)} /></Field>
+              <Field label="Status (optional — shown in hero meta row)">
+                <input className={inputCls} value={project.status || ''} onChange={e => update('status', e.target.value)} placeholder="e.g. v3 in stakeholder review" />
+              </Field>
               <Field label="Tags (comma-separated)"><input className={inputCls} value={tagsStr} onChange={e => setTagsStr(e.target.value)} placeholder="Mobile App, Design System" /></Field>
             </div>
 
@@ -454,6 +491,141 @@ export function AdminProjectEdit() {
             </Field>
             <Field label="Reflection">
               <RichTextField value={project.reflection || ''} onChange={v => update('reflection', v)} placeholder="What you learned…" minHeight={160} />
+            </Field>
+
+            {/* ── Principles ── */}
+            <h2 className="pt-6 font-display text-xl text-ink">Principles</h2>
+            <p className="text-sm text-muted">Short rules that drove the work. Shown as a 2×2 card grid. 2–4 recommended.</p>
+            <div className="space-y-3">
+              {(project.principles || []).map((p, i) => (
+                <div key={i} className="rounded-xl border border-line p-4">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="label text-muted">Principle {String(i + 1).padStart(2, '0')}</span>
+                    <button type="button" onClick={() => removePrinciple(i)}
+                      className="rounded-lg border border-line px-3 py-1 text-xs text-red-500 hover:bg-red-50">Remove</button>
+                  </div>
+                  <div className="space-y-2">
+                    <input
+                      className={inputCls}
+                      value={p.title || ''}
+                      onChange={e => updatePrinciple(i, 'title', e.target.value)}
+                      placeholder="Principle title (e.g. Show the place, not a placeholder.)"
+                    />
+                    <textarea
+                      className={textareaCls + ' !min-h-[80px]'}
+                      value={p.body || ''}
+                      onChange={e => updatePrinciple(i, 'body', e.target.value)}
+                      placeholder="Short explanation…"
+                    />
+                  </div>
+                </div>
+              ))}
+              <button type="button" onClick={addPrinciple}
+                className="label w-full rounded-lg border border-dashed border-line py-3 text-muted hover:border-accent hover:text-accent">
+                + Add principle
+              </button>
+            </div>
+
+            {/* ── Chapters ── */}
+            <h2 className="pt-6 font-display text-xl text-ink">Chapters</h2>
+            <p className="text-sm text-muted">
+              The work shown chapter by chapter. Each chapter has a number, title, body, and an optional image or video. If both media fields are empty, a decorative numbered placeholder is shown on the live page.
+            </p>
+            <div className="space-y-4">
+              {(project.chapters || []).map((c, i) => (
+                <div key={i} className="rounded-xl border border-line bg-white/70 p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="label text-muted">Chapter {c.number || String(i + 1).padStart(2, '0')}</span>
+                    <button type="button" onClick={() => removeChapter(i)}
+                      className="rounded-lg border border-line px-3 py-1 text-xs text-red-500 hover:bg-red-50">Remove</button>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-5">
+                    <div className="md:col-span-1">
+                      <Field label="Number">
+                        <input className={inputCls} value={c.number || ''} onChange={e => updateChapter(i, 'number', e.target.value)} placeholder="01" />
+                      </Field>
+                    </div>
+                    <div className="md:col-span-4">
+                      <Field label="Title">
+                        <input className={inputCls} value={c.title || ''} onChange={e => updateChapter(i, 'title', e.target.value)} placeholder="Chapter title" />
+                      </Field>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <Field label="Body (use blank lines between paragraphs)">
+                      <textarea
+                        className={textareaCls + ' !min-h-[140px]'}
+                        value={c.body || ''}
+                        onChange={e => updateChapter(i, 'body', e.target.value)}
+                        placeholder="Describe the chapter — what changed and why…"
+                      />
+                    </Field>
+                  </div>
+                  <div className="mt-3">
+                    <Field label="Image (shown to the right of the body)">
+                      <ImageFocalPoint
+                        label=""
+                        imageValue={c.image || ''}
+                        focusValue={null}
+                        onImageChange={v => updateChapter(i, 'image', v)}
+                        onFocusChange={() => {}}
+                      />
+                    </Field>
+                  </div>
+                  <div className="mt-3 grid gap-3 md:grid-cols-2">
+                    <Field label="Video URL (optional — overrides image when set)">
+                      <input className={inputCls} value={c.video || ''} onChange={e => updateChapter(i, 'video', e.target.value)} placeholder="https://…mp4" />
+                    </Field>
+                    <Field label="Caption (optional)">
+                      <input className={inputCls} value={c.caption || ''} onChange={e => updateChapter(i, 'caption', e.target.value)} placeholder="Shown under the media" />
+                    </Field>
+                  </div>
+                </div>
+              ))}
+              <button type="button" onClick={addChapter}
+                className="label w-full rounded-lg border border-dashed border-line py-3 text-muted hover:border-accent hover:text-accent">
+                + Add chapter
+              </button>
+            </div>
+
+            {/* ── Decisions & trade-offs ── */}
+            <h2 className="pt-6 font-display text-xl text-ink">Decisions &amp; Trade-offs</h2>
+            <p className="text-sm text-muted">Three-column "we chose X over Y because Z" rows. Shown as a public decisions table on the case study page.</p>
+            <div className="space-y-3">
+              {(project.decisions || []).map((d, i) => (
+                <div key={i} className="rounded-xl border border-line p-4">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="label text-muted">Decision {String(i + 1).padStart(2, '0')}</span>
+                    <button type="button" onClick={() => removeDecision(i)}
+                      className="rounded-lg border border-line px-3 py-1 text-xs text-red-500 hover:bg-red-50">Remove</button>
+                  </div>
+                  <div className="space-y-2">
+                    <input className={inputCls} value={d.chose || ''} onChange={e => updateDecision(i, 'chose', e.target.value)} placeholder="We chose… (e.g. Photos of the real places)" />
+                    <input className={inputCls} value={d.over || ''} onChange={e => updateDecision(i, 'over', e.target.value)} placeholder="Over… (e.g. Illustrations everywhere)" />
+                    <textarea
+                      className={textareaCls + ' !min-h-[80px]'}
+                      value={d.because || ''}
+                      onChange={e => updateDecision(i, 'because', e.target.value)}
+                      placeholder="Because… (the reasoning)"
+                    />
+                  </div>
+                </div>
+              ))}
+              <button type="button" onClick={addDecision}
+                className="label w-full rounded-lg border border-dashed border-line py-3 text-muted hover:border-accent hover:text-accent">
+                + Add decision
+              </button>
+            </div>
+
+            {/* ── Status note ── */}
+            <h2 className="pt-6 font-display text-xl text-ink">Status Framing</h2>
+            <Field label="Status Note (short honest intro above the stats grid)">
+              <RichTextField
+                value={project.statusNote || ''}
+                onChange={v => update('statusNote', v)}
+                placeholder="e.g. LCA 3.0 is designed, fully prototyped and in stakeholder review. It has not shipped yet, so I'm not claiming usage numbers."
+                minHeight={120}
+              />
             </Field>
           </div>
 

@@ -106,8 +106,10 @@ const SCHEMA_VERSION = 'v6'
 // Slugs whose CMS copies should be fully replaced with the latest static definition
 // when migrating to the current schema. Add a slug here when a case study has been
 // rewritten in projects.js and you need to override any stale admin-saved copy that
-// users may already have cached in Supabase / localStorage.
-const FORCE_RESET_SLUGS = ['landmark-citizen-app']
+// users may already have cached in Supabase / localStorage. The v6 migration already
+// reset landmark-citizen-app — leave this empty now so subsequent schema bumps don't
+// wipe the admin's own edits.
+const FORCE_RESET_SLUGS = []
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 export function getProjects() {
