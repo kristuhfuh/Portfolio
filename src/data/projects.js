@@ -52,8 +52,7 @@ The question for 3.0: what would it take for a mum in Lekki to open this app on 
       { title: 'Landmark owns the relationship.', body: 'Guests never contact vendors directly. Help always goes through Landmark support.' },
     ],
 
-    // ── Chapters sit behind the PasswordGate on the case study page ──
-    gatedChapters: [
+    chapters: [
       {
         number: '01',
         title: 'Home and Explore',

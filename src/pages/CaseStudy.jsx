@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from 'react'
 import { getProjectBySlug as getProject, getProjects, normalizeDriveUrl } from '../lib/cms.js'
 import { projects as staticProjects } from '../data/projects.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
-import PasswordGate from '../components/PasswordGate.jsx'
 
 // Renders CMS text that may be plain (uses \n\n) or HTML (from RichTextField)
 function richHtml(content = '') {
@@ -769,16 +768,9 @@ Case study {project.number} · {project.year}
       {/* ─── Principles (public, 3.0 projects) ─── */}
       <Principles principles={project.principles} accent={accent} />
 
-      {/* ─── Chapters (gated) or legacy image gallery ─── */}
-      {project.gatedChapters?.length ? (
-        <PasswordGate
-          storageKey={`preview-unlocked-${project.slug}`}
-          title="Preview access — LCA 3.0"
-          subtitle="These chapters cover unreleased 3.0 screens. Enter the preview password to unlock the eight chapters below."
-          accent={accent}
-        >
-          <Chapters chapters={project.gatedChapters} accent={accent} projectTitle={project.title} />
-        </PasswordGate>
+      {/* ─── Chapters or legacy image gallery ─── */}
+      {project.chapters?.length ? (
+        <Chapters chapters={project.chapters} accent={accent} projectTitle={project.title} />
       ) : (
         <ImageGallery images={project.images} title={project.title} accent={accent} />
       )}
