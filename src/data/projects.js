@@ -8,120 +8,128 @@ export const projects = [
     slug: 'landmark-citizen-app',
     number: '01',
     title: 'Landmark Citizen App',
-    tagline: `Redesigning the complete ecosystem for West Africa's premium beachfront destination`,
-    tags: ['Mobile App', 'UI Design', 'UX Research', 'Hospitality', 'Lifestyle'],
+    tagline: `Turning a payments app into the way Nigerian families plan a day out at Landmark.`,
+    tags: ['Mobile App', 'Product Design', 'Design System', 'Hospitality', 'Lifestyle'],
     client: 'Landmark Africa',
-    year: '2024',
+    year: '2024–2026',
     location: 'Victoria Island, Lagos',
-    role: 'UI/UX Designer',
-    timeline: '6 weeks',
-    team: 'Project Manager, Developer, 2 Data Analysts',
+    role: 'Lead product designer',
+    timeline: 'v2 redesign (2024), LCA 3.0 (2026)',
+    team: 'PM, developer, 2 data analysts (v2)',
+    status: 'v3 in stakeholder review',
     cover: 'https://framerusercontent.com/images/A96w4ZpC5F1QA39OE7wySL4yBg4.webp?width=2400&height=1800',
-    accent: '#FF8C42',
+    accent: '#FF8A00',
     accentSoft: '#FFB380',
 
-    hook: `Make the complete ecosystem feel like one intuitive experience.`,
+    hook: `Make every Landmark experience, from Upside Down House to a plate of jollof, bookable in a few taps by the person planning the family's weekend.`,
 
-    images: [
-      'https://framerusercontent.com/images/A96w4ZpC5F1QA39OE7wySL4yBg4.webp?width=2400&height=1800',
-      'https://framerusercontent.com/images/3C0VOTTkKKwN2ontWnhZfDoAbzI.png?width=1722&height=2084',
-      'https://framerusercontent.com/images/xn14raFI0MqgR8EHybMvOYUVY.png?width=1104&height=955',
+    overview: `Landmark is a leisure destination in Victoria Island, Lagos: the beach, Pop Landmark, Upside Down House, Kids Club, hotels, retail and dozens of food stalls. The Citizen App is how guests pay, book and earn points across all of it.
+
+In 2024 I redesigned the first version. Working from surveys, post-booking forms and customer service reports, we shortened registration, rebuilt the booking flow, added event search and introduced the first rewards system Landmark had shipped.
+
+It worked as a payments tool. It did not yet work as a reason to visit.`,
+
+    challenge: `By 2026, Landmark's goal had shifted from processing transactions to selling experiences to families. The app had not followed.
+
+• **Discovery was empty.** The Explore tab was a grid of grey placeholder boxes. Nothing told a parent what was on today.
+
+• **Food ordering stopped at the counter.** Guests queued to collect with a pickup code, even when they were sitting at a table.
+
+• **Every flow looked different.** Hotel, archery, Kids Club and Upside Down House each had their own booking pattern, colours and button styles.
+
+• **Rewards were anonymous.** The leaderboard listed six rows of "User 10293894". There was no reason to care where you ranked.
+
+• **The system had drifted.** Two icon libraries, a 3D icon style, an off-brand orange on buttons and inconsistent copy across hundreds of screens.
+
+The question for 3.0: what would it take for a mum in Lekki to open this app on Saturday morning before she opens WhatsApp?`,
+
+    pullQuote: `A good decision can expire. Swapping photos for illustrations was right when image rights were the risk. Once the goal became selling a family day out, it was the wrong call.`,
+
+    principles: [
+      { title: 'Show the place, not a placeholder.', body: 'Photos for places and people. Flat illustrations for categories. Animated illustrations only for success moments.' },
+      { title: 'One booking pattern everywhere.', body: 'Details, then date and time, then review and pay, then confirmation and feedback. It works the same for a hotel room, a bow and arrow, or a birthday party.' },
+      { title: 'Nudge toward the safe choice.', body: 'The action we want people to take is the primary button. "Keep my account" is primary; "Delete my account" is secondary in red.' },
+      { title: 'Landmark owns the relationship.', body: 'Guests never contact vendors directly. Help always goes through Landmark support.' },
     ],
 
-    metrics: [
-      { value: '6', label: 'Weeks to redesign' },
-      { value: '3', label: 'Major user flows rebuilt' },
+    // ── Chapters sit behind the PasswordGate on the case study page ──
+    gatedChapters: [
+      {
+        number: '01',
+        title: 'Home and Explore',
+        body: `Home became a long, scannable page: things to do, deals, food, events and rewards, under a location switcher for each Landmark site.\n\nExplore replaced the grey grid with an illustrated map of Landmark Nigeria. Lagos is live with 24 things to do. Port Harcourt appears greyed out as "coming soon", so the app can announce expansion without a dead end.`,
+        image: '',
+        caption: 'Explore before (grey boxes) and after (illustrated map).',
+      },
+      {
+        number: '02',
+        title: 'Food ordering (the biggest change)',
+        body: `The old flow ended with a queue and a pickup code. The new one asks one question: how do you want it?\n\n• **Pick up at the counter**, with a live status: placed, preparing, ready. A map and walking directions show where Stall 4 is.\n\n• **Deliver to my seat.** Scan the QR code on your table. No code, or it won't scan? Type the table number instead.\n\n• **No pickup codes.** Guests confirm collection with a single "Order received" button, which also opens the rating.\n\n• **Help goes to Landmark, not the stall.** The order screen offers "Contact Landmark support", never the vendor's phone number.\n\n• **The same pattern carries into retail,** with a "Ready for pickup" screen for Style Hub orders.`,
+        video: '',
+        caption: '20-second prototype: menu → table delivery → Order received.',
+      },
+      {
+        number: '03',
+        title: 'One booking flow for everything',
+        body: `Hotel, Activities, Kids Club and Upside Down House now share one structure. Each starts with a banner photo of the actual place.\n\nWe removed options the business no longer sells, such as hotel breakfast and late check-out. Hotel check-in needs no booking code; guests give their name and show ID at the front desk. Cancelling shows the refund before you commit, and "Keep booking" is the primary action.`,
+        image: '',
+      },
+      {
+        number: '04',
+        title: 'Rewards that feel like a game',
+        body: `Points, tiers, a weekly visit streak, coupons you can share, and a monthly leaderboard with real first names instead of user IDs. Booking in the app saves 10% on selected tickets, and the review screen shows the discount line by line.`,
+        image: '',
+      },
+      {
+        number: '05',
+        title: 'Feedback that fixes things',
+        body: `Every completed order and booking ends with a short rating. A rating below 4 stars changes the form: it asks what went wrong and lets guests add up to 3 photos. Operations get evidence, not just a low score.`,
+        image: '',
+      },
+      {
+        number: '06',
+        title: 'History, wallet and support',
+        body: `History has three tabs: Bookings, Orders and Transactions. Party and excursion requests sit inside Bookings, so there's one place to check what's coming up.`,
+        image: '',
+      },
+      {
+        number: '07',
+        title: 'The system underneath',
+        body: `• One icon family (Flaticon UIcons) replaced two libraries and a 3D icon style.\n\n• One token set: brand orange #FF8A00 for actions and a darker accent for orange text that passes contrast.\n\n• One typeface, Plus Jakarta Sans, with a 12px minimum.\n\n• A content glossary (Landmark Wallet, Top up, Log in) applied across every screen, in sentence case.\n\n• A fully linked prototype with no dead ends, ready for stakeholder walkthroughs.`,
+        image: '',
+      },
+      {
+        number: '08',
+        title: 'Onboarding and launch',
+        body: `I explored seven onboarding directions, each with three slides and a welcome screen. They range from a bold poster style to a family group-chat story and the brand's wavy checkerboard. A 59-second launch video shows the old app's problems, then the new food flow, the 10% saving, rewards and the map.`,
+        image: '',
+        video: '',
+      },
     ],
 
-    // ─── FIXED: Replaced process counts ("8 features identified", "2 iteration cycles")
-    // with impact-framed stats. Fill in [PLACEHOLDER] values with your real numbers.
+    decisions: [
+      { chose: 'Photos of the real places',             over: 'Illustrations everywhere (our own 2024 call)', because: 'Families decide on what the place looks like. The 2024 choice was made for image-rights reasons, and Landmark now has its own photo library.' },
+      { chose: 'An "Order received" button',            over: 'Pickup codes',                                  because: 'Codes added a step at a busy counter and confused guests. Staff already see the order on their screen.' },
+      { chose: 'Typing the table number as a fallback', over: 'QR only',                                       because: 'QR stickers peel, get wet and fail in low light. A dead end at the table is the worst moment to have one.' },
+      { chose: 'Support-only contact',                  over: 'Calling the vendor',                            because: 'Landmark keeps the complaint, the refund and the data. Vendors stay focused on cooking.' },
+      { chose: 'Photos only below 4 stars',             over: 'Photos on every rating',                        because: 'Keeps happy reviews to two taps. Asks for evidence only when there\'s something to fix.' },
+      { chose: 'The safe action as the primary button', over: 'The requested action as primary',               because: 'Fewer accidental cancellations and deletions. The destructive path stays one clear tap away.' },
+    ],
+
+    statusNote: `LCA 3.0 is designed, fully prototyped and in stakeholder review. It has not shipped yet, so I'm not claiming usage numbers. Here is what the work covers.`,
+
     outcomeStats: [
-      { value: '[X]', label: '[PLACEHOLDER: e.g. App store rating before → after, or % increase in bookings]' },
-      { value: '[X]', label: '[PLACEHOLDER: e.g. Registration steps reduced from X to Y]' },
-      { value: '[X]', label: '[PLACEHOLDER: e.g. Booking flow steps reduced from X to Y]' },
-      { value: '4', label: 'Core sections rebuilt — Home, Events, Rewards, Onboarding' },
-      { value: '1st', label: 'Gamified rewards system in Landmark\'s product history' },
-      { value: '6 wks', label: 'Full redesign and handoff, including 2 full iteration cycles' },
+      { value: '7',   label: 'Core areas redesigned — Home, Explore, food, bookings, rewards, history, onboarding' },
+      { value: '9',   label: 'Rating flows with photo upload for low ratings' },
+      { value: '218', label: '3D icons replaced with one flat icon family' },
+      { value: '155', label: 'Copy fixes against a single glossary' },
+      { value: '0',   label: 'Broken links in the stakeholder prototype' },
+      { value: '7',   label: 'Onboarding directions, plus a 59-second launch video' },
     ],
 
-    deliverables: [
-      'Simplified registration and onboarding flow',
-      'Redesigned booking flow with fewer steps',
-      'Modernized home page with improved navigation',
-      'Events page with search, categorization, and agenda view',
-      'Gamified activity and rewards system',
-      'Visual empty-state illustrations',
-      'Push notification system',
-      'Google Sign-In integration',
-      'Cross-brand business promotion module',
-      'Instagram promotional graphics and videos',
-    ],
+    reflection: `The 2024 redesign taught me to treat user feedback as a blueprint. The 2026 one taught me that a good decision can expire. Swapping photos for illustrations was right when image rights were the risk. Once the goal became selling a family day out, it was the wrong call, and I reversed it.
 
-    overview: `Landmark Africa needed a system where transactions and bookings could be processed faster and automatically linked to the database, removing the need for manual collation and data entry. Hence, the Landmark Citizen App was introduced — a central hub designed to give customers access to all activities within the Landmark ecosystem, eliminating the need to visit different physical locations to complete transactions.
-
-The app's activity rate peaked during the establishment of Landmark Beach, located in Victoria Island, Lagos, Nigeria. Through the app, users could purchase food and beverages, book events, reserve rooms and furniture, and engage with a range of activities within the Landmark community.
-
-I redesigned the existing Landmark Citizen App, collected and studied data from past reviews and suggestions, made improvements, and added new features to make the app more user-friendly, intuitive, and easy on the eye. I worked alongside a project manager, a developer, and two data analysts.`,
-
-    challenge: `While the app's development brought about significant improvements and proved beneficial to the business, this was still the first version, and therefore, feedback was essential to understand how users felt about their experience.
-
-From the feedback collected through user surveys, in-app forms, and customer service reports, several recurring pain points and improvement ideas emerged. These insights were categorised into important features/fixes and optional enhancements based on their impact on usability, customer experience, and business goals.
-
-**Important Features Identified:**
-
-• Simplify Registration Process — Users found the onboarding forms too long and discouraging.
-
-• Redesign Booking Flow — The process felt confusing and required too many steps and transitions.
-
-• Modernize The User Interface — Visuals felt outdated and inconsistent with Landmark's premium brand.
-
-• Fix Receipt Printing Errors — Users frequently experienced issues with transaction receipts not generating properly.
-
-• Clarify Empty-State Pages — Users were unsure why some pages had no content or what action to take next.
-
-**Optional Enhancements:**
-
-• Add Google Sign-In to allow quick and seamless access.
-
-• Promote Other Company-Related Businesses within the app to improve cross-brand visibility.
-
-• Gamify The App Experience to make usage more fun and engaging.
-
-• Introduce Push Notifications to keep users informed about events, offers, and updates.`,
-
-    pullQuote: `The biggest lesson: user feedback isn't just bug reports. It's a blueprint for what actually matters to people using your product every day.`,
-
-    approach: [
-      'Collected user feedback through email surveys, in-app forms presented at the end of each booking experience, and direct reports from Customer Service Representatives who interacted with customers on-site',
-      'Analysed and categorised all responses into two groups: important features/fixes (impacting core usability) and optional enhancements (improving engagement and cross-sell)',
-      'Held collaborative brainstorming sessions with the product team, developers, and data analysts to map ideas against user pain points and identify quick fixes versus long-term improvements',
-      'Mapped out user journeys in detail from registration to booking and payment, ensuring each task was logical and efficient. Streamlined the booking flow with fewer screens and clearer CTAs, standardised navigation patterns, defined empty-state content and error messaging',
-      'Modernised the visual direction to reflect Landmark\'s premium brand identity using a refined colour palette, improved typography, and polished iconography. Added interactive elements like micro-animations and hover states to enhance feedback and delight',
-      'First iteration: Created draft with drawn illustrations, new opening and splash screens, changed font from Nunito to Plus Jakarta Sans for better mobile readability, improved colour contrast of text and icons for visibility',
-      'Final iteration: Changed splash screen to more interactive style with full-screen images, switched to illustrations instead of actual photos to prevent future image rights issues',
-    ],
-
-    // ─── FIXED: Removed vague "improved user engagement" claims. Each section now
-    // states what changed and why it matters. Add [PLACEHOLDER] metrics where you have data.
-    outcome: `[PLACEHOLDER: Open with your strongest metric here — app rating change, booking completion rate, support ticket volume, or any number that shows the redesign worked. E.g. "Within [X weeks] of launch, the app's store rating improved from X to Y."]
-
-**Registration Redesign** reduced the onboarding form to only essential fields, with Google Sign-In added as a one-tap alternative. Users who previously abandoned the signup flow due to length now had a faster path to their first transaction.
-
-**Booking Flow Rebuild** cut the number of steps and transitions users had to navigate before completing a purchase. The previous flow was described in CSR reports as "confusing" — the redesigned version consolidated steps, clarified CTAs, and removed dead-end transitions.
-
-**Events Page** added search by name, date, and category — functionality that previously didn't exist. Categorisation and a new Agenda view meant users could find and plan for events without scrolling through an undifferentiated list.
-
-**Activity and Rewards Redesign** transformed the app from a transactional platform into a gamified lifestyle companion. Users can now clearly see points, cashback, and reward progress in a visually engaging way with progress indicators and celebratory feedback. Coupons and benefits were reorganised into intuitive tabs (Active, Expired, Used), and features like cashback breakdowns and milestone incentives help users understand tangible benefits.
-
-The design decisions made here — Plus Jakarta Sans over Nunito, illustrated splash screens over photography — were later adopted as the standard visual language for Landmark's subsequent mobile products.`,
-
-    // ─── FIXED: Elevated from a minor typographic footnote to a signal of
-    // precedent-setting work. This belongs prominently, not buried.
-    reception: `The visual and typographic decisions I made on this project — switching to Plus Jakarta Sans and replacing photography with custom illustrations — were adopted unchanged as the standard for Landmark Africa's subsequent mobile products. When a single project sets the template for everything that comes after it, the architecture worked.`,
-
-    reflection: `This project taught me the value of user feedback as a design tool, not just a validation metric. The CSR reports and post-booking surveys gave us insights we couldn't have gotten from analytics alone — they showed us not just what users did, but why they struggled.
-
-If I were to revisit this, I'd push for A/B testing on the rewards gamification earlier. We built the entire system based on research and best practices, but live testing with real transaction data would have validated (or challenged) our assumptions faster.`,
+Next time I would put the food flow in front of stall staff and real guests before polishing anything else. It is the flow with the most moving parts, and the one where a wrong assumption costs a real queue.`,
 
     links: [],
   },

@@ -101,7 +101,13 @@ const PAGES_KEY     = 'cms_pages'
 const BEYOND_KEY    = 'cms_beyond_pixels'
 const GALLERY_KEY   = 'cms_contact_gallery'
 const VERSION_KEY   = 'cms_schema_version'
-const SCHEMA_VERSION = 'v4'
+const SCHEMA_VERSION = 'v5'
+
+// Slugs whose CMS copies should be fully replaced with the latest static definition
+// when migrating to the current schema. Add a slug here when a case study has been
+// rewritten in projects.js and you need to override any stale admin-saved copy that
+// users may already have cached in Supabase / localStorage.
+const FORCE_RESET_SLUGS = ['landmark-citizen-app']
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
 export function getProjects() {
@@ -112,17 +118,24 @@ export function getProjects() {
     if (saved && saved.length) {
       const merged = saved.map(savedP => {
         const staticP = staticProjects.find(p => p.slug === savedP.slug)
-        return staticP ? { ...staticP, ...savedP } : savedP
+        if (!staticP) return savedP
+        // Force-reset slugs get the static definition verbatim — overrides stale admin edits
+        if (FORCE_RESET_SLUGS.includes(savedP.slug)) return staticP
+        return { ...staticP, ...savedP }
       })
       staticProjects.forEach(sp => {
         if (!merged.find(p => p.slug === sp.slug)) merged.push(sp)
       })
       lsSet(PROJECTS_KEY, merged)
       lsSet(VERSION_KEY, SCHEMA_VERSION)
+      // Propagate the migrated list to Supabase so other sessions see the reset too.
+      // Fire-and-forget — a failed sync still leaves the correct data in localStorage.
+      dbSet(PROJECTS_KEY, merged)
       return merged
     }
     lsSet(PROJECTS_KEY, staticProjects)
     lsSet(VERSION_KEY, SCHEMA_VERSION)
+    dbSet(PROJECTS_KEY, staticProjects)
     return staticProjects
   }
 

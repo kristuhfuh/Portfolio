@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { getProjectBySlug as getProject, getProjects, normalizeDriveUrl } from '../lib/cms.js'
 import { projects as staticProjects } from '../data/projects.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
+import PasswordGate from '../components/PasswordGate.jsx'
 
 // Renders CMS text that may be plain (uses \n\n) or HTML (from RichTextField)
 function richHtml(content = '') {
@@ -80,17 +81,24 @@ function PullQuote({ quote, accent }) {
 }
 
 // ─── Outcome stats grid — animated counters ───
-function OutcomeStats({ stats, accent }) {
+function OutcomeStats({ stats, accent, intro, label, heading }) {
   if (!stats?.length) return null
   return (
     <section className="relative overflow-hidden border-t border-line bg-ink py-24 text-cream dark:border-dark-line dark:bg-cream dark:text-ink md:py-32">
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         <div className="mb-16 max-w-3xl">
-          <div className="label mb-4 text-cream/60 dark:text-ink/60">✦ By the numbers</div>
+          <div className="label mb-4 text-cream/60 dark:text-ink/60">{label || '✦ By the numbers'}</div>
           <h2 className="display-lg text-[clamp(2.5rem,6vw,5rem)]">
-            What the <em className="italic" style={{ color: accent }}>work</em> produced.
+            {heading || (
+              <>What the <em className="italic" style={{ color: accent }}>work</em> produced.</>
+            )}
           </h2>
+          {intro && (
+            <p className="mt-6 text-base leading-relaxed text-cream/80 dark:text-ink/80 md:text-lg">
+              {intro}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-cream/10 dark:bg-ink/10 md:grid-cols-3">
@@ -190,6 +198,154 @@ function Reception({ quote, accent }) {
             {quote}
           </p>
         </motion.div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Principles — four-up grid of the rules behind the work ───
+function Principles({ principles, accent }) {
+  if (!principles?.length) return null
+  return (
+    <section className="border-t border-line py-20 dark:border-dark-line md:py-28">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        <div className="mb-14 max-w-3xl">
+          <div className="label mb-4 text-muted dark:text-dark-muted">Principles</div>
+          <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
+            Four rules that drove every <em className="italic" style={{ color: accent }}>3.0</em> decision.
+          </h2>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          {principles.map((p, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-10%' }}
+              transition={{ duration: 0.5, delay: i * 0.05 }}
+              className="rounded-3xl border border-line p-6 dark:border-dark-line md:p-8"
+            >
+              <div className="label mb-3 tabular-nums" style={{ color: accent }}>
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <h3 className="font-display text-xl text-ink dark:text-dark-ink md:text-2xl">
+                {p.title}
+              </h3>
+              <p className="mt-3 text-ink/80 dark:text-dark-ink/80">{p.body}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Chapters — the work shown chapter by chapter ───
+function Chapters({ chapters, accent, projectTitle }) {
+  if (!chapters?.length) return null
+  return (
+    <section className="border-t border-line py-20 dark:border-dark-line md:py-28">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        <div className="mb-16 max-w-3xl">
+          <div className="label mb-4 text-muted dark:text-dark-muted">The work, chapter by chapter</div>
+          <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
+            Eight <em className="italic" style={{ color: accent }}>decisions</em>, shown.
+          </h2>
+        </div>
+        <div className="flex flex-col gap-16 md:gap-24">
+          {chapters.map((chapter, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-10%' }}
+              transition={{ duration: 0.7 }}
+              className="grid gap-8 md:grid-cols-12 md:gap-10"
+            >
+              <div className="md:col-span-5">
+                <div className="flex items-center gap-3">
+                  <span className="label tabular-nums" style={{ color: accent }}>{chapter.number}</span>
+                  <span className="h-px flex-1" style={{ background: `${accent}30` }} />
+                </div>
+                <h3 className="mt-3 font-display text-2xl text-ink dark:text-dark-ink md:text-3xl">
+                  {chapter.title}
+                </h3>
+                <div
+                  className="mt-5 space-y-3 text-ink/85 dark:text-dark-ink/85 [&>p]:mb-3 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
+                  dangerouslySetInnerHTML={{ __html: richHtml(chapter.body) }}
+                />
+              </div>
+              <div className="md:col-span-7">
+                {chapter.image ? (
+                  <div className="overflow-hidden rounded-3xl border border-line dark:border-dark-line">
+                    <img src={chapter.image} alt={`${projectTitle} — ${chapter.title}`} className="h-auto w-full" />
+                  </div>
+                ) : chapter.video ? (
+                  <div className="overflow-hidden rounded-3xl border border-line dark:border-dark-line bg-black">
+                    <video src={chapter.video} controls playsInline className="h-auto w-full" />
+                  </div>
+                ) : (
+                  <div
+                    className="flex min-h-[220px] items-center justify-center rounded-3xl border border-dashed p-6 text-center text-sm text-muted dark:text-dark-muted md:min-h-[320px]"
+                    style={{ borderColor: `${accent}50` }}
+                  >
+                    Media slot — upload the chapter image or prototype clip in the admin.
+                  </div>
+                )}
+                {chapter.caption && (
+                  <p className="mt-3 text-sm text-muted dark:text-dark-muted">{chapter.caption}</p>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Decisions and trade-offs — three-column table ───
+function DecisionsTable({ decisions, accent }) {
+  if (!decisions?.length) return null
+  return (
+    <section className="border-t border-line py-20 dark:border-dark-line md:py-28">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        <div className="mb-14 max-w-3xl">
+          <div className="label mb-4 text-muted dark:text-dark-muted">Decisions and trade-offs</div>
+          <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
+            What we chose, and <em className="italic" style={{ color: accent }}>why</em>.
+          </h2>
+        </div>
+        <div className="overflow-hidden rounded-3xl border border-line dark:border-dark-line">
+          <div className="hidden grid-cols-12 gap-6 border-b border-line bg-ink/5 px-6 py-4 dark:border-dark-line dark:bg-cream/5 md:grid">
+            <div className="label col-span-3 text-muted dark:text-dark-muted">We chose</div>
+            <div className="label col-span-3 text-muted dark:text-dark-muted">Over</div>
+            <div className="label col-span-6 text-muted dark:text-dark-muted">Because</div>
+          </div>
+          {decisions.map((d, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: '-5%' }}
+              transition={{ duration: 0.4, delay: i * 0.04 }}
+              className="grid grid-cols-1 gap-3 border-b border-line px-6 py-6 last:border-b-0 dark:border-dark-line md:grid-cols-12 md:gap-6"
+            >
+              <div className="md:col-span-3">
+                <div className="label mb-1 text-muted dark:text-dark-muted md:hidden">We chose</div>
+                <div className="font-medium text-ink dark:text-dark-ink">{d.chose}</div>
+              </div>
+              <div className="md:col-span-3">
+                <div className="label mb-1 text-muted dark:text-dark-muted md:hidden">Over</div>
+                <div className="text-ink/70 dark:text-dark-ink/70">{d.over}</div>
+              </div>
+              <div className="md:col-span-6">
+                <div className="label mb-1 text-muted dark:text-dark-muted md:hidden">Because</div>
+                <div className="text-ink/85 dark:text-dark-ink/85">{d.because}</div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -447,26 +603,36 @@ export default function CaseStudy() {
             </p>
           </motion.div>
 
-          {/* Meta grid */}
+          {/* Meta grid — static 3-up to give long values (eg "v2 redesign (2024), LCA 3.0 (2026)") room to breathe */}
           {(() => {
             const links = project.links?.filter(l => l.url) ?? []
-            const colCount = 5 + (links.length > 0 ? 1 : 0)
+            const rows = [
+              ['Client', project.client],
+              ['Role', project.role],
+              ['Timeline', project.timeline],
+              ['Team', project.team],
+              ['Location', project.location],
+              ...(project.status ? [['Status', project.status]] : []),
+            ]
             return (
-              <dl className={`mt-14 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-8 dark:border-dark-line md:grid-cols-${colCount}`}>
-                {[
-                  ['Client', project.client],
-                  ['Role', project.role],
-                  ['Timeline', project.timeline],
-                  ['Team', project.team],
-                  ['Location', project.location],
-                ].map(([label, value]) => (
-                  <div key={label}>
-                    <dt className="label text-muted dark:text-dark-muted">{label}</dt>
-                    <dd className="mt-2 text-ink dark:text-dark-ink">{value}</dd>
+              <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-line pt-8 dark:border-dark-line md:grid-cols-3 lg:gap-x-10">
+                {rows.map(([label, value]) => (
+                  <div key={label} className="min-w-0">
+                    <dt className="label flex items-center gap-2 text-muted dark:text-dark-muted">
+                      {label}
+                      {label === 'Status' && (
+                        <span
+                          aria-hidden="true"
+                          className="inline-block h-1.5 w-1.5 rounded-full"
+                          style={{ background: accent }}
+                        />
+                      )}
+                    </dt>
+                    <dd className="mt-2 break-words text-ink dark:text-dark-ink">{value}</dd>
                   </div>
                 ))}
                 {links.length > 0 && (
-                  <div>
+                  <div className="min-w-0">
                     <dt className="label text-muted dark:text-dark-muted">Links</dt>
                     <dd className="mt-2 flex flex-col gap-1.5">
                       {links.map((link, i) => (
@@ -478,7 +644,7 @@ export default function CaseStudy() {
                           className="inline-flex items-center gap-1 text-ink underline underline-offset-2 hover:opacity-60 dark:text-dark-ink"
                         >
                           {link.name || 'View'}
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 shrink-0" aria-hidden="true">
                             <path fillRule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H2.25a.75.75 0 0 1 0-1.5h8.5a.75.75 0 0 1 .75.75v8.5a.75.75 0 0 1-1.5 0V6.06l-5.22 5.22a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
                           </svg>
                         </a>
@@ -506,7 +672,7 @@ export default function CaseStudy() {
                 {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
                 The brief, in one line
               </div>
-              <p className="display-hero max-w-5xl text-[clamp(2.5rem,7vw,6.5rem)] text-ink dark:text-dark-ink">
+              <p className="display-hero max-w-5xl text-[clamp(1.75rem,3.5vw,3.25rem)] leading-[1.15] text-ink dark:text-dark-ink">
                 {project.hook.split(' ').map((word, i) => {
                   const mid = Math.floor(project.hook.split(' ').length / 2)
                   const shouldAccent = i === mid
@@ -572,48 +738,77 @@ export default function CaseStudy() {
       {/* ─── Pull quote (mid-story breakpoint) ─── */}
       {project.pullQuote && <PullQuote quote={project.pullQuote} accent={accent} />}
 
-      {/* ─── Visual gallery ─── */}
-      <ImageGallery images={project.images} title={project.title} accent={accent} />
+      {/* ─── Principles (public, 3.0 projects) ─── */}
+      <Principles principles={project.principles} accent={accent} />
 
-      {/* ─── Approach ─── */}
-      <StoryBlock label="The work" heading="How it came together." accent={accent}>
-        <ol className="space-y-0">
-          {project.approach.map((step, i) => (
-            <motion.li
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-5%' }}
-              transition={{ duration: 0.5, delay: i * 0.04 }}
-              className="flex gap-5 border-b border-line py-6 dark:border-dark-line"
-            >
-              <span className="label shrink-0 pt-1 tabular-nums" style={{ color: accent }}>
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <span
-                className="text-lg leading-relaxed text-ink dark:text-dark-ink [&>b]:font-semibold [&>strong]:font-semibold"
-                dangerouslySetInnerHTML={{ __html: richHtml(step) }}
-              />
-            </motion.li>
-          ))}
-        </ol>
-      </StoryBlock>
+      {/* ─── Chapters (gated) or legacy image gallery ─── */}
+      {project.gatedChapters?.length ? (
+        <PasswordGate
+          storageKey={`preview-unlocked-${project.slug}`}
+          title="Preview access — LCA 3.0"
+          subtitle="These chapters cover unreleased 3.0 screens. Enter the preview password to unlock the eight chapters below."
+          accent={accent}
+        >
+          <Chapters chapters={project.gatedChapters} accent={accent} projectTitle={project.title} />
+        </PasswordGate>
+      ) : (
+        <ImageGallery images={project.images} title={project.title} accent={accent} />
+      )}
 
-      {/* ─── Outcome (prose) ─── */}
-      <StoryBlock label="What shipped" heading="The result." accent={accent}>
-        <div
-          className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
-          dangerouslySetInnerHTML={{ __html: richHtml(project.outcome) }}
-        />
-      </StoryBlock>
+      {/* ─── Approach (legacy projects only) ─── */}
+      {project.approach?.length > 0 && (
+        <StoryBlock label="The work" heading="How it came together." accent={accent}>
+          <ol className="space-y-0">
+            {project.approach.map((step, i) => (
+              <motion.li
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-5%' }}
+                transition={{ duration: 0.5, delay: i * 0.04 }}
+                className="flex gap-5 border-b border-line py-6 dark:border-dark-line"
+              >
+                <span className="label shrink-0 pt-1 tabular-nums" style={{ color: accent }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span
+                  className="text-lg leading-relaxed text-ink dark:text-dark-ink [&>b]:font-semibold [&>strong]:font-semibold"
+                  dangerouslySetInnerHTML={{ __html: richHtml(step) }}
+                />
+              </motion.li>
+            ))}
+          </ol>
+        </StoryBlock>
+      )}
 
-      {/* ─── Deliverables list ─── */}
+      {/* ─── Outcome prose (legacy projects only) ─── */}
+      {project.outcome && (
+        <StoryBlock label="What shipped" heading="The result." accent={accent}>
+          <div
+            className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
+            dangerouslySetInnerHTML={{ __html: richHtml(project.outcome) }}
+          />
+        </StoryBlock>
+      )}
+
+      {/* ─── Decisions and trade-offs (public) ─── */}
+      <DecisionsTable decisions={project.decisions} accent={accent} />
+
+      {/* ─── Deliverables list (legacy projects only) ─── */}
       <Deliverables items={project.deliverables} accent={accent} />
 
-      {/* ─── Outcome stats grid (dramatic dark section) ─── */}
-      <OutcomeStats stats={project.outcomeStats} accent={accent} />
+      {/* ─── Outcome stats grid — honest status framing when project.statusNote is set ─── */}
+      <OutcomeStats
+        stats={project.outcomeStats}
+        accent={accent}
+        intro={project.statusNote}
+        label={project.statusNote ? '✦ Status and results' : undefined}
+        heading={project.statusNote ? (
+          <>What <em className="italic" style={{ color: accent }}>LCA 3.0</em> covers.</>
+        ) : undefined}
+      />
 
-      {/* ─── Reception callout ─── */}
+      {/* ─── Reception callout (legacy projects only) ─── */}
       <Reception quote={project.reception} accent={accent} />
 
       {/* ─── Reflection ─── */}
