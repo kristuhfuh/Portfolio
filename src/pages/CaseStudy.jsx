@@ -89,7 +89,7 @@ function OutcomeStats({ stats, accent, intro, label, heading }) {
           <div className="label mb-4 text-cream/60 dark:text-ink/60">{label || '✦ By the numbers'}</div>
           <h2 className="display-lg text-[clamp(2.5rem,6vw,5rem)]">
             {heading || (
-              <>What the <em className="italic" style={{ color: accent }}>work</em> produced.</>
+              <>What the work produced.</>
             )}
           </h2>
           {intro && (
@@ -137,7 +137,7 @@ function Deliverables({ items, accent }) {
     Deliverables
               </div>
               <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
-                What <em className="italic" style={{ color: accent }}>shipped</em>.
+                What shipped.
               </h2>
               <p className="mt-6 text-muted dark:text-dark-muted">
                 Every output from the project — design artefacts, systems, and production-ready assets.
@@ -209,7 +209,7 @@ function Principles({ principles, accent }) {
         <div className="mb-14 max-w-3xl">
           <div className="label mb-4 text-muted dark:text-dark-muted">Principles</div>
           <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
-            Four rules that drove every <em className="italic" style={{ color: accent }}>3.0</em> decision.
+            Four rules that drove every 3.0 decision.
           </h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -255,7 +255,7 @@ function Chapters({ chapters, accent, projectTitle }) {
         <div className="mb-16 max-w-3xl">
           <div className="label mb-4 text-muted dark:text-dark-muted">The work, chapter by chapter</div>
           <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
-            Eight <em className="italic" style={{ color: accent }}>decisions</em>, shown.
+            Eight decisions, shown.
           </h2>
         </div>
         <div className="flex flex-col gap-16 md:gap-24">
@@ -333,7 +333,7 @@ function DecisionsTable({ decisions, accent }) {
         <div className="mb-14 max-w-3xl">
           <div className="label mb-4 text-muted dark:text-dark-muted">Decisions and trade-offs</div>
           <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
-            What we chose, and <em className="italic" style={{ color: accent }}>why</em>.
+            What we chose, and why.
           </h2>
         </div>
         <div className="overflow-hidden rounded-3xl border border-line dark:border-dark-line">
@@ -700,16 +700,7 @@ Case study {project.number} · {project.year}
     The brief, in one line
               </div>
               <p className="display-hero max-w-5xl text-[clamp(1.75rem,3.5vw,3.25rem)] leading-[1.15] text-ink dark:text-dark-ink">
-                {project.hook.split(' ').map((word, i) => {
-                  const mid = Math.floor(project.hook.split(' ').length / 2)
-                  const shouldAccent = i === mid
-                  return (
-                    <span key={i}>
-                      {shouldAccent ? <em className="italic" style={{ color: accent }}>{word}</em> : word}
-                      {' '}
-                    </span>
-                  )
-                })}
+                {project.hook}
               </p>
             </motion.div>
           </div>
@@ -824,7 +815,7 @@ Case study {project.number} · {project.year}
         intro={project.statusNote}
         label={project.statusNote ? '✦ Status and results' : undefined}
         heading={project.statusNote ? (
-          <>What <em className="italic" style={{ color: accent }}>LCA 3.0</em> covers.</>
+          <>What LCA 3.0 covers.</>
         ) : undefined}
       />
 
