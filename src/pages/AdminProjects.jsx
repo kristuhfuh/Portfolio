@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { getProjects, saveProject, deleteProject, getProjectBySlug, toggleProjectVisibility, normalizeDriveUrl } from '../lib/cms.js'
+import { projects as staticProjects } from '../data/projects.js'
 import RichTextField from '../components/RichTextField.jsx'
 import GalleryImageManager from '../components/GalleryImageManager.jsx'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
@@ -134,6 +135,7 @@ export function AdminProjectEdit() {
   const [deliverablesStr, setDeliverablesStr] = useState('')
   const [saved, setSaved] = useState(false)
   const [syncFailed, setSyncFailed] = useState(false)
+  const [syncedFromStatic, setSyncedFromStatic] = useState(false)
   const [brief, setBrief] = useState('')
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError] = useState('')
@@ -227,6 +229,31 @@ export function AdminProjectEdit() {
     }
   }
 
+  // Pull latest field values from projects.js (static source) into form state.
+  // Preserves CMS-only flags like `hidden`. User must still click Save to persist.
+  const handleSyncFromStatic = () => {
+    const staticP = staticProjects.find(p => p.slug === project.slug)
+    if (!staticP) {
+      window.alert(`No static entry found in projects.js for slug "${project.slug}". Add one there first, then sync.`)
+      return
+    }
+    const current = project.title || project.slug
+    const ok = window.confirm(
+      `Pull latest "${current}" values from projects.js? Any unsaved admin edits here will be overwritten by the static version. You will still need to click Save to persist to the live site.`
+    )
+    if (!ok) return
+    const merged = { ...emptyProject, ...staticP, hidden: project.hidden }
+    setProject(merged)
+    setTagsStr(staticP.tags?.join(', ') || '')
+    setGalleryImages((staticP.images || []).map(img =>
+      typeof img === 'string' ? { url: img, caption: '' } : img
+    ))
+    setApproachStr(staticP.approach?.join('\n---\n') || '')
+    setDeliverablesStr(staticP.deliverables?.join('\n') || '')
+    setSyncedFromStatic(true)
+    setTimeout(() => setSyncedFromStatic(false), 3500)
+  }
+
   const handleSave = async () => {
     const final = {
       ...project,
@@ -268,16 +295,32 @@ export function AdminProjectEdit() {
                 {isNew ? 'New Case Study' : `Edit: ${project.title}`}
               </h1>
             </div>
-            <div className="flex flex-col items-end gap-1">
-              <button onClick={handleSave}
-                className={`label rounded-lg px-5 py-2.5 text-cream transition-all ${saved ? 'bg-emerald-500' : syncFailed ? 'bg-amber-500' : 'bg-accent hover:scale-[1.02]'}`}>
-                {saved ? '✓ Saved to cloud' : syncFailed ? '⚠ Saved locally only' : 'Save'}
-              </button>
-              {syncFailed && (
-                <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                  Cloud sync failed — check Supabase permissions
-                </p>
+            <div className="flex items-start gap-2">
+              {!isNew && (
+                <button
+                  onClick={handleSyncFromStatic}
+                  disabled={syncedFromStatic}
+                  title="Pull the latest values for this project from projects.js. Overwrites unsaved admin edits. You still need to click Save after."
+                  className={`label rounded-lg border px-4 py-2.5 text-sm transition-colors ${
+                    syncedFromStatic
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                      : 'border-black/10 text-ink hover:bg-black/5'
+                  }`}
+                >
+                  {syncedFromStatic ? '✓ Pulled from static' : 'Sync from static'}
+                </button>
               )}
+              <div className="flex flex-col items-end gap-1">
+                <button onClick={handleSave}
+                  className={`label rounded-lg px-5 py-2.5 text-cream transition-all ${saved ? 'bg-emerald-500' : syncFailed ? 'bg-amber-500' : 'bg-accent hover:scale-[1.02]'}`}>
+                  {saved ? '✓ Saved to cloud' : syncFailed ? '⚠ Saved locally only' : 'Save'}
+                </button>
+                {syncFailed && (
+                  <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                    Cloud sync failed — check Supabase permissions
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
