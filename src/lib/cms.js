@@ -111,6 +111,48 @@ const SCHEMA_VERSION = 'v6'
 // wipe the admin's own edits.
 const FORCE_RESET_SLUGS = []
 
+// ─── Snapshot safeguard ──────────────────────────────────────────────────────
+// Any migration that is about to mutate cms_projects first snapshots the current
+// state to both localStorage and Supabase under a timestamped key. If a migration
+// goes wrong (eg a force-reset wipes admin edits), restoreProjectBackup(key) can
+// put it back. Snapshots are not auto-pruned — they are small and recovery matters
+// more than storage neatness.
+function snapshotProjectsBeforeMigration(saved) {
+  if (!saved || !saved.length) return
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+  const backupKey = `cms_projects_backup_${timestamp}`
+  try {
+    lsSet(backupKey, saved)
+    // Fire-and-forget — if Supabase sync fails the localStorage copy still exists.
+    dbSet(backupKey, saved)
+    // Append to the local index so listProjectBackups can enumerate them.
+    const index = lsGet('cms_projects_backup_index', [])
+    index.push({ key: backupKey, timestamp, size: saved.length })
+    lsSet('cms_projects_backup_index', index)
+    dbSet('cms_projects_backup_index', index)
+    // eslint-disable-next-line no-console
+    console.info(`[CMS] pre-migration snapshot saved → ${backupKey}`)
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('[CMS] snapshot failed:', e)
+  }
+}
+
+export function listProjectBackups() {
+  return lsGet('cms_projects_backup_index', [])
+}
+
+// Restore a specific backup. Writes the backup's data to cms_projects
+// (both local and Supabase) with a fresh timestamp so initCMS doesn't
+// overwrite it on the next page load.
+export async function restoreProjectBackup(backupKey) {
+  const data = lsGet(backupKey, null) || await dbGet(backupKey)
+  if (!data) throw new Error(`Backup not found: ${backupKey}`)
+  lsSet(PROJECTS_KEY, data)
+  const cloudSynced = await dbSet(PROJECTS_KEY, data)
+  return { restored: data.length, cloudSynced }
+}
+
 // ─── Projects ─────────────────────────────────────────────────────────────────
 export function getProjects() {
   const currentVersion = lsGet(VERSION_KEY, null)
@@ -118,6 +160,8 @@ export function getProjects() {
 
   if (currentVersion !== SCHEMA_VERSION) {
     if (saved && saved.length) {
+      // Snapshot BEFORE any mutation so a bad migration can be rolled back.
+      snapshotProjectsBeforeMigration(saved)
       const merged = saved.map(savedP => {
         const staticP = staticProjects.find(p => p.slug === savedP.slug)
         if (!staticP) return savedP
