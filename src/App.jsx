@@ -7,6 +7,8 @@ import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
 import PageLoader from './components/PageLoader.jsx'
 import CustomCursor from './components/CustomCursor.jsx'
+import { MotionConfig } from 'framer-motion'
+import { useMotionPreference } from './lib/motion.js'
 import Home from './pages/Home.jsx'
 import NotFound from './pages/NotFound.jsx'
 
@@ -81,11 +83,12 @@ function AppRoutes() {
   }
 
   return (
-    <div className="grain min-h-screen bg-cream text-ink transition-colors dark:bg-dark-bg dark:text-dark-ink">
+    <div className={`public-portfolio grain min-h-screen bg-cream text-ink transition-colors dark:bg-dark-bg dark:text-dark-ink ${pathname === '/' ? 'is-home' : ''}`}>
       <PageLoader />
       <CustomCursor />
       <Nav />
-      <main>
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <main id="main-content" tabIndex={-1}>
         <Suspense fallback={<Spin />}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -100,11 +103,14 @@ function AppRoutes() {
 }
 
 export default function App() {
+  const reduced = useMotionPreference()
   return (
+    <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
     <ThemeProvider>
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>
     </ThemeProvider>
+    </MotionConfig>
   )
 }

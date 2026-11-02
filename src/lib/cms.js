@@ -270,19 +270,19 @@ export function deleteContact(id) {
 const defaultPages = {
   hero: {
     headline: 'Christopher\nAkpoguma',
-    subtitle: 'Product Designer turning complex ideas into interfaces people actually finish using. Four years across real estate, fintech, events, and consumer apps — with a specialty in Framer for production-ready prototypes and web.',
+    subtitle: 'I turn complex ideas into intuitive products. A little bold. A little unexpected. Always made for the person on the other side.',
     focus: 'Product design · Framer development',
     openTo: 'Full-time · Contract · Select freelance',
     cvUrl: '',
-    topImage: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&h=1200&fit=crop',
+    topImage: '/images/hero-top.jpg',
     topImageFocus: { x: 50, y: 50 },
-    bottomImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=1200&fit=crop',
+    bottomImage: '/images/hero-bottom.jpg',
     bottomImageFocus: { x: 50, y: 50 },
   },
   about: {
     heading: 'The Design Poet — with a straight job.',
     bio: `I am Christopher /kris+tuh+fuh/ — a Product Designer with a hunger for turning simple and complex ideas into engaging experiences.\n\nMy journey was set on the grounds of curiosity and a drive to modernise digital products. Along the way I have contributed my skills to over 15 projects across real estate, fintech, events, fashion, and travel.\n\nBeyond the pixels, I see design as a means of communicating what my mind dreams into what the user requires. I care how a button feels, but I care more about why someone needs the button at all.`,
-    photo: 'https://framerusercontent.com/images/JHDEnCL7px098imQz7F1WCGe8.jpg?width=1152&height=2047',
+    photo: '/images/hero-top.jpg',
   },
   contact: {
     heading: `Let's build\nsomething worth\nthe pixels.`,

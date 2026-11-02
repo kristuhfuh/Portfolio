@@ -6,7 +6,7 @@ export const experience = [
     start: 'Jul 2025',
     end: 'Present',
     description:
-      'Leading design for the Citizen App and Events platform across one of West Africa\'s largest mixed-use developments.',
+      'Leading design for the Citizen App and Events platform, and using AI to prototype and build as part of redesigning LEMA, the Landmark Enterprise Management System.',
   },
   {
     company: 'Eden Cloudwave',
@@ -59,4 +59,5 @@ export const recognition = [
   'Designed for 15+ projects across finance, real estate, events, fashion, and travel',
   'Work shipped to production across mobile apps, web platforms, and brand systems',
   'Specialized in Framer — interactive prototypes and production-ready web builds',
+  'AI-assisted prototyping and building websites and web apps, including work on LEMA',
 ]

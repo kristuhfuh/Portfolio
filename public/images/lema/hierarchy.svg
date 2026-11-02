@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100">
+ <rect width="1600" height="1100" fill="#e8dcf5"/>
+ <g font-family="Arial, sans-serif" fill="#34204d"><text x="70" y="90" font-size="22" letter-spacing="2">LEMA / INFORMATION HIERARCHY</text><text x="70" y="177" font-size="66" font-weight="600" letter-spacing="-2">The person comes first.</text>
+ <text x="70" y="275" font-size="22">BEFORE / FLAT METADATA</text><text x="760" y="275" font-size="22">AFTER / PROFILE-LED STRUCTURE</text>
+ <rect x="70" y="310" width="570" height="640" rx="12" fill="#f5f1e9"/>
+ <g font-size="25" fill="#706476"><text x="105" y="374">Employee details</text><text x="105" y="450">Name</text><text x="105" y="505">Department</text><text x="105" y="560">Role</text><text x="105" y="615">Account Active</text><text x="105" y="670">Employment Status</text><text x="105" y="725">Last Login</text><text x="105" y="780">First Login Done</text><text x="105" y="835">Direct Permissions</text><text x="105" y="890">…</text></g>
+ <rect x="760" y="310" width="770" height="640" rx="12" fill="#f5f1e9"/><circle cx="830" cy="390" r="35" fill="#6535c5"/><circle cx="830" cy="379" r="10" fill="#e8dcf5"/><path d="M812 409c0-24 36-24 36 0" fill="#e8dcf5"/>
+ <text x="890" y="380" font-size="36" font-weight="600">Employee profile</text><text x="890" y="423" font-size="22">Role · Department · Account state</text>
+ <path d="M795 466h700" stroke="#d1c2df"/>
+ <g font-size="26"><text x="800" y="530">Identity</text><text x="800" y="615">Organisation</text><text x="800" y="700">Access</text><text x="800" y="785">Activity</text></g>
+ <g stroke="#d1c2df"><path d="M800 550h690M800 635h690M800 720h690M800 805h690"/></g>
+ <rect x="800" y="846" width="690" height="62" rx="8" fill="#deed9c"/><text x="825" y="885" font-size="24">“Active · can sign in”</text>
+ <text x="70" y="1033" font-size="20">STRUCTURE DIAGRAM / Based on the implemented redesign</text></g>
+</svg>

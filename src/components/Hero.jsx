@@ -1,205 +1,86 @@
-import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
-import AvailabilityBadge from './AvailabilityBadge.jsx'
-import HeroImageBox from './HeroImageBox.jsx'
+import { useRef, useState } from 'react'
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
+import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
 import { getPageContent } from '../lib/cms.js'
+import { Arrow, Burst } from './DesignMarks.jsx'
 
-function richHtml(content = '') {
-  if (!content) return ''
-  if (/<[a-z][\s\S]*>/i.test(content)) return content
-  return content.split('\n\n').filter(Boolean).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')
-}
+const ease = [0.22, 1, 0.36, 1]
 
-function cvDownloadUrl(raw) {
-  if (!raw) return null
-  const match = raw.match(/\/file\/d\/([^/?#]+)/)
-  return match ? `https://drive.google.com/uc?export=download&id=${match[1]}` : raw
-}
+function HeroCollage({ hero }) {
+  const [casual, setCasual] = useState(false)
+  const reduced = useReducedMotion()
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const x = useSpring(mx, { stiffness: 100, damping: 22 })
+  const y = useSpring(my, { stiffness: 100, damping: 22 })
+  const rotate = useTransform(x, [-24, 24], [-3, 3])
 
-const rotatingWords = ['interfaces', 'systems', 'experiences', 'products', 'journeys']
+  function move(event) {
+    if (reduced || event.pointerType === 'touch') return
+    const rect = event.currentTarget.getBoundingClientRect()
+    mx.set(((event.clientX - rect.left) / rect.width - 0.5) * 44)
+    my.set(((event.clientY - rect.top) / rect.height - 0.5) * 30)
+  }
 
-function RotatingWord() {
-  const [index, setIndex] = useState(0)
-  useEffect(() => {
-    const interval = setInterval(() => setIndex(i => (i + 1) % rotatingWords.length), 2600)
-    return () => clearInterval(interval)
-  }, [])
   return (
-    <span className="relative inline-block">
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={rotatingWords[index]}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
-          className="inline-block italic text-accent"
-        >
-          {rotatingWords[index]}
-        </motion.span>
-      </AnimatePresence>
-    </span>
+    <div className="hero-collage" onPointerMove={move} onPointerLeave={() => { mx.set(0); my.set(0) }}>
+      <motion.div className="collage-art" style={reduced ? undefined : { x, y, rotate }} aria-hidden="true">
+        <img src="/images/design-poet-art.svg" alt="" fetchPriority="high" />
+        <span className="collage-art-caption">A little outside the lines.</span>
+      </motion.div>
+      <motion.figure className="collage-portrait" style={reduced ? undefined : { x, y }}>
+        <div className="collage-portrait-image"><img src={casual ? hero.bottomImage || '/images/hero-bottom.jpg' : hero.topImage || '/images/hero-top.jpg'} alt={casual ? 'Another side of Christopher Akpoguma' : 'Christopher Akpoguma'} style={{ objectPosition: `${(casual ? hero.bottomImageFocus : hero.topImageFocus)?.x ?? 50}% ${(casual ? hero.bottomImageFocus : hero.topImageFocus)?.y ?? 40}%` }} fetchPriority="high" /></div>
+        <figcaption><button type="button" onClick={() => setCasual(!casual)} aria-pressed={casual} aria-label="Show Christopher's other portrait"><span>{casual ? 'A little less buttoned up.' : 'Christopher, in real life.'}</span><span aria-hidden="true">↻</span></button></figcaption>
+      </motion.figure>
+      <motion.div className="collage-note" style={reduced ? undefined : { rotate }} aria-hidden="true">
+        <span>Made of</span><strong>curiosity<br />& a little<br /><em>chaos.</em></strong>
+        <svg viewBox="0 0 100 38" fill="none"><path d="M5 25C30-5 75 0 84 13c11 18-52 26-51 10C35 2 91 6 96 10" stroke="currentColor" strokeWidth="2" /></svg>
+      </motion.div>
+      <div className="collage-sticker" aria-hidden="true"><Burst /><span>100%<br />myself.</span></div>
+    </div>
   )
 }
 
 export default function Hero() {
   const ref = useRef(null)
+  const reduced = useReducedMotion()
+  const hero = getPageContent('hero')
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -70])
-  const imgY = useTransform(scrollYProgress, [0, 1], [0, 50])
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-  const opacity = useTransform(scrollYProgress, [0, 0.5], isMobile ? [1, 1] : [1, 0])
-
-  const heroContent = getPageContent('hero')
-  const cvUrl = cvDownloadUrl(heroContent.cvUrl)
+  const artY = useTransform(scrollYProgress, [0, 1], [0, -65])
+  const headline = 'Christopher Akpoguma'
+  const defaultIntro = 'I turn complex ideas into intuitive products. A little bold. A little unexpected. Always made for the person on the other side.'
+  const intro = !hero.subtitle || hero.subtitle.startsWith('Product Designer turning complex ideas into interfaces people actually finish using.') ? defaultIntro : hero.subtitle.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&')
+  const cvMatch = hero.cvUrl?.match(/\/file\/d\/([^/?#]+)/)
+  const cvUrl = cvMatch ? `https://drive.google.com/uc?export=download&id=${cvMatch[1]}` : hero.cvUrl
 
   return (
-    <section
-      ref={ref}
-      className="relative min-h-screen overflow-hidden pb-20 pt-32 md:pt-40"
-    >
-      {/* Very subtle dot grid */}
-      <div className="pointer-events-none absolute inset-0 dotted opacity-20 dark:opacity-10" />
-
-      <motion.div
-        style={{ y: textY, opacity }}
-        className="relative mx-auto max-w-[1400px] px-6 md:px-10"
-      >
-        {/* Top line: availability + name intro */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-8 flex flex-wrap items-center gap-4"
-        >
-          <AvailabilityBadge />
-          <span className="italic text-xl text-muted dark:text-dark-muted">
-            Hi, I'm Christopher —
-          </span>
-        </motion.div>
-
-        {/* Main hero grid: role text (left) + photo (right) */}
-        <div className="grid items-start gap-10 md:grid-cols-[1fr_400px] lg:grid-cols-[1fr_440px]">
-          {/* Left: MASSIVE role text */}
-          <div>
-            <motion.h1
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="display-hero text-[clamp(4.5rem,13vw,12rem)] leading-[0.87] text-ink dark:text-dark-ink"
-            >
-              {heroContent.headline
-                ? heroContent.headline.split('\n').map((line, i, arr) => (
-                    <span key={i}>
-                      {i === arr.length - 1
-                        ? <span className="text-accent">{line}</span>
-                        : line}
-                      {i < arr.length - 1 && <br />}
-                    </span>
-                  ))
-                : (<>Product<br /><span className="text-accent">Designer.</span></>)
-              }
-            </motion.h1>
-
-            {/* Description — uses CMS subtitle if set, otherwise fallback with RotatingWord */}
-            {heroContent.subtitle ? (
-              <motion.div
-                initial={{ opacity: 0, y: 22 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-9 max-w-[480px] text-lg leading-relaxed text-ink/72 dark:text-dark-ink/72 md:text-xl [&>p]:mb-3 [&>p:last-child]:mb-0"
-                dangerouslySetInnerHTML={{ __html: richHtml(heroContent.subtitle) }}
-              />
-            ) : (
-              <motion.p
-                initial={{ opacity: 0, y: 22 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-9 max-w-[480px] text-lg leading-relaxed text-ink/72 dark:text-dark-ink/72 md:text-xl"
-              >
-                I design <RotatingWord /> that people love to use — four years across
-                fintech, real estate, events &amp; apps, with a specialty in{' '}
-                <em className="italic text-accent">Framer</em> for production-ready web.
-              </motion.p>
-            )}
-
-            {/* CTA row */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.38, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-10 flex flex-wrap items-center gap-4"
-            >
-              <a
-                href="#contact"
-                data-track="hero-get-in-touch"
-                className="label inline-flex items-center gap-2.5 rounded-full bg-ink px-6 py-3.5 text-cream transition-[background-color,transform] duration-200 hover:bg-accent active:scale-[0.96] dark:bg-cream dark:text-ink dark:hover:bg-accent dark:hover:text-cream"
-              >
-                Get in Touch
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M13 5l7 7-7 7" />
-                </svg>
-              </a>
-              {cvUrl && (
-                <a
-                  href={cvUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  data-track="hero-download-cv"
-                  className="link-underline text-sm text-ink/60 transition-opacity hover:opacity-70 dark:text-dark-ink/60"
-                >
-                  Download CV
-                </a>
-              )}
-            </motion.div>
-
-            {/* Info pills */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.52, duration: 0.6 }}
-              className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-line pt-8 dark:border-dark-line"
-            >
-              {[
-                { label: 'Location', value: 'Lagos, Nigeria' },
-                { label: 'Focus', value: heroContent.focus || 'Product Design · Framer' },
-                { label: 'Open to', value: heroContent.openTo || 'Full-time · Contract' },
-              ].map(item => (
-                <div key={item.label}>
-                  <div className="label text-muted dark:text-dark-muted">{item.label}</div>
-                  <div className="mt-0.5 text-sm text-ink dark:text-dark-ink">{item.value}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Right: hero image box */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.88, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
-            style={{ y: imgY }}
-          >
-            <HeroImageBox />
+    <section ref={ref} className="poet-hero" aria-labelledby="hero-heading">
+      <div className="hero-topline">
+        <span><span className="availability-dot" />Open for a good collaboration</span>
+        <span>Lagos, NG <span className="hero-timezone">↗ Working everywhere</span></span>
+      </div>
+      <div className="hero-composition">
+        <div className="hero-copy">
+          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="hero-intro">
+            {headline}.<br /><span>Product designer. Framer developer. AI-assisted builder.</span>
+          </motion.p>
+          <h1 id="hero-heading" className="hero-title" aria-label="Design you can feel.">
+            <span className="hero-line"><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: 0.95, delay: 0.1, ease }}>Design you</motion.span></span>
+            <span className="hero-line hero-line-last"><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: 0.95, delay: 0.22, ease }}>can <em>feel.</em><Burst className="hero-title-burst" /></motion.span></span>
+          </h1>
+          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45, ease }} className="hero-bottom-copy">
+            <p>{intro}</p>
+            <div className="hero-actions">
+              <a href="#work" className="poet-button poet-button-lime" data-track="hero-view-work">Explore my work <Arrow /></a>
+              {cvUrl && <a href={cvUrl} target="_blank" rel="noreferrer" className="hero-cv" data-track="hero-download-cv">Get my CV ↗</a>}
+            </div>
           </motion.div>
         </div>
-
-        {/* Scroll cue */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.1, duration: 0.7 }}
-          className="mt-16 flex items-center gap-3 text-muted dark:text-dark-muted"
-        >
-          <span className="animate-float inline-block" style={{ animationDuration: '1.6s' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-          </span>
-          <span className="label">Scroll to see the work</span>
+        <motion.div className="hero-art-stage" initial={{ opacity: 0, scale: 0.9, rotate: reduced ? 0 : 5 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 1.1, delay: 0.2, ease }} style={reduced ? undefined : { y: artY }}>
+          <HeroCollage hero={hero} />
         </motion.div>
-      </motion.div>
+      </div>
+      <div className="hero-footnote"><span>Strategy in the head. Feeling in the pixels.</span><a href="#work">Take a little scroll <span>↓</span></a></div>
     </section>
   )
 }

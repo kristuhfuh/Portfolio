@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <defs><pattern id="lines" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M0 12h24" stroke="#f5b9d1" stroke-width="2"/></pattern><clipPath id="crop"><path d="M0 0h800v1000H0z"/></clipPath></defs>
+  <g clip-path="url(#crop)">
+    <path fill="#f27b3f" d="M0 0h800v1000H0z"/><path fill="#342053" d="M0 0h400v500H0z"/><path fill="#e9d6fa" d="M400 500h400v500H400z"/>
+    <circle cx="400" cy="500" r="295" fill="#c7d96f"/><circle cx="400" cy="500" r="225" fill="#342053"/><circle cx="400" cy="500" r="155" fill="#f5b9d1"/><circle cx="400" cy="500" r="85" fill="#f27b3f"/>
+    <path fill="url(#lines)" d="M0 710h285v290H0z"/><path d="M530 50v215m-107-107h215m-184-76 151 151m0-151L454 233" stroke="#e9d6fa" stroke-width="32"/>
+    <path d="M75 120c0-52 118-52 118 0s-118 52-118 0Zm0 75c0-52 118-52 118 0s-118 52-118 0Zm0 75c0-52 118-52 118 0s-118 52-118 0Z" fill="none" stroke="#f27b3f" stroke-width="9"/>
+    <path d="M485 842h235m-117-118v235" stroke="#7050c4" stroke-width="22"/>
+  </g>
+</svg>

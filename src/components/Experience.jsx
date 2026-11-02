@@ -1,8 +1,10 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { useMotionPreference } from '../lib/motion.js'
 import { experience } from '../data/experience.js'
 
 export default function Experience() {
+  const reduced = useMotionPreference()
   const sectionRef = useRef(null)
   const listRef = useRef(null)
 
@@ -32,7 +34,7 @@ export default function Experience() {
           {/* Left — sticky heading */}
           <div className="md:col-span-4">
             <div className="md:sticky md:top-32">
-              <motion.div style={{ y: headingY }}>
+              <motion.div style={reduced ? undefined : { y: headingY }}>
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -97,7 +99,7 @@ export default function Experience() {
               <div className="absolute left-[11px] top-0 bottom-0 w-px overflow-hidden bg-line dark:bg-dark-line">
                 <motion.div
                   className="absolute left-0 right-0 top-0 bg-accent"
-                  style={{ scaleY: lineScaleY, transformOrigin: 'top center', bottom: 0 }}
+                  style={{ scaleY: reduced ? 1 : lineScaleY, transformOrigin: 'top center', bottom: 0 }}
                 />
               </div>
 

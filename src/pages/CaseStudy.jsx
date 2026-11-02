@@ -4,17 +4,15 @@ import { useEffect, useState, useRef } from 'react'
 import { getProjectBySlug as getProject, getProjects, normalizeDriveUrl } from '../lib/cms.js'
 import { projects as staticProjects } from '../data/projects.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
+import CaseStudyOverview from '../components/CaseStudyOverview.jsx'
+import { getCaseStudyNotes, hasDraftText } from '../data/caseStudyNotes.js'
+import { formatCaseStudyText } from '../lib/caseStudyText.js'
+import { useMotionPreference } from '../lib/motion.js'
+import { lemaProject } from '../data/lema.js'
+import CaseStudyComparisons from '../components/CaseStudyComparisons.jsx'
 
 // Renders CMS text that may be plain (uses \n\n) or HTML (from RichTextField)
-function richHtml(content = '') {
-  if (!content) return ''
-  if (/<[a-z][\s\S]*>/i.test(content)) return content
-  return content
-    .split('\n\n')
-    .filter(Boolean)
-    .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
-    .join('')
-}
+const richHtml = formatCaseStudyText
 
 function getNextProject(slug) {
   const projects = getProjects()
@@ -29,9 +27,9 @@ const fadeUp = {
 }
 
 // ─── Story section (sticky heading + rich body) ───
-function StoryBlock({ label, heading, accent, children }) {
+function StoryBlock({ label, heading, accent, children, id }) {
   return (
-    <section className="border-t border-line py-20 dark:border-dark-line md:py-28">
+    <section id={id} className="case-prose border-t border-line py-20 dark:border-dark-line md:py-28">
       <div className="mx-auto grid max-w-[1400px] gap-14 px-6 md:grid-cols-12 md:gap-10 md:px-10">
         <div className="md:col-span-4">
           <div className="sticky top-32">
@@ -80,7 +78,8 @@ function PullQuote({ quote, accent }) {
 
 // ─── Outcome stats grid — animated counters ───
 function OutcomeStats({ stats, accent, intro, label, heading }) {
-  if (!stats?.length) return null
+  const publishedStats = (stats || []).filter(stat => !hasDraftText(stat.value) && !hasDraftText(stat.label))
+  if (!publishedStats.length) return null
   return (
     <section className="relative overflow-hidden border-t border-line bg-ink py-24 text-cream dark:border-dark-line dark:bg-cream dark:text-ink md:py-32">
 
@@ -100,7 +99,7 @@ function OutcomeStats({ stats, accent, intro, label, heading }) {
         </div>
 
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-cream/10 dark:bg-ink/10 md:grid-cols-3">
-          {stats.map((stat, i) => (
+          {publishedStats.map((stat, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -175,7 +174,7 @@ function Deliverables({ items, accent }) {
 
 // ─── Reception callout — small but punchy ───
 function Reception({ quote, accent }) {
-  if (!quote) return null
+  if (!quote || hasDraftText(quote)) return null
   return (
     <section className="border-t border-line py-20 dark:border-dark-line">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
@@ -250,12 +249,12 @@ function Principles({ principles, accent }) {
 function Chapters({ chapters, accent, projectTitle }) {
   if (!chapters?.length) return null
   return (
-    <section className="border-t border-line py-20 dark:border-dark-line md:py-28">
+    <section id="process" className="case-prose border-t border-line py-20 dark:border-dark-line md:py-28">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <div className="mb-16 max-w-3xl">
           <div className="label mb-4 text-muted dark:text-dark-muted">The work, chapter by chapter</div>
           <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
-            Eight decisions, shown.
+            The decisions, in the details.
           </h2>
         </div>
         <div className="flex flex-col gap-16 md:gap-24">
@@ -328,7 +327,7 @@ function Chapters({ chapters, accent, projectTitle }) {
 function DecisionsTable({ decisions, accent }) {
   if (!decisions?.length) return null
   return (
-    <section className="border-t border-line py-20 dark:border-dark-line md:py-28">
+    <section id="decisions" className="border-t border-line py-20 dark:border-dark-line md:py-28">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <div className="mb-14 max-w-3xl">
           <div className="label mb-4 text-muted dark:text-dark-muted">Decisions and trade-offs</div>
@@ -393,6 +392,7 @@ function normalizeImages(images) {
 
 // ─── Image gallery — auto-slideshow + Apple-style thumbnail strip ───
 function ImageGallery({ images: rawImages, title, accent }) {
+  const reduced = useMotionPreference()
   const images = normalizeImages(rawImages)
   const [activeIdx, setActiveIdx] = useState(0)
   const [paused, setPaused] = useState(false)
@@ -415,21 +415,16 @@ function ImageGallery({ images: rawImages, title, accent }) {
 
   // Image timer — skipped for video slides
   useEffect(() => {
-    if (paused || isVideo || images.length <= 1) return
+    if (reduced || paused || isVideo || images.length <= 1) return
     const t = setInterval(advance, imageInterval)
     return () => clearInterval(t)
-  }, [paused, isVideo, images.length, imageInterval, activeIdx])
-
-  // Resume 8 s after last manual interaction
-  useEffect(() => {
-    if (!paused) return
-    const t = setTimeout(() => setPaused(false), 8000)
-    return () => clearTimeout(t)
-  }, [paused, activeIdx])
+  }, [reduced, paused, isVideo, images.length, imageInterval, activeIdx])
 
   // Keyboard nav
   useEffect(() => {
     const onKey = (e) => {
+      if (!e.target.closest('[data-case-gallery]')) return
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') e.preventDefault()
       if (e.key === 'ArrowLeft') prev()
       if (e.key === 'ArrowRight') next()
     }
@@ -443,8 +438,8 @@ function ImageGallery({ images: rawImages, title, accent }) {
     const thumb = activeThumbRef.current
     if (!container || !thumb) return
     const offset = thumb.offsetLeft - container.clientWidth / 2 + thumb.clientWidth / 2
-    container.scrollTo({ left: offset, behavior: 'smooth' })
-  }, [activeIdx])
+    container.scrollTo({ left: offset, behavior: reduced ? 'instant' : 'smooth' })
+  }, [activeIdx, reduced])
 
   if (!images || images.length === 0) return null
 
@@ -455,7 +450,7 @@ function ImageGallery({ images: rawImages, title, accent }) {
   }
 
   return (
-    <section className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
+    <section data-case-gallery tabIndex={0} aria-label="Project images. Use the left and right arrow keys to browse." className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
       {/* Header */}
       <div className="label mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2 text-muted dark:text-dark-muted">
@@ -598,29 +593,34 @@ function ImageGallery({ images: rawImages, title, accent }) {
 
 // ─── Main case study page ───
 export default function CaseStudy() {
+  const reduced = useMotionPreference()
   const { slug } = useParams()
-  const project = getProject(slug)
+  const project = getProject(slug) || (slug === lemaProject.slug ? lemaProject : null)
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0])
   const heroY = useTransform(scrollYProgress, [0, 1], [0, -80])
 
-  useEffect(() => { window.scrollTo(0, 0) }, [slug])
+  useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [slug])
 
   if (!project) return <Navigate to="/" replace />
+  const notes = getCaseStudyNotes(project)
+  const decisions = project.decisions?.length ? project.decisions : notes.decisions
+  const wordCount = [project.overview, project.challenge, project.outcome, project.reflection, ...(project.approach || []), ...(project.chapters || []).map(c => c.body)].join(' ').replace(/<[^>]*>/g, '').split(/\s+/).length
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200))
   const next = getNextProject(slug)
   const accent = project.accent || '#6D28D9'
 
   return (
-    <article>
+    <article className="poet-case-study" key={slug}>
       {/* ─── Hero with hook ─── */}
       <section ref={heroRef} className="relative overflow-hidden pb-12 pt-36 md:pb-20 md:pt-48">
         <div className="pointer-events-none absolute inset-0 dotted opacity-30" />
 
-        <motion.div style={{ opacity: heroOpacity, y: heroY }} className="relative mx-auto max-w-[1400px] px-6 md:px-10">
+        <motion.div style={reduced ? undefined : { opacity: heroOpacity, y: heroY }} className="relative mx-auto max-w-[1400px] px-6 md:px-10">
           <motion.div initial="hidden" animate="show" variants={fadeUp}>
             <div className="label mb-6 flex items-center gap-3 text-muted dark:text-dark-muted">
-Case study {project.number} · {project.year}
+Case study {project.number} · {project.year} · {readingTime} min read
             </div>
 
             <h1 className="display-hero text-[clamp(2.8rem,9vw,8rem)] text-ink dark:text-dark-ink">
@@ -644,7 +644,7 @@ Case study {project.number} · {project.year}
             ]
             return (
               <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-line pt-8 dark:border-dark-line md:grid-cols-3 lg:gap-x-10">
-                {rows.map(([label, value]) => (
+                {rows.filter(([, value]) => value).map(([label, value]) => (
                   <div key={label} className="min-w-0">
                     <dt className="label flex items-center gap-2 text-muted dark:text-dark-muted">
                       {label}
@@ -686,26 +686,8 @@ Case study {project.number} · {project.year}
         </motion.div>
       </section>
 
-      {/* ─── Hook statement (huge editorial type) ─── */}
-      {project.hook && (
-        <section className="border-y border-line py-24 dark:border-dark-line md:py-36">
-          <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-20%' }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="label mb-6 flex items-center gap-2 text-muted dark:text-dark-muted">
-    The brief, in one line
-              </div>
-              <p className="display-hero max-w-5xl text-[clamp(1.75rem,3.5vw,3.25rem)] leading-[1.15] text-ink dark:text-dark-ink">
-                {project.hook}
-              </p>
-            </motion.div>
-          </div>
-        </section>
-      )}
+      <nav className="case-story-nav" aria-label="Case study sections"><a href="#snapshot">The short version</a><a href="#problem">The problem</a>{(project.chapters?.length > 0 || project.approach?.length > 0) && <a href="#process">My process</a>}{decisions?.length > 0 && <a href="#decisions">Key decisions</a>}<a href="#results">Results & lessons</a></nav>
+      <CaseStudyOverview project={project} />
 
       {/* ─── Cover image ─── */}
       <section className="mx-auto max-w-[1400px] px-6 md:px-10 md:pt-8">
@@ -721,6 +703,7 @@ Case study {project.number} · {project.year}
             viewport={{ once: true }}
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
             src={normalizeDriveUrl(project.cover)}
+            style={{ viewTransitionName: `project-${project.slug}` }}
             alt={project.title}
             className="h-auto w-full object-cover"
             loading="eager"
@@ -738,7 +721,7 @@ Case study {project.number} · {project.year}
       </section>
 
       {/* ─── The story: overview ─── */}
-      <StoryBlock label="Overview" heading="The setup." accent={accent}>
+      <StoryBlock label="Context and collaboration" heading="The brief. My part in it." accent={accent}>
         <div
           className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
           dangerouslySetInnerHTML={{ __html: richHtml(project.overview) }}
@@ -746,7 +729,7 @@ Case study {project.number} · {project.year}
       </StoryBlock>
 
       {/* ─── Challenge ─── */}
-      <StoryBlock label="The tension" heading="What had to change." accent={accent}>
+      <StoryBlock id="problem" label="Problem framing" heading="What had to change." accent={accent}>
         <div
           className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
           dangerouslySetInnerHTML={{ __html: richHtml(project.challenge) }}
@@ -768,7 +751,7 @@ Case study {project.number} · {project.year}
 
       {/* ─── Approach (legacy projects only) ─── */}
       {project.approach?.length > 0 && (
-        <StoryBlock label="The work" heading="How it came together." accent={accent}>
+        <StoryBlock id="process" label="Process and iteration" heading="How I got there." accent={accent}>
           <ol className="space-y-0">
             {project.approach.map((step, i) => (
               <motion.li
@@ -792,9 +775,11 @@ Case study {project.number} · {project.year}
         </StoryBlock>
       )}
 
+      <DecisionsTable decisions={decisions} accent={accent} />
+
       {/* ─── Outcome prose (legacy projects only) ─── */}
       {project.outcome && (
-        <StoryBlock label="What shipped" heading="The result." accent={accent}>
+        <StoryBlock id="results" label="Results and delivery" heading="What changed." accent={accent}>
           <div
             className="space-y-5 text-lg leading-relaxed text-ink/85 dark:text-dark-ink/85 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
             dangerouslySetInnerHTML={{ __html: richHtml(project.outcome) }}
@@ -802,21 +787,19 @@ Case study {project.number} · {project.year}
         </StoryBlock>
       )}
 
-      {/* ─── Decisions and trade-offs (public) ─── */}
-      <DecisionsTable decisions={project.decisions} accent={accent} />
+      <CaseStudyComparisons items={project.comparisons} />
 
       {/* ─── Deliverables list (legacy projects only) ─── */}
       <Deliverables items={project.deliverables} accent={accent} />
 
       {/* ─── Outcome stats grid — honest status framing when project.statusNote is set ─── */}
+      <div id={project.outcome ? undefined : 'results'} className="case-results-anchor" />
       <OutcomeStats
         stats={project.outcomeStats}
         accent={accent}
         intro={project.statusNote}
-        label={project.statusNote ? '✦ Status and results' : undefined}
-        heading={project.statusNote ? (
-          <>What LCA 3.0 covers.</>
-        ) : undefined}
+        label="✦ Scope of the design delivery"
+        heading="What the work covers."
       />
 
       {/* ─── Reception callout (legacy projects only) ─── */}

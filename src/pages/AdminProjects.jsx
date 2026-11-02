@@ -6,6 +6,8 @@ import { projects as staticProjects } from '../data/projects.js'
 import RichTextField from '../components/RichTextField.jsx'
 import GalleryImageManager from '../components/GalleryImageManager.jsx'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
+import { getCaseStudyNotes } from '../data/caseStudyNotes.js'
+import { lemaProject } from '../data/lema.js'
 
 // ─── Projects List ───
 export function AdminProjects() {
@@ -30,6 +32,7 @@ export function AdminProjects() {
             {projects.length} projects · {projects.filter(p => !p.hidden).length} visible
           </p>
         </div>
+        {!projects.some(p => p.slug === lemaProject.slug) && <Link to="/admin/projects/lema" className="label ml-auto mr-4 rounded-lg border border-line px-4 py-2.5 text-ink">Edit LEMA case study</Link>}
         <Link to="/admin/projects/new"
           className="label inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-cream transition-transform hover:scale-[1.02]">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
@@ -142,7 +145,7 @@ export function AdminProjectEdit() {
 
   useEffect(() => {
     if (!isNew) {
-      const p = getProjectBySlug(slug)
+      const p = getProjectBySlug(slug) || (slug === lemaProject.slug ? lemaProject : null)
       if (p) {
         setProject({ ...emptyProject, ...p })
         setTagsStr(p.tags?.join(', ') || '')
@@ -280,6 +283,7 @@ export function AdminProjectEdit() {
   const previewTags = tagsStr.split(',').map(t => t.trim()).filter(Boolean)
   const previewDeliverables = deliverablesStr.split('\n').map(s => s.trim()).filter(Boolean)
   const previewApproach = approachStr.split('\n---\n').map(s => s.trim()).filter(Boolean)
+  const shortVersion = getCaseStudyNotes(project)
 
   return (
     <div className="flex gap-0 min-h-screen -m-8">
@@ -325,6 +329,13 @@ export function AdminProjectEdit() {
           </div>
 
           <div className="space-y-6 rounded-2xl border border-line bg-white/60 p-6 backdrop-blur md:p-8">
+            <fieldset className="space-y-4 rounded-xl border border-line p-4">
+              <legend className="px-2 font-medium text-ink">The short version</legend>
+              <p className="text-xs text-muted">A quick introduction for people reviewing your work. Describe your own contribution and distinguish design delivery from measured results.</p>
+              {[
+                ['audience', 'Designed for'], ['problem', 'The problem'], ['contribution', 'My contribution'], ['result', 'The result'], ['constraint', 'The constraint'], ['evidence', 'What the evidence supports'],
+              ].map(([key, label]) => <Field key={key} label={label}><textarea className={textareaCls} value={shortVersion[key] || ''} onChange={e => update('recruiterSummary', { ...(project.recruiterSummary || {}), [key]: e.target.value })} /></Field>)}
+            </fieldset>
             <div className="grid gap-6 md:grid-cols-2">
               <Field label="Title"><input className={inputCls} value={project.title} onChange={e => update('title', e.target.value)} /></Field>
               <Field label="Slug"><input className={inputCls} value={project.slug} onChange={e => update('slug', e.target.value)} placeholder="auto-generated" /></Field>

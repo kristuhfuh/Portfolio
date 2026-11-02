@@ -9,21 +9,23 @@ import About from '../components/About.jsx'
 import BeyondPixels from '../components/BeyondPixels.jsx'
 import WorkGallery from '../components/ContactGallery.jsx'
 import Contact from '../components/Contact.jsx'
+import BuildLab from '../components/BuildLab.jsx'
 
 export default function Home() {
   return (
-    <>
+    <div className="portfolio-home">
       <Hero />
       <Marquee />
       <Statement />
       <Work />
       <OtherDesigns />
+      <BuildLab />
       <Process />
       <Experience />
       <About />
       <BeyondPixels />
       <WorkGallery />
       <Contact />
-    </>
+    </div>
   )
 }

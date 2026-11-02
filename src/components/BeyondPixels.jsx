@@ -1,14 +1,17 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { useMotionPreference } from '../lib/motion.js'
 import { getBeyondPixels } from '../lib/cms.js'
 
 function PixelBox({ item, index }) {
+  const reduced = useMotionPreference()
   const videoRef = useRef(null)
   const [hovering, setHovering] = useState(false)
   const [muted, setMuted] = useState(true)
   const hasVideo = !!item.video
 
-  const handleEnter = () => {
+  const handleEnter = (manual = false) => {
+    if (reduced && !manual) return
     setHovering(true)
     if (hasVideo && videoRef.current) {
       videoRef.current.currentTime = 0
@@ -43,14 +46,14 @@ function PixelBox({ item, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-5%' }}
       transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative aspect-[3/4] cursor-pointer overflow-hidden rounded-2xl border border-line dark:border-dark-line"
-      onMouseEnter={handleEnter}
+      className="pixel-box group relative aspect-[3/4] cursor-pointer overflow-hidden"
+      onMouseEnter={() => handleEnter(false)}
       onMouseLeave={handleLeave}
-      onClick={handleTap}
     >
       <img
         src={item.image}
         alt={item.label}
+        loading="lazy"
         className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ${
           hovering && hasVideo ? 'scale-110 opacity-0' : 'scale-100 opacity-100'
         }`}
@@ -76,12 +79,14 @@ function PixelBox({ item, index }) {
         <span className="label text-cream/90">{item.label}</span>
       </div>
 
+      {hasVideo && <button type="button" className="absolute inset-0 z-10" aria-label={`${hovering ? 'Pause' : 'Play'} ${item.label} video`} aria-pressed={hovering} onClick={() => hovering ? handleLeave() : handleEnter(true)} />}
+
       {hasVideo && hovering && (
         <motion.button
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           onClick={(e) => { e.stopPropagation(); toggleMute(e) }}
-          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-cream backdrop-blur-sm transition-transform hover:scale-110"
+          className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/50 text-cream backdrop-blur-sm transition-transform hover:scale-110"
           aria-label={muted ? 'Unmute' : 'Mute'}
         >
           {muted ? (
@@ -109,7 +114,7 @@ export default function BeyondPixels() {
   const items = getBeyondPixels()
 
   return (
-    <section className="border-t border-line py-24 dark:border-dark-line md:py-32">
+    <section className="poet-beyond py-24 md:py-32">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
 
         {/* Header */}

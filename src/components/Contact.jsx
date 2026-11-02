@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
 import AvailabilityBadge from './AvailabilityBadge.jsx'
 import { addContact, getPageContent } from '../lib/cms.js'
 
@@ -18,22 +19,21 @@ const links = [
 // Line-curtain reveal — line of text slides up from below its own clip
 function LineReveal({ children, delay = 0, className = '' }) {
   return (
-    <span className={`block overflow-hidden ${className}`} style={{ lineHeight: 1.1 }}>
+    <motion.span className={`block overflow-hidden ${className}`} style={{ lineHeight: 1.1 }} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-5%' }}>
       <motion.span
         className="block"
-        initial={{ y: '106%' }}
-        whileInView={{ y: '0%' }}
-        viewport={{ once: true, margin: '-5%' }}
+        variants={{ hidden: { y: '106%' }, visible: { y: '0%' } }}
         transition={{ delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
       </motion.span>
-    </span>
+    </motion.span>
   )
 }
 
 // Magnetic CTA button — follows cursor within hover zone
 function MagneticButton({ children, href, className = '' }) {
+  const reduced = useReducedMotion()
   const btnRef = useRef(null)
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -41,7 +41,7 @@ function MagneticButton({ children, href, className = '' }) {
   const sy = useSpring(my, { stiffness: 350, damping: 28 })
 
   const onMove = (e) => {
-    if (!btnRef.current) return
+    if (!btnRef.current || reduced) return
     const rect = btnRef.current.getBoundingClientRect()
     mx.set((e.clientX - rect.left - rect.width / 2) * 0.32)
     my.set((e.clientY - rect.top - rect.height / 2) * 0.32)
@@ -52,7 +52,7 @@ function MagneticButton({ children, href, className = '' }) {
     <motion.a
       ref={btnRef}
       href={href}
-      style={{ x: sx, y: sy }}
+      style={reduced ? undefined : { x: sx, y: sy }}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       className={className}
@@ -93,12 +93,12 @@ export default function Contact() {
   }
 
   const inputCls =
-    'w-full rounded-xl border border-cream/12 bg-cream/6 px-4 py-3.5 text-sm text-cream outline-none placeholder:text-cream/28 transition-[border-color,box-shadow] duration-200 focus:border-accentSoft focus:shadow-[0_0_0_3px_rgba(167,139,250,0.14)] dark:border-ink/10 dark:bg-ink/5 dark:text-ink dark:placeholder:text-ink/28 dark:focus:border-accent'
+    'contact-input w-full text-sm outline-none transition-[border-color,box-shadow] duration-200'
 
   return (
     <section
       id="contact"
-      className="relative overflow-hidden border-t border-line bg-ink text-cream dark:border-dark-line dark:bg-cream dark:text-ink"
+      className="poet-contact relative overflow-hidden"
     >
       {/* Decorative spinning ring */}
       <div className="pointer-events-none absolute right-10 top-16 hidden opacity-[0.06] md:block">
@@ -212,6 +212,9 @@ export default function Contact() {
                 <input
                   className={inputCls}
                   placeholder="Your name"
+                  aria-label="Your name"
+                  name="name"
+                  autoComplete="name"
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
                   required
@@ -220,6 +223,9 @@ export default function Contact() {
                   className={inputCls}
                   type="email"
                   placeholder="Your email"
+                  aria-label="Your email"
+                  name="email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={e => setForm({ ...form, email: e.target.value })}
                   required
@@ -227,6 +233,8 @@ export default function Contact() {
                 <textarea
                   className={inputCls + ' min-h-[130px] resize-y'}
                   placeholder="Your message"
+                  aria-label="Your message"
+                  name="message"
                   value={form.message}
                   onChange={e => setForm({ ...form, message: e.target.value })}
                   required
@@ -259,7 +267,7 @@ export default function Contact() {
             transition={{ duration: 0.7, delay: 0.22 }}
             className="md:col-span-6 md:col-start-7"
           >
-            <ul className="border-t border-cream/10 dark:border-ink/10">
+            <ul className="contact-links border-t border-cream/10 dark:border-ink/10">
               {links.map((l, idx) => {
                 const value = content[l.key] || ''
                 const href = l.prefix ? l.prefix + value : value

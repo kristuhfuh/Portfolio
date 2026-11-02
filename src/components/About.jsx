@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
 import { tools, recognition } from '../data/experience.js'
 import { getPageContent } from '../lib/cms.js'
 
@@ -14,6 +15,7 @@ function richHtml(content = '') {
 }
 
 export default function About() {
+  const reduced = useReducedMotion()
   const sectionRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -23,12 +25,13 @@ export default function About() {
   const photoScale = useTransform(scrollYProgress, [0, 0.4], [1.05, 1])
 
   const content = getPageContent('about')
+  const photo = content.photo?.includes('JHDEnCL7px098imQz7F1WCGe8') ? (getPageContent('hero').topImage || '/images/hero-top.jpg') : content.photo
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="border-t border-line py-24 dark:border-dark-line md:py-32"
+      className="poet-about py-24 md:py-32"
     >
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         {/* Section label */}
@@ -60,17 +63,18 @@ export default function About() {
           {/* Left: photo */}
           <div className="md:col-span-5">
             <motion.div
-              style={{ y: photoY }}
-              className="overflow-hidden rounded-3xl border border-line dark:border-dark-line"
+              style={reduced ? undefined : { y: photoY }}
+              className="poet-about-photo overflow-hidden"
             >
               <motion.img
-                style={{ scale: photoScale }}
+                style={reduced ? undefined : { scale: photoScale }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-                src={content.photo}
+                src={photo}
                 alt="Christopher Akpoguma"
+                loading="lazy"
                 className="h-auto max-h-[580px] w-full object-cover object-top"
               />
             </motion.div>
@@ -87,6 +91,7 @@ export default function About() {
               className="text-lg leading-relaxed text-ink/82 dark:text-dark-ink/82 [&>p]:mb-5 [&>p:last-child]:mb-0"
               dangerouslySetInnerHTML={{ __html: richHtml(content.bio) }}
             />
+            <p className="mt-6 text-lg leading-relaxed">My practice also goes from design into making. I use AI to prototype ideas and build websites and web apps — including while redesigning LEMA, Landmark's Enterprise Management System.</p>
 
             {/* Tools */}
             <motion.div

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+ <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="m0 0 9 5-9 5" fill="none" stroke="#6535c5" stroke-width="1.5"/></marker></defs>
+ <rect width="1600" height="1000" fill="#e8dcf5"/>
+ <g font-family="Arial, sans-serif" fill="#34204d"><text x="70" y="85" font-size="22" letter-spacing="2">LEMA / IMPLEMENTATION AND FAILURE PATHS</text><text x="70" y="185" font-size="65" font-weight="600" letter-spacing="-2">A form still needs to submit.</text>
+ <rect x="70" y="310" width="430" height="300" rx="12" fill="#6535c5"/><g fill="#f5f1e9"><text x="108" y="380" font-size="23">CRITICAL FLOWS</text><text x="108" y="450" font-size="34">Leave request</text><text x="108" y="505" font-size="34">IT support</text><text x="108" y="560" font-size="34">Point logs</text></g>
+ <rect x="770" y="270" width="760" height="145" rx="12" fill="#f5f1e9"/><text x="810" y="330" font-size="30">Livewire interaction</text><text x="810" y="376" font-size="23">Bound interface behaviour</text>
+ <rect x="770" y="505" width="760" height="145" rx="12" fill="#deed9c"/><text x="810" y="565" font-size="30">Native POST fallback</text><text x="810" y="611" font-size="23">CSRF-protected submission when binding fails</text>
+ <path d="M70 750h1460" stroke="#34204d" stroke-opacity=".3"/><text x="70" y="820" font-size="30">Shared skeletons + progress feedback</text><text x="70" y="874" font-size="24">Make loading visible across the redesigned panel.</text><text x="70" y="950" font-size="19">IMPLEMENTATION DIAGRAM / From the redesign's reported behaviour</text></g>
+ <g fill="none" stroke="#6535c5" stroke-width="4" marker-end="url(#a)"><path d="M515 460h110V342h130M625 460v117h130"/></g>
+</svg>

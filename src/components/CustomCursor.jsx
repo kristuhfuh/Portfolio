@@ -5,21 +5,30 @@ export default function CustomCursor() {
   const innerRef = useRef(null)
 
   useEffect(() => {
-    if (window.innerWidth < 1024) return
-
     const outer = outerRef.current
     const inner = innerRef.current
     if (!outer || !inner) return
-
+    const media = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)')
+    const sync = () => {
+      document.documentElement.classList.toggle('custom-cursor-active', media.matches)
+      outer.style.opacity = '0'
+    }
+    sync()
+    media.addEventListener('change', sync)
     const INTERACTIVE = 'a, button, [role="button"], input, textarea, select, label'
     let isHovering = false
 
     const onMove = (e) => {
+      if (!media.matches) return
+      outer.style.opacity = '1'
       outer.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
     }
 
     const onOver = (e) => {
       const nowHovering = !!e.target.closest(INTERACTIVE)
+      const project = e.target.closest('.project-link')
+      const frame = e.target.closest('.gallery-card')
+      outer.dataset.label = project ? 'Explore ↗' : frame ? 'Take a look ↗' : ''
       if (nowHovering !== isHovering) {
         isHovering = nowHovering
         outer.classList.toggle('cursor-hovering', isHovering)
@@ -36,6 +45,8 @@ export default function CustomCursor() {
     window.addEventListener('mouseup',   onUp)
 
     return () => {
+      document.documentElement.classList.remove('custom-cursor-active')
+      media.removeEventListener('change', sync)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseover', onOver)
       window.removeEventListener('mousedown', onDown)
@@ -46,8 +57,8 @@ export default function CustomCursor() {
   return (
     <div
       ref={outerRef}
-      className="pointer-events-none fixed left-0 top-0 z-[9999] hidden lg:block"
-      style={{ willChange: 'transform' }}
+      className="poet-cursor pointer-events-none fixed left-0 top-0 z-[9999] hidden lg:block"
+      style={{ willChange: 'transform', opacity: 0 }}
     >
       <div ref={innerRef} className="cursor-inner">
         <svg
