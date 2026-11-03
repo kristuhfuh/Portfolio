@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { loadContacts, markContactRead, deleteContact } from '../lib/cms.js'
+import { getContacts, loadContacts, markContactRead, deleteContact } from '../lib/cms.js'
 
 function Avatar({ name }) {
   return (
@@ -15,9 +15,17 @@ export default function AdminContacts() {
   const [selected, setSelected] = useState(null)
   const [loading, setLoading]   = useState(true)
   const [query, setQuery] = useState('')
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(null)
+  async function reload() {
+    setLoading(true); setError('')
+    try { setContacts(await loadContacts()) }
+    catch (failure) { setError(failure.message); setContacts(getContacts()) }
+    finally { setLoading(false) }
+  }
 
   useEffect(() => {
-    loadContacts().then(data => { setContacts(data); setLoading(false) })
+    reload()
   }, [])
 
   const unread = contacts.filter(c => !c.read).length
@@ -33,19 +41,24 @@ export default function AdminContacts() {
       })
     : contacts
 
-  const handleSelect = (c) => {
+  const handleSelect = async (c) => {
+    if (busy) return
     setSelected(c)
     if (!c.read) {
-      const updated = markContactRead(c.id)
-      setContacts(Array.isArray(updated) ? updated : contacts.map(x => x.id === c.id ? { ...x, read: true } : x))
+      setBusy(c.id); setError('')
+      try { setContacts(await markContactRead(c.id)); setSelected(previous => previous?.id === c.id ? { ...previous, read: true } : previous) }
+      catch (failure) { setError(failure.message) }
+      finally { setBusy(null) }
     }
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    if (busy) return
     if (!window.confirm('Delete this message?')) return
-    deleteContact(id)
-    setContacts(prev => prev.filter(c => c.id !== id))
-    if (selected?.id === id) setSelected(null)
+    setBusy(id); setError('')
+    try { setContacts(await deleteContact(id)); if (selected?.id === id) setSelected(null) }
+    catch (failure) { setError(failure.message) }
+    finally { setBusy(null) }
   }
 
   if (loading) return (
@@ -56,6 +69,8 @@ export default function AdminContacts() {
 
   return (
     <div className="max-w-4xl">
+      <div className="admin-page-heading"><div><p className="eyebrow">Good conversations start here</p><h1>Your inbox<span>.</span></h1><p>Read enquiries and reply directly by email.</p></div><button type="button" className="admin-button" disabled={!!busy} onClick={reload}>Refresh messages</button></div>
+      {error && <p className="admin-notice error" role="alert">{error} <button type="button" className="underline ml-2" onClick={reload}>Try again</button></p>}
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
@@ -75,6 +90,7 @@ export default function AdminContacts() {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search name, email, message…"
+            aria-label="Search messages"
             className="w-full rounded-xl border border-black/8 bg-white py-2 pl-9 pr-4 text-sm text-[#141414] placeholder-[#141414]/30 outline-none focus:border-[#6D28D9]/40 focus:ring-2 focus:ring-[#6D28D9]/10 sm:w-64"
           />
           {query && (
@@ -110,7 +126,7 @@ export default function AdminContacts() {
               </div>
             )}
             {filtered.map((c, i) => (
-              <motion.button key={c.id}
+              <motion.button key={c.id} disabled={!!busy}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.04 }}
                 onClick={() => handleSelect(c)}
@@ -159,7 +175,7 @@ export default function AdminContacts() {
                         className="text-sm text-[#6D28D9] hover:underline">{selected.email}</a>
                     </div>
                   </div>
-                  <button onClick={() => handleDelete(selected.id)}
+                  <button disabled={!!busy} onClick={() => handleDelete(selected.id)}
                     className="shrink-0 rounded-xl border border-red-100 px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-50">
                     Delete
                   </button>

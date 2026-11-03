@@ -28,11 +28,6 @@ function PixelBox({ item, index }) {
     }
   }
 
-  const handleTap = () => {
-    if (!window.matchMedia('(hover: none)').matches) return
-    hovering ? handleLeave() : handleEnter()
-  }
-
   const toggleMute = (e) => {
     e.stopPropagation()
     const next = !muted

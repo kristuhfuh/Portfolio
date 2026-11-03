@@ -1,4 +1,5 @@
 import { hasDraftText } from '../data/caseStudyNotes.js'
+import { sanitizeRichText } from './richText.js'
 
 const escapeHtml = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 const inline = value => escapeHtml(value).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
@@ -6,7 +7,7 @@ const inline = value => escapeHtml(value).replace(/\*\*([^*]+)\*\*/g, '<strong>$
 // Support the existing rich-text CMS and the Markdown used by static case studies.
 export function formatCaseStudyText(content = '') {
   if (!content) return ''
-  if (/<[a-z][\s\S]*>/i.test(content)) return content
+  if (/<[a-z][\s\S]*>/i.test(content)) return sanitizeRichText(content)
   const blocks = []
   let paragraph = [], list = []
   const flushParagraph = () => { if (paragraph.length) blocks.push(`<p>${paragraph.map(inline).join('<br>')}</p>`); paragraph = [] }

@@ -48,6 +48,8 @@ export default function Hero() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const artY = useTransform(scrollYProgress, [0, 1], [0, -65])
   const headline = 'Christopher Akpoguma'
+  const expression = String(hero.expression || '').replace(/<[^>]*>/g, '').trim() || 'Design you\ncan feel.'
+  const headingLines = expression.split('\n').map(line => line.trim()).filter(Boolean)
   const defaultIntro = 'I turn complex ideas into intuitive products. A little bold. A little unexpected. Always made for the person on the other side.'
   const intro = !hero.subtitle || hero.subtitle.startsWith('Product Designer turning complex ideas into interfaces people actually finish using.') ? defaultIntro : hero.subtitle.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&')
   const cvMatch = hero.cvUrl?.match(/\/file\/d\/([^/?#]+)/)
@@ -56,18 +58,15 @@ export default function Hero() {
   return (
     <section ref={ref} className="poet-hero" aria-labelledby="hero-heading">
       <div className="hero-topline">
-        <span><span className="availability-dot" />Open for a good collaboration</span>
+        <span><span className="availability-dot" />{hero.openTo || 'Open for a good collaboration'}</span>
         <span>Lagos, NG <span className="hero-timezone">↗ Working everywhere</span></span>
       </div>
       <div className="hero-composition">
         <div className="hero-copy">
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="hero-intro">
-            {headline}.<br /><span>Product designer. Framer developer. AI-assisted builder.</span>
+            {headline}.<br /><span>{hero.roleLabel || 'Product designer. Framer developer. AI-assisted builder.'}</span>
           </motion.p>
-          <h1 id="hero-heading" className="hero-title" aria-label="Design you can feel.">
-            <span className="hero-line"><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: 0.95, delay: 0.1, ease }}>Design you</motion.span></span>
-            <span className="hero-line hero-line-last"><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: 0.95, delay: 0.22, ease }}>can <em>feel.</em><Burst className="hero-title-burst" /></motion.span></span>
-          </h1>
+          <h1 id="hero-heading" className="hero-title" aria-label={headingLines.join(' ')}>{headingLines.map((line, index) => { const words = line.split(' '); const last = index === headingLines.length - 1; return <span className="hero-line" key={index}><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: 0.95, delay: 0.1 + index * 0.12, ease }}>{last ? <>{words.slice(0, -1).join(' ')}<em>{words[words.length - 1]}</em><Burst className="hero-title-burst" /></> : line}</motion.span></span> })}</h1>
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45, ease }} className="hero-bottom-copy">
             <p>{intro}</p>
             <div className="hero-actions">
@@ -80,7 +79,7 @@ export default function Hero() {
           <HeroCollage hero={hero} />
         </motion.div>
       </div>
-      <div className="hero-footnote"><span>Strategy in the head. Feeling in the pixels.</span><a href="#work">Take a little scroll <span>↓</span></a></div>
+      <div className="hero-footnote"><span>{hero.focus || 'Strategy in the head. Feeling in the pixels.'}</span><a href="#work">Take a little scroll <span>↓</span></a></div>
     </section>
   )
 }

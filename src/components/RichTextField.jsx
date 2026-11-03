@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import { escapeText, sanitizeRichText } from '../lib/richText.js';
 
 const TOOLBAR = [
   [
@@ -54,11 +55,11 @@ const TOOLBAR = [
 
 function toHtml(val) {
   if (!val) return '';
-  if (/<[a-z][\s\S]*>/i.test(val)) return val;
-  return val.replace(/\n/g, '<br>');
+  if (/<[a-z][\s\S]*>/i.test(val)) return sanitizeRichText(val);
+  return escapeText(val).replace(/\n/g, '<br>');
 }
 
-export default function RichTextField({ value = '', onChange, placeholder = '', singleLine = false, minHeight = 120 }) {
+export default function RichTextField({ value = '', onChange, placeholder = '', singleLine = false, minHeight = 120, id, 'aria-labelledby': labelledBy }) {
   const editorRef = useRef(null);
   const [focused, setFocused] = useState(false);
   const [activeFormats, setActiveFormats] = useState({});
@@ -120,6 +121,8 @@ export default function RichTextField({ value = '', onChange, placeholder = '', 
                 key={cmd + (arg || '')}
                 type="button"
                 title={label}
+                aria-label={label}
+                onClick={e => { if (e.detail === 0) exec(cmd, arg); }}
                 onMouseDown={e => { e.preventDefault(); exec(cmd, arg); }}
                 className={`flex h-7 w-7 items-center justify-center rounded text-xs transition-colors
                   ${activeFormats[cmd]
@@ -143,11 +146,17 @@ export default function RichTextField({ value = '', onChange, placeholder = '', 
         )}
         <div
           ref={editorRef}
+          id={id}
+          role="textbox"
+          aria-labelledby={labelledBy}
+          aria-label={labelledBy ? undefined : placeholder || 'Rich text'}
+          aria-multiline={!singleLine}
           contentEditable
           suppressContentEditableWarning
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          onInput={() => onChange(editorRef.current?.innerHTML || '')}
+          onInput={() => onChange(sanitizeRichText(editorRef.current?.innerHTML || ''))}
+          onPaste={event => { event.preventDefault(); const html = event.clipboardData.getData('text/html'); const text = event.clipboardData.getData('text/plain'); document.execCommand('insertHTML', false, html ? sanitizeRichText(html) : escapeText(text).replace(/\n/g, '<br>')); onChange(editorRef.current?.innerHTML || ''); }}
           onKeyDown={handleKeyDown}
           onKeyUp={updateActiveFormats}
           onMouseUp={updateActiveFormats}

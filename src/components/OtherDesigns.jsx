@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { getOtherDesigns, normalizeDriveUrl } from '../lib/cms.js'
+import { safeLink } from '../lib/richText.js'
 
 function DesignCard({ item, index }) {
   const [hovered, setHovered] = useState(false)
   const src = normalizeDriveUrl(item.image)
-  const isExternal = item.link && /^https?:\/\//.test(item.link)
+  const link = safeLink(item.link)
+  const isExternal = /^(https?:)?\/\//i.test(link)
 
   const cardContent = (
     <div
@@ -55,7 +57,7 @@ function DesignCard({ item, index }) {
             {item.title}
           </p>
         )}
-        {item.link && (
+        {link && (
           <span
             className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-medium text-cream/70"
             style={{
@@ -87,13 +89,13 @@ function DesignCard({ item, index }) {
       viewport={{ once: true, margin: '-5%' }}
       transition={{ duration: 0.6, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
     >
-      {item.link ? (
+      {link ? (
         isExternal ? (
-          <a href={item.link} target="_blank" rel="noopener noreferrer">
+          <a href={link} target="_blank" rel="noopener noreferrer">
             {cardContent}
           </a>
         ) : (
-          <a href={item.link}>
+          <a href={link}>
             {cardContent}
           </a>
         )

@@ -3,10 +3,11 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
 import { tools, recognition } from '../data/experience.js'
 import { getPageContent } from '../lib/cms.js'
+import { sanitizeRichText } from '../lib/richText.js'
 
 // Renders CMS content that may be HTML (RichTextField) or plain text (\n\n paragraphs)
 function richHtml(content = '') {
-  if (/<[a-z][\s\S]*>/i.test(content)) return content
+  if (/<[a-z][\s\S]*>/i.test(content)) return sanitizeRichText(content)
   return content
     .split('\n\n')
     .filter(Boolean)

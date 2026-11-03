@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getProjects, getContacts } from '../lib/cms.js'
+import { getContacts, loadContacts } from '../lib/cms.js'
+import { getProjectLibrary } from '../lib/projectLibrary.js'
 import { fetchAnalytics } from '../lib/analytics.js'
 import AIGenerateModal from '../components/AIGenerateModal.jsx'
 
@@ -161,13 +162,14 @@ function AnalyticsPanel({ data }) {
 }
 
 export default function AdminDashboard() {
-  const projects = getProjects()
-  const contacts = getContacts()
+  const projects = getProjectLibrary()
+  const [contacts, setContacts] = useState(getContacts)
   const unread   = contacts.filter(c => !c.read).length
   const [showAI, setShowAI] = useState(false)
   const [analytics, setAnalytics] = useState(null)
 
   useEffect(() => {
+    loadContacts().then(setContacts).catch(() => {})
     fetchAnalytics().then(setAnalytics).catch(() => setAnalytics(false))
   }, [])
 
@@ -190,14 +192,14 @@ export default function AdminDashboard() {
       </motion.div>
 
       {/* ── Content stats ─────────────────────────────────────────────────── */}
-      <div className="mb-6 grid grid-cols-3 gap-4">
-        <StatCard index={1} value={projects.length} label="Case studies published" accent="text-[#141414]" />
+      <div className="admin-dashboard-stats mb-6 grid gap-4">
+        <StatCard index={1} value={projects.length} label="Case studies in your library" accent="text-[#141414]" />
         <StatCard index={2} value={contacts.length} label="Total messages received" sub={unread} accent="text-[#6D28D9]" />
         <StatCard index={3} value={projects.filter(p => !p.hidden).length} label="Projects visible on site" accent="text-emerald-500" />
       </div>
 
       {/* ── Two-column body ───────────────────────────────────────────────── */}
-      <div className="grid grid-cols-12 gap-6 items-start">
+      <div className="admin-dashboard-layout grid gap-6 items-start">
 
         {/* Left column — actions + messages */}
         <div className="col-span-7 space-y-6">

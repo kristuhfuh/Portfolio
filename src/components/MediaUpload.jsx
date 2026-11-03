@@ -45,10 +45,11 @@ export default function MediaUpload({
     setError('')
     setUploading(true)
     setProgress(10)
+    let ticker
 
     try {
       // Fake progress ticks while upload is in flight
-      const ticker = setInterval(() => setProgress(p => Math.min(p + 15, 85)), 400)
+      ticker = setInterval(() => setProgress(p => Math.min(p + 15, 85)), 400)
       const url = await uploadToSupabase(file)
       clearInterval(ticker)
       setProgress(100)
@@ -59,6 +60,7 @@ export default function MediaUpload({
       setError(`Upload failed: ${err.message}`)
       setProgress(0)
     } finally {
+      clearInterval(ticker)
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''
     }

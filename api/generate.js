@@ -47,8 +47,14 @@ export default async function handler(req, res) {
 PROJECT BRIEF:
 ${brief}
 
+Use only facts in the brief. Do not invent research, metrics, testimonials, collaborators, launch status, or outcomes. Describe planned validation as a next step. Leave unsupported fields empty.
+
 Return ONLY a valid JSON object with these exact keys (no markdown, no code fences, just raw JSON):
 {
+  "title": "A short project name supported by the brief.",
+  "tagline": "One clear sentence describing the project.",
+  "client": "Client name from the brief, or an empty string.",
+  "tags": ["Relevant discipline or product category"],
   "hook": "One punchy dramatic sentence that opens the case study. Max 15 words.",
   "overview": "2-3 sentences giving a clear picture of the project, context, and the designer's role.",
   "challenge": "2-3 sentences describing the core problem or constraint that made this hard.",

@@ -27,6 +27,24 @@ function lsSet(key, val) {
 
 // ─── Pending saves counter (used by AdminLayout to warn on tab close) ─────────
 export let pendingSaves = 0
+const syncListeners = new Set()
+const savedFailedKeys = lsGet('cms_failed_write_keys', [])
+const failedWrites = new Map((Array.isArray(savedFailedKeys) ? savedFailedKeys : []).filter(key => typeof key === 'string' && key.startsWith('cms_')).map(key => [key, lsGet(key, null)]).filter(([, value]) => value !== null))
+const writeQueues = new Map()
+let syncSnapshot = { pending: 0, failed: failedWrites.size, lastSavedAt: null }
+export const getCMSSyncState = () => syncSnapshot
+export function subscribeCMSSync(listener) { syncListeners.add(listener); return () => syncListeners.delete(listener) }
+function emitSync(lastSavedAt = syncSnapshot.lastSavedAt) {
+  try {
+    if (failedWrites.size) lsSet('cms_failed_write_keys', [...failedWrites.keys()])
+    else localStorage.removeItem('cms_failed_write_keys')
+  } catch { /* Cloud saves should still finish if browser storage is unavailable. */ }
+  syncSnapshot = { pending: pendingSaves, failed: failedWrites.size, lastSavedAt }
+  syncListeners.forEach(listener => listener())
+}
+export async function retryFailedSaves() {
+  return Promise.all([...failedWrites.entries()].map(([key, value]) => dbSet(key, value)))
+}
 
 // ─── Supabase helpers (async, fire-and-forget on writes) ──────────────────────
 async function dbGet(key) {
@@ -40,33 +58,38 @@ async function dbGet(key) {
 }
 
 async function dbSet(key, val) {
-  pendingSaves++
+  const value = JSON.parse(JSON.stringify(val))
   const ts = Date.now()
-  // Record the save time locally immediately — even if Supabase fails, local
-  // data will be considered newer so initCMS won't overwrite it on next load.
   localStorage.setItem(`${key}_ts`, ts)
-  try {
-    const { error } = await supabase
-      .from('settings')
-      .upsert(
-        [{ key, value: val }, { key: `${key}_ts`, value: ts }],
-        { onConflict: 'key' }
+  pendingSaves++
+  emitSync()
+  const task = (writeQueues.get(key) || Promise.resolve()).then(async () => {
+    try {
+      const { error } = await supabase.from('settings').upsert(
+        [{ key, value }, { key: `${key}_ts`, value: ts }], { onConflict: 'key' },
       )
-    if (error) {
-      console.error('[Supabase] write failed:', error.message, error)
+      if (error) throw error
+      failedWrites.delete(key)
+      return true
+    } catch {
+      failedWrites.set(key, value)
       return false
+    } finally {
+      pendingSaves--
+      emitSync(failedWrites.has(key) ? syncSnapshot.lastSavedAt : Date.now())
     }
-    return true
-  } finally {
-    pendingSaves--
-  }
+  })
+  writeQueues.set(key, task)
+  task.finally(() => { if (writeQueues.get(key) === task) writeQueues.delete(key) })
+  return task
 }
 
 // ─── Boot: pull latest data from Supabase into localStorage ───────────────────
 export async function initCMS() {
   try {
+    const contentKeys = ['cms_projects', 'cms_pages', 'cms_beyond_pixels', 'cms_contact_gallery', 'cms_other_designs', 'cms_projects_backup_index']
     const result = await Promise.race([
-      supabase.from('settings').select('key, value'),
+      supabase.from('settings').select('key, value').in('key', contentKeys.flatMap(key => [key, `${key}_ts`])),
       new Promise(resolve => setTimeout(() => resolve({ data: null, error: 'timeout' }), 4000)),
     ])
     const { data, error } = result
@@ -103,14 +126,6 @@ const GALLERY_KEY   = 'cms_contact_gallery'
 const VERSION_KEY   = 'cms_schema_version'
 const SCHEMA_VERSION = 'v6'
 
-// Slugs whose CMS copies should be fully replaced with the latest static definition
-// when migrating to the current schema. Add a slug here when a case study has been
-// rewritten in projects.js and you need to override any stale admin-saved copy that
-// users may already have cached in Supabase / localStorage. The v6 migration already
-// reset landmark-citizen-app — leave this empty now so subsequent schema bumps don't
-// wipe the admin's own edits.
-const FORCE_RESET_SLUGS = []
-
 // ─── Snapshot safeguard ──────────────────────────────────────────────────────
 // Any migration that is about to mutate cms_projects first snapshots the current
 // state to both localStorage and Supabase under a timestamped key. If a migration
@@ -131,7 +146,6 @@ function snapshotProjectsBeforeMigration(saved) {
     lsSet('cms_projects_backup_index', index)
     dbSet('cms_projects_backup_index', index)
     // eslint-disable-next-line no-console
-    console.info(`[CMS] pre-migration snapshot saved → ${backupKey}`)
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('[CMS] snapshot failed:', e)
@@ -157,65 +171,42 @@ export async function restoreProjectBackup(backupKey) {
 export function getProjects() {
   const currentVersion = lsGet(VERSION_KEY, null)
   const saved = lsGet(PROJECTS_KEY, null)
-
-  if (currentVersion !== SCHEMA_VERSION) {
-    if (saved && saved.length) {
-      // Snapshot BEFORE any mutation so a bad migration can be rolled back.
-      snapshotProjectsBeforeMigration(saved)
-      const merged = saved.map(savedP => {
-        const staticP = staticProjects.find(p => p.slug === savedP.slug)
-        if (!staticP) return savedP
-        // Force-reset slugs get the static definition verbatim — overrides stale admin edits
-        if (FORCE_RESET_SLUGS.includes(savedP.slug)) return staticP
-        return { ...staticP, ...savedP }
-      })
-      staticProjects.forEach(sp => {
-        if (!merged.find(p => p.slug === sp.slug)) merged.push(sp)
-      })
-      lsSet(PROJECTS_KEY, merged)
-      lsSet(VERSION_KEY, SCHEMA_VERSION)
-      // Propagate the migrated list to Supabase so other sessions see the reset too.
-      // Fire-and-forget — a failed sync still leaves the correct data in localStorage.
-      dbSet(PROJECTS_KEY, merged)
-      return merged
-    }
-    lsSet(PROJECTS_KEY, staticProjects)
-    lsSet(VERSION_KEY, SCHEMA_VERSION)
-    dbSet(PROJECTS_KEY, staticProjects)
-    return staticProjects
-  }
-
-  return saved || staticProjects
+  // Public reads never save defaults or migrations back to the cloud.
+  const projects = Array.isArray(saved) ? saved : staticProjects
+  return projects.map(project => currentVersion !== SCHEMA_VERSION
+    ? { ...staticProjects.find(item => item.slug === project.slug), ...project }
+    : { ...project })
 }
 
 export function getProjectBySlug(slug) { return getProjects().find(p => p.slug === slug) }
 
-export async function saveProject(project) {
+export async function saveProject(project, { originalSlug = project.slug } = {}) {
+  if (!String(project.title || '').trim()) throw new Error('Give the case study a title before saving.')
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project.slug) || project.slug === 'new') throw new Error('Use a URL name with lowercase letters, numbers, and single hyphens.')
   const all = getProjects()
-  const idx = all.findIndex(p => p.slug === project.slug)
+  const idx = all.findIndex(p => p.slug === originalSlug)
+  if (all.some((p, i) => p.slug === project.slug && i !== idx)) throw new Error('That URL name is already used by another case study.')
+  if (lsGet(VERSION_KEY, null) !== SCHEMA_VERSION) snapshotProjectsBeforeMigration(lsGet(PROJECTS_KEY, null))
   if (idx >= 0) all[idx] = project
   else all.push(project)
+  lsSet(PROJECTS_KEY, all)
+  lsSet(VERSION_KEY, SCHEMA_VERSION)
+  const cloudSynced = await dbSet(PROJECTS_KEY, all)
+  return { data: all, cloudSynced }
+}
+
+export async function deleteProject(slug) {
+  const all = getProjects().filter(p => p.slug !== slug)
   lsSet(PROJECTS_KEY, all)
   const cloudSynced = await dbSet(PROJECTS_KEY, all)
   return { data: all, cloudSynced }
 }
 
-export function deleteProject(slug) {
-  const all = getProjects().filter(p => p.slug !== slug)
+export async function toggleProjectVisibility(slug) {
+  const all = getProjects().map(project => project.slug === slug ? { ...project, hidden: !project.hidden } : project)
   lsSet(PROJECTS_KEY, all)
-  dbSet(PROJECTS_KEY, all)
-  return all
-}
-
-export function toggleProjectVisibility(slug) {
-  const all = getProjects()
-  const project = all.find(p => p.slug === slug)
-  if (project) {
-    project.hidden = !project.hidden
-    lsSet(PROJECTS_KEY, all)
-    dbSet(PROJECTS_KEY, all)
-  }
-  return all
+  const cloudSynced = await dbSet(PROJECTS_KEY, all)
+  return { data: all, cloudSynced }
 }
 
 export function reorderProjects(projects) {
@@ -230,11 +221,12 @@ export function getContacts() { return lsGet(CONTACTS_KEY, []) }
 export async function addContact(contact) {
   const entry = { ...contact, date: new Date().toISOString(), read: false }
   // Write to Supabase contacts table
-  await supabase.from('contacts').insert({
+  const { error } = await supabase.from('contacts').insert({
     name:    entry.name,
     email:   entry.email,
     message: entry.message,
   })
+  if (error) throw new Error('Your message could not be delivered. Please try again or email me directly.')
   // Also keep a local copy
   const all = getContacts()
   all.unshift({ ...entry, id: Date.now().toString() })
@@ -247,22 +239,27 @@ export async function loadContacts() {
     .from('contacts')
     .select('*')
     .order('created_at', { ascending: false })
-  if (error || !data) return getContacts()
+  if (error) throw new Error('Messages could not be loaded. Your cached messages are still available.')
+  if (!data) return []
   lsSet(CONTACTS_KEY, data)
   return data
 }
 
-export function markContactRead(id) {
+export async function markContactRead(id) {
+  const { error } = await supabase.from('contacts').update({ read: true }).eq('id', id)
+  if (error) throw new Error('The read status was not saved. Try opening this message again.')
   const all = getContacts().map(c => c.id === id ? { ...c, read: true } : c)
   lsSet(CONTACTS_KEY, all)
-  supabase.from('contacts').update({ read: true }).eq('id', id)
+  window.dispatchEvent(new Event('cms-contacts-changed'))
   return all
 }
 
-export function deleteContact(id) {
+export async function deleteContact(id) {
+  const { error } = await supabase.from('contacts').delete().eq('id', id)
+  if (error) throw new Error('The message could not be deleted. Please try again.')
   const all = getContacts().filter(c => c.id !== id)
   lsSet(CONTACTS_KEY, all)
-  supabase.from('contacts').delete().eq('id', id)
+  window.dispatchEvent(new Event('cms-contacts-changed'))
   return all
 }
 

@@ -1,21 +1,27 @@
-import { useParams, Link, Navigate } from 'react-router-dom'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
-import { useEffect, useState, useRef } from 'react'
-import { getProjectBySlug as getProject, getProjects, normalizeDriveUrl } from '../lib/cms.js'
-import { projects as staticProjects } from '../data/projects.js'
+import { useParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useEffect } from 'react'
+import { getProjectBySlug as getProject, getProjects } from '../lib/cms.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
 import CaseStudyOverview from '../components/CaseStudyOverview.jsx'
 import { getCaseStudyNotes, hasDraftText } from '../data/caseStudyNotes.js'
 import { formatCaseStudyText } from '../lib/caseStudyText.js'
-import { useMotionPreference } from '../lib/motion.js'
 import { lemaProject } from '../data/lema.js'
 import CaseStudyComparisons from '../components/CaseStudyComparisons.jsx'
+import CaseStudyHero from '../components/CaseStudyHero.jsx'
+import CaseStudyChapters from '../components/CaseStudyChapters.jsx'
+import CaseStudyNavigation from '../components/CaseStudyNavigation.jsx'
+import { getCaseStudyChapters } from '../data/caseStudyStories.js'
+import CaseStudyGallery from '../components/CaseStudyGallery.jsx'
+import { useAuth } from '../lib/auth.jsx'
+import NotFound from './NotFound.jsx'
+import '../styles/case-studies.css'
 
 // Renders CMS text that may be plain (uses \n\n) or HTML (from RichTextField)
 const richHtml = formatCaseStudyText
 
 function getNextProject(slug) {
-  const projects = getProjects()
+  const projects = getProjects().filter(project => !project.hidden)
   const idx = projects.findIndex((p) => p.slug === slug)
   if (idx === -1) return projects[0]
   return projects[(idx + 1) % projects.length]
@@ -245,84 +251,6 @@ function Principles({ principles, accent }) {
   )
 }
 
-// ─── Chapters — the work shown chapter by chapter ───
-function Chapters({ chapters, accent, projectTitle }) {
-  if (!chapters?.length) return null
-  return (
-    <section id="process" className="case-prose border-t border-line py-20 dark:border-dark-line md:py-28">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-        <div className="mb-16 max-w-3xl">
-          <div className="label mb-4 text-muted dark:text-dark-muted">The work, chapter by chapter</div>
-          <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
-            The decisions, in the details.
-          </h2>
-        </div>
-        <div className="flex flex-col gap-16 md:gap-24">
-          {chapters.map((chapter, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.7 }}
-              className="grid gap-8 md:grid-cols-12 md:gap-10"
-            >
-              <div className="md:col-span-5">
-                <div className="flex items-center gap-3">
-                  <span className="label tabular-nums" style={{ color: accent }}>{chapter.number}</span>
-                  <span className="h-px flex-1" style={{ background: `${accent}30` }} />
-                </div>
-                <h3 className="mt-3 font-display text-2xl text-ink dark:text-dark-ink md:text-3xl">
-                  {chapter.title}
-                </h3>
-                <div
-                  className="mt-5 space-y-3 text-ink/85 dark:text-dark-ink/85 [&>p]:mb-3 [&>p:last-child]:mb-0 [&>b]:font-semibold [&>strong]:font-semibold"
-                  dangerouslySetInnerHTML={{ __html: richHtml(chapter.body) }}
-                />
-              </div>
-              <div className="md:col-span-7">
-                {chapter.image ? (
-                  <div className="overflow-hidden rounded-3xl border border-line dark:border-dark-line">
-                    <img src={chapter.image} alt={`${projectTitle} — ${chapter.title}`} className="h-auto w-full" />
-                  </div>
-                ) : chapter.video ? (
-                  <div className="overflow-hidden rounded-3xl border border-line dark:border-dark-line bg-black">
-                    <video src={chapter.video} controls playsInline className="h-auto w-full" />
-                  </div>
-                ) : (
-                  // Decorative numbered placeholder — reads as intentional composition
-                  // rather than "upload here" admin UI when imagery hasn't shipped yet.
-                  <div
-                    aria-hidden="true"
-                    className="relative flex min-h-[260px] items-center justify-center overflow-hidden rounded-3xl border border-line dark:border-dark-line md:min-h-[360px]"
-                    style={{ background: `linear-gradient(135deg, ${accent}10, ${accent}04)` }}
-                  >
-                    <span
-                      className="font-display font-bold leading-none tracking-tightest"
-                      style={{ fontSize: 'clamp(5rem, 14vw, 11rem)', color: `${accent}30` }}
-                    >
-                      {chapter.number}
-                    </span>
-                    <span
-                      className="label absolute bottom-5 right-6 text-muted dark:text-dark-muted"
-                      style={{ color: `${accent}80` }}
-                    >
-                      Chapter {chapter.number}
-                    </span>
-                  </div>
-                )}
-                {chapter.caption && (
-                  <p className="mt-3 text-sm text-muted dark:text-dark-muted">{chapter.caption}</p>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ─── Decisions and trade-offs — three-column table ───
 function DecisionsTable({ decisions, accent }) {
   if (!decisions?.length) return null
@@ -381,344 +309,30 @@ function DecisionsTable({ decisions, accent }) {
   )
 }
 
-// Normalize images — handles both old string[] and new {url,caption}[] formats, fixes Drive URLs
-function normalizeImages(images) {
-  if (!images) return []
-  return images.map(img => {
-    if (typeof img === 'string') return { url: normalizeDriveUrl(img), caption: '' }
-    return { ...img, url: normalizeDriveUrl(img.url) }
-  })
-}
-
-// ─── Image gallery — auto-slideshow + Apple-style thumbnail strip ───
-function ImageGallery({ images: rawImages, title, accent }) {
-  const reduced = useMotionPreference()
-  const images = normalizeImages(rawImages)
-  const [activeIdx, setActiveIdx] = useState(0)
-  const [paused, setPaused] = useState(false)
-  const [hovered, setHovered] = useState(false)
-  const [direction, setDirection] = useState(1)
-  const thumbsRef = useRef(null)
-  const activeThumbRef = useRef(null)
-
-  const active = images[activeIdx]
-  const isVideo = active?.type === 'video'
-  const imageInterval = hovered ? 12000 : 5000
-
-  const go = (next) => {
-    setDirection(next > activeIdx ? 1 : -1)
-    setActiveIdx(next)
-  }
-  const prev = () => { setPaused(true); go(Math.max(0, activeIdx - 1)) }
-  const next = () => { setPaused(true); go((activeIdx + 1) % images.length) }
-  const advance = () => { setDirection(1); setActiveIdx(i => (i + 1) % images.length) }
-
-  // Image timer — skipped for video slides
-  useEffect(() => {
-    if (reduced || paused || isVideo || images.length <= 1) return
-    const t = setInterval(advance, imageInterval)
-    return () => clearInterval(t)
-  }, [reduced, paused, isVideo, images.length, imageInterval, activeIdx])
-
-  // Keyboard nav
-  useEffect(() => {
-    const onKey = (e) => {
-      if (!e.target.closest('[data-case-gallery]')) return
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') e.preventDefault()
-      if (e.key === 'ArrowLeft') prev()
-      if (e.key === 'ArrowRight') next()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [activeIdx])
-
-  // Scroll thumbnail strip horizontally to keep active thumb centred
-  useEffect(() => {
-    const container = thumbsRef.current
-    const thumb = activeThumbRef.current
-    if (!container || !thumb) return
-    const offset = thumb.offsetLeft - container.clientWidth / 2 + thumb.clientWidth / 2
-    container.scrollTo({ left: offset, behavior: reduced ? 'instant' : 'smooth' })
-  }, [activeIdx, reduced])
-
-  if (!images || images.length === 0) return null
-
-  const variants = {
-    enter: (d) => ({ x: d > 0 ? '100%' : '-100%' }),
-    center: { x: 0 },
-    exit:  (d) => ({ x: d > 0 ? '-100%' : '100%' }),
-  }
-
-  return (
-    <section data-case-gallery tabIndex={0} aria-label="Project images. Use the left and right arrow keys to browse." className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
-      {/* Header */}
-      <div className="label mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-muted dark:text-dark-muted">
-          {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
-          Visual work
-          {images.length > 1 && (
-            <span className="text-muted/50 dark:text-dark-muted/50">{activeIdx + 1} / {images.length}</span>
-          )}
-        </div>
-        {images.length > 1 && (
-          <button onClick={() => setPaused(p => !p)}
-            className="label flex items-center gap-1.5 text-xs text-muted transition hover:text-ink dark:text-dark-muted dark:hover:text-dark-ink">
-            {paused
-              ? <><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Resume</>
-              : <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause</>
-            }
-          </button>
-        )}
-      </div>
-
-      {/* Main viewer */}
-      <div
-        className="relative mb-4 mx-auto overflow-hidden rounded-3xl border border-line bg-black/5 dark:border-dark-line dark:bg-white/[0.02]"
-        style={{ minHeight: 340, width: 'fit-content', maxWidth: '100%' }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        <AnimatePresence custom={direction} mode="popLayout">
-          <motion.div
-            key={activeIdx}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.38, ease: [0.25, 1, 0.5, 1] }}
-          >
-            {isVideo ? (
-              <video
-                key={active.url}
-                src={active.url}
-                controls
-                playsInline
-                preload="metadata"
-                className="block h-auto max-h-[75vh] max-w-full bg-black"
-                onEnded={() => { if (!paused) advance() }}
-              />
-            ) : (
-              <img
-                src={active.url}
-                alt={`${title} — visual ${activeIdx + 1}`}
-                className="block h-auto max-h-[75vh] max-w-full"
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Caption pill */}
-        <AnimatePresence>
-          {active.caption && (
-            <motion.div
-              key={active.caption}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 4 }}
-              transition={{ duration: 0.3, delay: 0.15 }}
-              className="absolute bottom-4 left-4 z-10 rounded-full bg-black/60 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
-            >
-              {active.caption}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Progress bar — images only */}
-        {images.length > 1 && !paused && !isVideo && (
-          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10">
-            <motion.div
-              key={`bar-${activeIdx}`}
-              className="h-full origin-left"
-              style={{ background: accent }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: imageInterval / 1000, ease: 'linear' }}
-            />
-          </div>
-        )}
-
-        {/* Arrows */}
-        {images.length > 1 && (
-          <>
-            <button onClick={prev} disabled={activeIdx === 0}
-              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70 disabled:opacity-20">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <button onClick={next}
-              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
-          </>
-        )}
-      </div>
-
-      {/* Apple-style thumbnail strip */}
-      {images.length > 1 && (
-        <div
-          ref={thumbsRef}
-          className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
-          style={{ scrollbarWidth: 'none' }}
-        >
-          {images.map((img, i) => (
-            <button
-              key={i}
-              ref={i === activeIdx ? activeThumbRef : null}
-              onClick={() => { setPaused(true); go(i) }}
-              className="relative shrink-0 overflow-hidden rounded-xl transition-all duration-300 focus:outline-none"
-              style={{
-                width: 80, height: 60,
-                border: `2px solid ${i === activeIdx ? accent : 'transparent'}`,
-                opacity: i === activeIdx ? 1 : 0.45,
-                transform: i === activeIdx ? 'scale(1.06)' : 'scale(1)',
-              }}
-            >
-              {img.type === 'video' ? (
-                <>
-                  <video src={img.url} className="h-full w-full object-cover" muted playsInline />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  </div>
-                </>
-              ) : (
-                <img src={img.url} alt="" className="h-full w-full object-cover" />
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-    </section>
-  )
-}
-
 // ─── Main case study page ───
 export default function CaseStudy() {
-  const reduced = useMotionPreference()
+  const { user, loading: authLoading } = useAuth()
   const { slug } = useParams()
   const project = getProject(slug) || (slug === lemaProject.slug ? lemaProject : null)
-  const heroRef = useRef(null)
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
-  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0])
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, -80])
 
   useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [slug])
 
-  if (!project) return <Navigate to="/" replace />
+  if (project?.hidden && authLoading) return <div className="min-h-screen grid place-items-center" role="status">Loading preview…</div>
+  if (!project || (project.hidden && !user)) return <NotFound />
   const notes = getCaseStudyNotes(project)
   const decisions = project.decisions?.length ? project.decisions : notes.decisions
+  const chapters = getCaseStudyChapters(project)
+  const navigationSections = [{ id: 'snapshot', label: 'The short version' }, { id: 'problem', label: 'The problem' }, ...((chapters.length || project.approach?.length) ? [{ id: 'process', label: 'Design story' }] : []), ...(decisions?.length ? [{ id: 'decisions', label: 'Key decisions' }] : []), { id: 'results', label: 'Results & lessons' }]
   const wordCount = [project.overview, project.challenge, project.outcome, project.reflection, ...(project.approach || []), ...(project.chapters || []).map(c => c.body)].join(' ').replace(/<[^>]*>/g, '').split(/\s+/).length
   const readingTime = Math.max(1, Math.ceil(wordCount / 200))
   const next = getNextProject(slug)
   const accent = project.accent || '#6D28D9'
 
   return (
-    <article className="poet-case-study" key={slug}>
-      {/* ─── Hero with hook ─── */}
-      <section ref={heroRef} className="relative overflow-hidden pb-12 pt-36 md:pb-20 md:pt-48">
-        <div className="pointer-events-none absolute inset-0 dotted opacity-30" />
-
-        <motion.div style={reduced ? undefined : { opacity: heroOpacity, y: heroY }} className="relative mx-auto max-w-[1400px] px-6 md:px-10">
-          <motion.div initial="hidden" animate="show" variants={fadeUp}>
-            <div className="label mb-6 flex items-center gap-3 text-muted dark:text-dark-muted">
-Case study {project.number} · {project.year} · {readingTime} min read
-            </div>
-
-            <h1 className="display-hero text-[clamp(2.8rem,9vw,8rem)] text-ink dark:text-dark-ink">
-              {project.title}
-            </h1>
-            <p className="mt-6 max-w-3xl text-xl leading-snug text-muted dark:text-dark-muted md:text-2xl">
-              {project.tagline}
-            </p>
-          </motion.div>
-
-          {/* Meta grid — static 3-up to give long values (eg "v2 redesign (2024), LCA 3.0 (2026)") room to breathe */}
-          {(() => {
-            const links = project.links?.filter(l => l.url) ?? []
-            const rows = [
-              ['Client', project.client],
-              ['Role', project.role],
-              ['Timeline', project.timeline],
-              ['Team', project.team],
-              ['Location', project.location],
-              ...(project.status ? [['Status', project.status]] : []),
-            ]
-            return (
-              <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-line pt-8 dark:border-dark-line md:grid-cols-3 lg:gap-x-10">
-                {rows.filter(([, value]) => value).map(([label, value]) => (
-                  <div key={label} className="min-w-0">
-                    <dt className="label flex items-center gap-2 text-muted dark:text-dark-muted">
-                      {label}
-                      {label === 'Status' && (
-                        <span
-                          aria-hidden="true"
-                          className="inline-block h-1.5 w-1.5 rounded-full"
-                          style={{ background: accent }}
-                        />
-                      )}
-                    </dt>
-                    <dd className="mt-2 break-words text-ink dark:text-dark-ink">{value}</dd>
-                  </div>
-                ))}
-                {links.length > 0 && (
-                  <div className="min-w-0">
-                    <dt className="label text-muted dark:text-dark-muted">Links</dt>
-                    <dd className="mt-2 flex flex-col gap-1.5">
-                      {links.map((link, i) => (
-                        <a
-                          key={i}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-ink underline underline-offset-2 hover:opacity-60 dark:text-dark-ink"
-                        >
-                          {link.name || 'View'}
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 shrink-0" aria-hidden="true">
-                            <path fillRule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H2.25a.75.75 0 0 1 0-1.5h8.5a.75.75 0 0 1 .75.75v8.5a.75.75 0 0 1-1.5 0V6.06l-5.22 5.22a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
-                          </svg>
-                        </a>
-                      ))}
-                    </dd>
-                  </div>
-                )}
-              </dl>
-            )
-          })()}
-        </motion.div>
-      </section>
-
-      <nav className="case-story-nav" aria-label="Case study sections"><a href="#snapshot">The short version</a><a href="#problem">The problem</a>{(project.chapters?.length > 0 || project.approach?.length > 0) && <a href="#process">My process</a>}{decisions?.length > 0 && <a href="#decisions">Key decisions</a>}<a href="#results">Results & lessons</a></nav>
+    <article className="poet-case-study" key={slug} style={{ '--case-accent': accent }}>
+      <CaseStudyHero project={project} readingTime={readingTime} />
+      <CaseStudyNavigation slug={slug} sections={navigationSections} />
       <CaseStudyOverview project={project} />
-
-      {/* ─── Cover image ─── */}
-      <section className="mx-auto max-w-[1400px] px-6 md:px-10 md:pt-8">
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-3xl border border-line dark:border-dark-line"
-        >
-          <motion.img
-            initial={{ scale: 1.08 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            src={normalizeDriveUrl(project.cover)}
-            style={{ viewTransitionName: `project-${project.slug}` }}
-            alt={project.title}
-            className="h-auto w-full object-cover"
-            loading="eager"
-            onError={(() => {
-              const staticCover = staticProjects.find(p => p.slug === project.slug)?.cover
-              return staticCover ? e => { if (e.target.src !== staticCover) e.target.src = staticCover } : undefined
-            })()}
-          />
-          {/* Accent corner mark */}
-          <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full bg-cream/90 px-3 py-1.5 backdrop-blur">
-            {/* <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: accent }} /> */}
-            <span className="label text-ink">{project.client}</span>
-          </div>
-        </motion.div>
-      </section>
 
       {/* ─── The story: overview ─── */}
       <StoryBlock label="Context and collaboration" heading="The brief. My part in it." accent={accent}>
@@ -743,14 +357,11 @@ Case study {project.number} · {project.year} · {readingTime} min read
       <Principles principles={project.principles} accent={accent} />
 
       {/* ─── Chapters or legacy image gallery ─── */}
-      {project.chapters?.length ? (
-        <Chapters chapters={project.chapters} accent={accent} projectTitle={project.title} />
-      ) : (
-        <ImageGallery images={project.images} title={project.title} accent={accent} />
-      )}
+      <CaseStudyChapters chapters={chapters} title={project.title} />
+      <CaseStudyGallery images={project.images} title={project.title} />
 
       {/* ─── Approach (legacy projects only) ─── */}
-      {project.approach?.length > 0 && (
+      {!chapters.length && project.approach?.length > 0 && (
         <StoryBlock id="process" label="Process and iteration" heading="How I got there." accent={accent}>
           <ol className="space-y-0">
             {project.approach.map((step, i) => (
@@ -834,6 +445,7 @@ Case study {project.number} · {project.year} · {readingTime} min read
       </section>
 
       {/* ─── Next project ─── */}
+      {next && next.slug !== slug && (
       <section className="border-t border-line dark:border-dark-line">
         <Link to={`/work/${next.slug}`}
           className="group relative flex flex-col items-start justify-between gap-8 overflow-hidden px-6 py-16 transition-colors md:flex-row md:items-center md:px-10 md:py-28"
@@ -855,6 +467,7 @@ Case study {project.number} · {project.year} · {readingTime} min read
           </div>
         </Link>
       </section>
+      )}
     </article>
   )
 }

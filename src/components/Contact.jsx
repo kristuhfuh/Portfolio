@@ -3,9 +3,10 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
 import AvailabilityBadge from './AvailabilityBadge.jsx'
 import { addContact, getPageContent } from '../lib/cms.js'
+import { sanitizeRichText, safeLink } from '../lib/richText.js'
 
 function richHtml(content = '') {
-  if (/<[a-z][\s\S]*>/i.test(content)) return content
+  if (/<[a-z][\s\S]*>/i.test(content)) return sanitizeRichText(content)
   return content.replace(/\n/g, '<br>')
 }
 
@@ -87,9 +88,13 @@ export default function Contact() {
     if (!form.name || !form.email || !form.message) return
     setStatus('sending')
     setSentName(form.name.split(' ')[0])
-    await addContact(form)
-    setStatus('sent')
-    setForm({ name: '', email: '', message: '' })
+    try {
+      await addContact(form)
+      setStatus('sent')
+      setForm({ name: '', email: '', message: '' })
+    } catch {
+      setStatus('error')
+    }
   }
 
   const inputCls =
@@ -209,6 +214,7 @@ export default function Contact() {
                 onSubmit={handleSubmit}
                 className="mt-10 space-y-4"
               >
+                {status === 'error' && <p className="contact-form-error" role="alert">Your message couldn’t be delivered. Your text is still here — try again, or <a className="underline" href={`mailto:${content.email}`}>email me directly</a>.</p>}
                 <input
                   className={inputCls}
                   placeholder="Your name"
@@ -268,7 +274,7 @@ export default function Contact() {
             className="md:col-span-6 md:col-start-7"
           >
             <ul className="contact-links border-t border-cream/10 dark:border-ink/10">
-              {links.map((l, idx) => {
+              {links.filter(link => { const value = content[link.key]; if (!value) return false; if (link.key === 'email') return true; try { return !!safeLink(value) && new URL(value).pathname !== '/' } catch { return false } }).map((l, idx) => {
                 const value = content[l.key] || ''
                 const href = l.prefix ? l.prefix + value : value
                 return (

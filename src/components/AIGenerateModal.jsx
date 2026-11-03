@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { saveProject, getProjects } from '../lib/cms.js'
+import Modal from './Modal.jsx'
 
 const formats = [
   {
@@ -76,15 +77,21 @@ export default function AIGenerateModal({ onClose }) {
     }
   }
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (!generated) return
+    setGenerating(true); setError('')
+    try {
     const projects = getProjects()
-    const slug = (generated.title || 'untitled')
+    const baseSlug = (generated.title || 'untitled-case-study')
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    let slug = baseSlug || 'untitled-case-study'
+    let suffix = 2
+    while (projects.some(project => project.slug === slug)) slug = `${baseSlug}-${suffix++}`
     const final = {
       slug,
       number: String(projects.length + 1).padStart(2, '0'),
-      title: generated.title || '',
+      title: generated.title || 'Untitled case study',
+      hidden: true,
       tagline: generated.tagline || '',
       tags: generated.tags || [],
       client: generated.client || '',
@@ -102,20 +109,15 @@ export default function AIGenerateModal({ onClose }) {
       outcome: generated.outcome || '',
       reception: '', reflection: generated.reflection || '', link: null,
     }
-    saveProject(final)
+    await saveProject(final, { originalSlug: null })
     onClose()
     navigate(`/admin/projects/${slug}`)
+    } catch (failure) { setError(failure.message) }
+    finally { setGenerating(false) }
   }
 
   return (
-    <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
+    <Modal onClose={onClose} label="Create a case study draft" className="admin-ai-dialog">
       {/* Modal */}
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.97 }}
@@ -141,9 +143,6 @@ export default function AIGenerateModal({ onClose }) {
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="rounded-lg p-2 text-muted transition-colors hover:bg-line/50">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
         </div>
 
         <div className="p-6">
@@ -270,10 +269,11 @@ export default function AIGenerateModal({ onClose }) {
                   </button>
                   <button
                     onClick={handleCreateProject}
+                    disabled={generating}
                     className="label inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-cream transition-all hover:scale-[1.02]"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
-                    Create Project & Open Editor
+                    {generating ? 'Saving draft…' : 'Create draft and open editor'}
                   </button>
                 </div>
               </motion.div>
@@ -282,6 +282,6 @@ export default function AIGenerateModal({ onClose }) {
           </AnimatePresence>
         </div>
       </motion.div>
-    </div>
+    </Modal>
   )
 }

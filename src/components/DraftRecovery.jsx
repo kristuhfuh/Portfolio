@@ -1,0 +1,3 @@
+export default function DraftRecovery({ draft, onRestore }) {
+  return <>{draft.recovery && <div className="admin-notice warning" role="status"><strong>You have an unsaved draft on this device.</strong><p>Restore it to continue editing, or discard it to keep the saved version.</p><div className="mt-3 flex gap-3"><button type="button" className="admin-button" onClick={() => { onRestore(draft.recovery); draft.dismissRecovery() }}>Restore draft</button><button type="button" className="admin-text-button" onClick={draft.discardRecovery}>Discard draft</button></div></div>}{draft.storageError && <p className="admin-notice warning" role="alert">This device’s draft storage is full. Keep this tab open until you have saved your changes.</p>}</>
+}

@@ -1,102 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useSyncExternalStore } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { getProjects, saveProject, deleteProject, getProjectBySlug, toggleProjectVisibility, normalizeDriveUrl } from '../lib/cms.js'
+import { getProjects, saveProject, getProjectBySlug } from '../lib/cms.js'
 import { projects as staticProjects } from '../data/projects.js'
 import RichTextField from '../components/RichTextField.jsx'
 import GalleryImageManager from '../components/GalleryImageManager.jsx'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 import { getCaseStudyNotes } from '../data/caseStudyNotes.js'
 import { lemaProject } from '../data/lema.js'
+import Field from '../components/AdminField.jsx'
+import DraftRecovery from '../components/DraftRecovery.jsx'
+import { useEditorDraft } from '../lib/useEditorDraft.js'
+import { getProjectReadiness } from '../lib/projectReadiness.js'
+import { getCaseStudyChapters } from '../data/caseStudyStories.js'
+import { getCMSSyncState, subscribeCMSSync } from '../lib/cms.js'
 
-// ─── Projects List ───
-export function AdminProjects() {
-  const [projects, setProjects] = useState(getProjects())
-
-  const handleDelete = (slug) => {
-    if (!window.confirm('Delete this project? This cannot be undone.')) return
-    setProjects(deleteProject(slug))
-  }
-
-  const handleToggleVisibility = (slug) => {
-    setProjects(toggleProjectVisibility(slug))
-  }
-
-  return (
-    <div>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
-            className="text-2xl text-[#141414]">Case Studies</h1>
-          <p className="mt-1 text-sm text-[#141414]/60">
-            {projects.length} projects · {projects.filter(p => !p.hidden).length} visible
-          </p>
-        </div>
-        {!projects.some(p => p.slug === lemaProject.slug) && <Link to="/admin/projects/lema" className="label ml-auto mr-4 rounded-lg border border-line px-4 py-2.5 text-ink">Edit LEMA case study</Link>}
-        <Link to="/admin/projects/new"
-          className="label inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-cream transition-transform hover:scale-[1.02]">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
-          New Project
-        </Link>
-      </div>
-
-      <div className="mt-8 space-y-3">
-        {projects.map((p, i) => (
-          <motion.div key={p.slug}
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: i * 0.04 }}
-            className={`flex items-center gap-4 rounded-2xl border border-black/6 bg-white p-4 ${p.hidden ? 'opacity-50' : ''}`}
-          >
-            <div className="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-line">
-              {p.cover && <img src={normalizeDriveUrl(p.cover)} alt="" className="h-full w-full object-cover" />}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-baseline gap-3">
-                <span className="font-mono text-xs text-[#141414]/55">{p.number}</span>
-                <h3 className="truncate font-display text-xl text-[#141414]">{p.title}</h3>
-                {p.hidden && (
-                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] text-gray-600">Hidden</span>
-                )}
-              </div>
-              <div className="mt-1 flex gap-2">
-                {p.tags?.slice(0, 3).map(t => (
-                  <span key={t} className="rounded-full bg-black/6 px-2 py-0.5 text-[10px] text-[#141414]/60">{t}</span>
-                ))}
-              </div>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              <button
-                onClick={() => handleToggleVisibility(p.slug)}
-                className="rounded-lg border border-black/10 px-3 py-2 text-xs text-[#141414] transition-colors hover:bg-[#141414] hover:text-white"
-                title={p.hidden ? 'Show on website' : 'Hide from website'}
-              >
-                {p.hidden ? (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                ) : (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
-                )}
-              </button>
-              <Link to={`/admin/projects/${p.slug}`}
-                className="rounded-lg border border-black/10 px-3 py-2 text-xs text-[#141414] transition-colors hover:bg-[#6D28D9] hover:text-white hover:border-[#6D28D9]">
-                Edit
-              </Link>
-              <button onClick={() => handleDelete(p.slug)}
-                className="rounded-lg border border-black/10 px-3 py-2 text-xs text-red-400 transition-colors hover:bg-red-50">
-                Delete
-              </button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  )
-}
+export { default as AdminProjects } from './AdminProjectList.jsx'
 
 // ─── Project Editor ───
 const emptyProject = {
@@ -112,16 +30,7 @@ const emptyProject = {
   deliverables: [],
   overview: '', challenge: '', pullQuote: '', approach: [], outcome: '',
   reception: '', reflection: '', links: [],
-}
-
-function Field({ label, children }) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-[10px] font-medium uppercase tracking-widest text-[#141414]/55"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</label>
-      {children}
-    </div>
-  )
+  hidden: true,
 }
 
 const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/40 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
@@ -142,21 +51,40 @@ export function AdminProjectEdit() {
   const [brief, setBrief] = useState('')
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [loadedSlug, setLoadedSlug] = useState(null)
+  const [missing, setMissing] = useState(false)
+  const syncState = useSyncExternalStore(subscribeCMSSync, getCMSSyncState)
+  const draft = useEditorDraft(`project_${slug}`, { project, tagsStr, galleryImages, approachStr, deliverablesStr }, loadedSlug === slug)
+  const saveRef = useRef(null)
 
   useEffect(() => {
+    setSaveError(''); setSaved(false); setSyncFailed(false); setMissing(false)
     if (!isNew) {
       const p = getProjectBySlug(slug) || (slug === lemaProject.slug ? lemaProject : null)
       if (p) {
-        setProject({ ...emptyProject, ...p })
+        setProject({ ...emptyProject, ...p, hidden: Boolean(p.hidden), chapters: getCaseStudyChapters(p), useDefaultStory: false })
         setTagsStr(p.tags?.join(', ') || '')
         setGalleryImages((p.images || []).map(img =>
           typeof img === 'string' ? { url: img, caption: '' } : img
         ))
         setApproachStr(p.approach?.join('\n---\n') || '')
         setDeliverablesStr(p.deliverables?.join('\n') || '')
-      }
+      } else setMissing(true)
+    } else {
+      setProject({ ...emptyProject }); setTagsStr(''); setGalleryImages([]); setApproachStr(''); setDeliverablesStr('')
     }
+    setLoadedSlug(slug)
   }, [slug, isNew])
+
+  useEffect(() => {
+    const saveWithKeyboard = event => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') { event.preventDefault(); saveRef.current?.() } }
+    window.addEventListener('keydown', saveWithKeyboard)
+    return () => window.removeEventListener('keydown', saveWithKeyboard)
+  }, [])
+  useEffect(() => { if (syncFailed && syncState.failed === 0 && syncState.lastSavedAt) { setSyncFailed(false); setSaved(true) } }, [syncFailed, syncState])
 
   const update = (key, value) => setProject(prev => ({ ...prev, [key]: value }))
   const updateMetric = (idx, key, value) => {
@@ -258,6 +186,9 @@ export function AdminProjectEdit() {
   }
 
   const handleSave = async () => {
+    if (saving || missing) return
+    setSaving(true); setSaveError('')
+    try {
     const final = {
       ...project,
       slug: project.slug || project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
@@ -267,7 +198,8 @@ export function AdminProjectEdit() {
       approach: approachStr.split('\n---\n').map(s => s.trim()).filter(Boolean),
       deliverables: deliverablesStr.split('\n').map(s => s.trim()).filter(Boolean),
     }
-    const { cloudSynced } = await saveProject(final)
+    const { cloudSynced } = await saveProject(final, { originalSlug: isNew ? null : slug })
+    draft.markSaved()
     if (cloudSynced) {
       setSaved(true)
       setSyncFailed(false)
@@ -275,68 +207,44 @@ export function AdminProjectEdit() {
     } else {
       setSyncFailed(true)
       setSaved(false)
-      setTimeout(() => setSyncFailed(false), 6000)
     }
-    if (isNew) navigate(`/admin/projects/${final.slug}`, { replace: true })
+    if (final.slug !== slug) navigate(`/admin/projects/${final.slug}`, { replace: true })
+    } catch (error) { setSaveError(error.message) }
+    finally { setSaving(false) }
   }
+  saveRef.current = handleSave
 
   const previewTags = tagsStr.split(',').map(t => t.trim()).filter(Boolean)
   const previewDeliverables = deliverablesStr.split('\n').map(s => s.trim()).filter(Boolean)
   const previewApproach = approachStr.split('\n---\n').map(s => s.trim()).filter(Boolean)
   const shortVersion = getCaseStudyNotes(project)
+  const readiness = getProjectReadiness({ ...project, tags: previewTags, images: galleryImages, approach: previewApproach })
+  const restoreDraft = value => { setProject(value.project); setTagsStr(value.tagsStr || ''); setGalleryImages(value.galleryImages || []); setApproachStr(value.approachStr || ''); setDeliverablesStr(value.deliverablesStr || '') }
+
+  if (missing) return <div className="admin-empty"><h2>Case study not found.</h2><p>Choose a story from your library or create a new one.</p><Link className="admin-button" to="/admin/projects">Back to stories</Link></div>
 
   return (
-    <div className="flex gap-0 min-h-screen -m-8">
+    <>
+    <div className="admin-editor-toolbar"><div><Link className="admin-button" to="/admin/projects">← All stories</Link><span className="admin-save-state" role="status">{saving ? 'Saving changes…' : draft.dirty ? 'Unsaved changes · draft kept on this device' : saved ? 'Saved' : 'Changes are saved when you choose Save'}</span></div><div><button type="button" className="admin-button admin-preview-toggle" onClick={() => setPreviewOpen(!previewOpen)}>{previewOpen ? 'Back to editing' : 'Show preview'}</button>{!isNew && <a className="admin-button" href={`/work/${slug}`} target="_blank" rel="noreferrer">Open page ↗</a>}<button className="admin-button primary" type="button" disabled={saving} onClick={handleSave}>{saving ? 'Saving…' : syncFailed ? 'Retry save' : 'Save changes'}</button></div></div>
+    <DraftRecovery draft={draft} onRestore={restoreDraft} />
+    {saveError && <p className="admin-notice error" role="alert">{saveError}</p>}
+    {syncFailed && <p className="admin-notice warning" role="status">Saved on this device. Cloud sync failed; choose Retry save to update your public portfolio.</p>}
+    <div className={`admin-editor ${previewOpen ? 'show-preview' : ''}`}>
       {/* ── Form panel ── */}
-      <div className="flex-1 min-w-0 overflow-y-auto p-8" style={{ maxHeight: '100vh' }}>
+      <div className="admin-editor-form" inert={saving ? '' : undefined} aria-busy={saving}>
         <div className="mx-auto max-w-2xl">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <Link to="/admin/projects" className="label mb-2 inline-flex items-center gap-1 text-muted hover:text-ink">
-                ← Back to Projects
-              </Link>
-              <h1 className="font-display text-3xl text-ink">
-                {isNew ? 'New Case Study' : `Edit: ${project.title}`}
-              </h1>
-            </div>
-            <div className="flex items-start gap-2">
-              {!isNew && (
-                <button
-                  onClick={handleSyncFromStatic}
-                  disabled={syncedFromStatic}
-                  title="Pull the latest values for this project from projects.js. Overwrites unsaved admin edits. You still need to click Save after."
-                  className={`label rounded-lg border px-4 py-2.5 text-sm transition-colors ${
-                    syncedFromStatic
-                      ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                      : 'border-black/10 text-ink hover:bg-black/5'
-                  }`}
-                >
-                  {syncedFromStatic ? '✓ Pulled from static' : 'Sync from static'}
-                </button>
-              )}
-              <div className="flex flex-col items-end gap-1">
-                <button onClick={handleSave}
-                  className={`label rounded-lg px-5 py-2.5 text-cream transition-all ${saved ? 'bg-emerald-500' : syncFailed ? 'bg-amber-500' : 'bg-accent hover:scale-[1.02]'}`}>
-                  {saved ? '✓ Saved to cloud' : syncFailed ? '⚠ Saved locally only' : 'Save'}
-                </button>
-                {syncFailed && (
-                  <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                    Cloud sync failed — check Supabase permissions
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-
+          <div className="admin-page-heading"><div><p className="eyebrow">Tell the story behind the screens</p><h1>{isNew ? 'A new story.' : project.title || 'Case study'}</h1><p>Clear decisions. Honest evidence. Your contribution.</p></div></div>
+          <nav className="admin-editor-section-links" aria-label="Editor sections">{[['summary','Summary'],['details','Details'],['media','Media'],['evidence','Evidence'],['story','Story'],['chapters','Chapters'],['decisions','Decisions']].map(([id,label])=><a href={`#editor-${id}`} key={id}>{label}</a>)}</nav>
           <div className="space-y-6 rounded-2xl border border-line bg-white/60 p-6 backdrop-blur md:p-8">
-            <fieldset className="space-y-4 rounded-xl border border-line p-4">
+            <fieldset id="editor-summary" className="space-y-4 rounded-xl border border-line p-4">
               <legend className="px-2 font-medium text-ink">The short version</legend>
               <p className="text-xs text-muted">A quick introduction for people reviewing your work. Describe your own contribution and distinguish design delivery from measured results.</p>
               {[
                 ['audience', 'Designed for'], ['problem', 'The problem'], ['contribution', 'My contribution'], ['result', 'The result'], ['constraint', 'The constraint'], ['evidence', 'What the evidence supports'],
               ].map(([key, label]) => <Field key={key} label={label}><textarea className={textareaCls} value={shortVersion[key] || ''} onChange={e => update('recruiterSummary', { ...(project.recruiterSummary || {}), [key]: e.target.value })} /></Field>)}
             </fieldset>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="admin-visibility-row"><label><input type="checkbox" checked={!project.hidden} onChange={event => update('hidden', !event.target.checked)} />Show this case study on the portfolio</label>{!isNew && <button type="button" className="admin-text-button" onClick={handleSyncFromStatic} disabled={syncedFromStatic}>{syncedFromStatic ? 'Source copy loaded' : 'Load source copy'}</button>}</div>
+            <div id="editor-details" className="grid gap-6 md:grid-cols-2">
               <Field label="Title"><input className={inputCls} value={project.title} onChange={e => update('title', e.target.value)} /></Field>
               <Field label="Slug"><input className={inputCls} value={project.slug} onChange={e => update('slug', e.target.value)} placeholder="auto-generated" /></Field>
             </div>
@@ -363,6 +271,7 @@ export function AdminProjectEdit() {
               <Field label="Tags (comma-separated)"><input className={inputCls} value={tagsStr} onChange={e => setTagsStr(e.target.value)} placeholder="Mobile App, Design System" /></Field>
             </div>
 
+            <div id="editor-media" />
             <Field label="Cover Image">
               <ImageFocalPoint
                 label=""
@@ -458,7 +367,7 @@ export function AdminProjectEdit() {
               <RichTextField value={project.reception || ''} onChange={v => update('reception', v)} placeholder="e.g. Adopted unchanged — in a project this size, that's the clearest signal the architecture worked." minHeight={100} />
             </Field>
 
-            <h2 className="pt-4 font-display text-xl text-ink">Outcome Stats (By the Numbers grid)</h2>
+            <h2 id="editor-evidence" className="pt-4 font-display text-xl text-ink">Delivery and evidence</h2>
             <p className="text-sm text-muted">Animated counter stats shown in the dark hero strip. 3–6 recommended.</p>
             <div className="space-y-3">
               {(project.outcomeStats || []).map((s, i) => (
@@ -531,6 +440,7 @@ export function AdminProjectEdit() {
             </div>
 
             <h2 className="pt-4 font-display text-xl text-ink">Narrative Sections</h2>
+            <div id="editor-story" />
             <Field label="Overview">
               <RichTextField value={project.overview} onChange={v => update('overview', v)} placeholder="Project overview…" minHeight={200} />
             </Field>
@@ -581,9 +491,9 @@ export function AdminProjectEdit() {
             </div>
 
             {/* ── Chapters ── */}
-            <h2 className="pt-6 font-display text-xl text-ink">Chapters</h2>
+            <h2 id="editor-chapters" className="pt-6 font-display text-xl text-ink">Story chapters</h2>
             <p className="text-sm text-muted">
-              The work shown chapter by chapter. Each chapter has a number, title, body, and an optional image or video. If both media fields are empty, a decorative numbered placeholder is shown on the live page.
+              Explain what you changed and why, chapter by chapter. Add a takeaway and an image or video when it helps tell the story.
             </p>
             <div className="space-y-4">
               {(project.chapters || []).map((c, i) => (
@@ -616,7 +526,10 @@ export function AdminProjectEdit() {
                     </Field>
                   </div>
                   <div className="mt-3">
-                    <Field label="Image (shown to the right of the body)">
+                    <Field label="Key takeaway (optional)"><input className={inputCls} value={c.takeaway || ''} onChange={event => updateChapter(i, 'takeaway', event.target.value)} placeholder="The decision or lesson to remember" /></Field>
+                  </div>
+                  <div className="mt-3">
+                    <Field label="Image (shown below the chapter)">
                       <ImageFocalPoint
                         label=""
                         imageValue={c.image || ''}
@@ -643,7 +556,7 @@ export function AdminProjectEdit() {
             </div>
 
             {/* ── Decisions & trade-offs ── */}
-            <h2 className="pt-6 font-display text-xl text-ink">Decisions &amp; Trade-offs</h2>
+            <h2 id="editor-decisions" className="pt-6 font-display text-xl text-ink">Decisions and trade-offs</h2>
             <p className="text-sm text-muted">Three-column "we chose X over Y because Z" rows. Shown as a public decisions table on the case study page.</p>
             <div className="space-y-3">
               {(project.decisions || []).map((d, i) => (
@@ -683,22 +596,12 @@ export function AdminProjectEdit() {
             </Field>
           </div>
 
-          <div className="mt-6 flex flex-col items-end gap-1">
-            <button onClick={handleSave}
-              className={`label rounded-lg px-6 py-3 text-cream transition-all ${saved ? 'bg-emerald-500' : syncFailed ? 'bg-amber-500' : 'bg-accent hover:scale-[1.02]'}`}>
-              {saved ? '✓ Saved to cloud' : syncFailed ? '⚠ Saved locally only' : 'Save Changes'}
-            </button>
-            {syncFailed && (
-              <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                Cloud sync failed — check Supabase permissions
-              </p>
-            )}
-          </div>
         </div>
       </div>
 
       {/* ── Preview panel ── */}
-      <div className="w-[420px] shrink-0 border-l border-line bg-cream/50 overflow-y-auto sticky top-0" style={{ height: '100vh' }}>
+      <div className="admin-editor-preview">
+        <div className="admin-readiness"><p><span>Story essentials</span><span>{readiness.complete} / {readiness.total}</span></p><ul>{readiness.checks.map(check => <li key={check.label}><span aria-hidden="true">{check.complete ? '✓' : '○'}</span>{check.label}</li>)}</ul></div>
         <div className="border-b border-line px-5 py-4 flex items-center justify-between">
           <span className="label text-muted">Live Preview</span>
           <span className="flex items-center gap-1.5">
@@ -828,5 +731,6 @@ export function AdminProjectEdit() {
         </div>
       </div>
     </div>
+    </>
   )
 }

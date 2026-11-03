@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { Arrow, Burst } from './DesignMarks.jsx'
 import ProjectLink from './ProjectLink.jsx'
+import { getProjectBySlug } from '../lib/cms.js'
 
 export default function BuildLab() {
+  if (getProjectBySlug('lema')?.hidden) return null
   return (
     <section className="poet-build-lab" aria-labelledby="build-heading">
       <div className="build-lab-copy"><p className="eyebrow">Design it. Make it real.</p><h2 id="build-heading">From a what-if<br />to a <em>working thing.</em></h2><p>I use AI to prototype ideas and build websites and web apps. It brings another dimension to my practice: I can explore an experience, put it into someone's hands, and keep making it better.</p><a href="#contact" className="poet-button poet-button-lime" data-track="ai-building-contact">Have something in mind? <Arrow /></a></div>

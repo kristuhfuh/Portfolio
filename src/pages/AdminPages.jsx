@@ -1,18 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
 import { motion } from 'framer-motion'
 import { getPageContent, savePageContent, getBeyondPixels, saveBeyondPixels, getContactGallery, saveContactGallery, getOtherDesigns, saveOtherDesigns } from '../lib/cms.js'
 import ImageFocalPoint from '../components/ImageFocalPoint.jsx'
 import RichTextField from '../components/RichTextField.jsx'
 import MediaUpload from '../components/MediaUpload.jsx'
+import Field from '../components/AdminField.jsx'
+import DraftRecovery from '../components/DraftRecovery.jsx'
+import { useEditorDraft } from '../lib/useEditorDraft.js'
+import { getCMSSyncState, subscribeCMSSync } from '../lib/cms.js'
 
 const inputCls = 'w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-[#141414] outline-none transition-colors placeholder:text-[#141414]/30 focus:border-[#6D28D9]/50 focus:ring-2 focus:ring-[#6D28D9]/8'
 const textareaCls = inputCls + ' min-h-[120px] resize-y'
 
 function Section({ title, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen)
+  const id = useId()
   return (
     <div className="rounded-2xl border border-black/6 bg-white">
-      <button onClick={() => setOpen(!open)}
+      <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between px-6 py-5 text-left">
         <h2 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 700 }}
           className="text-lg text-[#141414]">{title}</h2>
@@ -21,17 +26,7 @@ function Section({ title, children, defaultOpen = false }) {
           <path d="M6 9l6 6 6-6" />
         </svg>
       </button>
-      {open && <div className="space-y-4 border-t border-black/6 px-6 pb-6 pt-4">{children}</div>}
-    </div>
-  )
-}
-
-function Field({ label, children }) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-[10px] font-medium uppercase tracking-widest text-[#141414]/40"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}>{label}</label>
-      {children}
+      {open && <div id={id} className="space-y-4 border-t border-black/6 px-6 pb-6 pt-4">{children}</div>}
     </div>
   )
 }
@@ -45,13 +40,26 @@ export default function AdminPages() {
   const [otherDesigns, setOtherDesigns] = useState(getOtherDesigns())
   const [saved, setSaved] = useState('')
   const [syncFailed, setSyncFailed] = useState('')
+  const [saving, setSaving] = useState('')
+  const [saveError, setSaveError] = useState('')
+  const baseline = useRef({ hero, about, contact, beyond, gallery, otherDesigns })
+  const draft = useEditorDraft('page_content', { hero, about, contact, beyond, gallery, otherDesigns })
+  const syncState = useSyncExternalStore(subscribeCMSSync, getCMSSyncState)
+  useEffect(() => { if (syncFailed && syncState.failed === 0 && syncState.lastSavedAt) { setSaved(syncFailed); setSyncFailed('') } }, [syncFailed, syncState])
+  const restoreDraft = value => { setHero(value.hero); setAbout(value.about); setContact(value.contact); setBeyond(value.beyond || []); setGallery(value.gallery || []); setOtherDesigns(value.otherDesigns || []) }
 
   const save = async (page, data) => {
+    if (saving) return
+    setSaving(page); setSaveError('')
+    try {
+    if (page === 'hero' && data.expression !== undefined && !data.expression.trim()) throw new Error('Add a short hero heading before saving.')
     let result
     if (page === 'beyond') result = await saveBeyondPixels(data)
     else if (page === 'gallery') result = await saveContactGallery(data)
     else if (page === 'otherDesigns') result = await saveOtherDesigns(data)
     else result = await savePageContent(page, data)
+    baseline.current = { ...baseline.current, [page]: data }
+    draft.markSaved(baseline.current)
     if (result.cloudSynced) {
       setSaved(page)
       setSyncFailed('')
@@ -59,8 +67,9 @@ export default function AdminPages() {
     } else {
       setSyncFailed(page)
       setSaved('')
-      setTimeout(() => setSyncFailed(''), 5000)
     }
+    } catch (error) { setSaveError(error.message) }
+    finally { setSaving('') }
   }
 
   const updateGalleryItem = (idx, key, val) => {
@@ -79,12 +88,12 @@ export default function AdminPages() {
     setBeyond(items)
   }
 
-  const SaveBtn = ({ page, label }) => (
+  const saveButton = (page, label) => (
     <div className="mt-2 flex flex-col gap-1.5">
-      <button onClick={() => save(page, page === 'beyond' ? beyond : page === 'gallery' ? gallery : page === 'otherDesigns' ? otherDesigns : page === 'hero' ? hero : page === 'about' ? about : contact)}
+      <button type="button" disabled={!!saving} onClick={() => save(page, page === 'beyond' ? beyond : page === 'gallery' ? gallery : page === 'otherDesigns' ? otherDesigns : page === 'hero' ? hero : page === 'about' ? about : contact)}
         className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 ${saved === page ? 'bg-emerald-500' : syncFailed === page ? 'bg-amber-500' : 'bg-[#141414] hover:shadow-lg hover:shadow-black/15'}`}
         style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-        {saved === page ? '✓ Saved to cloud' : syncFailed === page ? '⚠ Saved locally only' : label}
+        {saving === page ? 'Saving…' : saved === page ? '✓ Saved to cloud' : syncFailed === page ? 'Retry save' : label}
       </button>
 
       {syncFailed === page && (
@@ -96,17 +105,21 @@ export default function AdminPages() {
   )
 
   return (
-    <div className="max-w-3xl">
+    <div className="admin-pages">
+      <div className="admin-page-heading"><div><p className="eyebrow">The words, the pictures, the personality</p><h1>Make it yours<span>.</span></h1><p>{draft.dirty ? 'You have unsaved changes. Save each section when it’s ready.' : 'Edit a section, then save it to update your portfolio.'}</p></div><a className="admin-button" href="/" target="_blank" rel="noreferrer">View portfolio ↗</a></div>
+      <DraftRecovery draft={draft} onRestore={restoreDraft} />
+      {saveError && <p className="admin-notice error" role="alert">{saveError}</p>}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <p className="text-sm text-[#141414]/40">Make changes and hit save — updates go live instantly.</p>
+        <p className="text-sm text-[#141414]/60">Cloud updates become available to visitors after they reload the page.</p>
       </motion.div>
 
       <div className="space-y-3">
         {/* Hero */}
         <Section title="Hero" defaultOpen>
-          <Field label="Headline (use \n for line breaks)">
-            <textarea className={textareaCls} value={hero.headline} onChange={e => setHero({ ...hero, headline: e.target.value })} />
+          <Field label="Hero heading (one short line per row)">
+            <textarea className={textareaCls} value={hero.expression || 'Design you\ncan feel.'} onChange={e => setHero({ ...hero, expression: e.target.value })} />
           </Field>
+          <Field label="Role line"><input className={inputCls} value={hero.roleLabel || 'Product designer. Framer developer. AI-assisted builder.'} onChange={event => setHero({ ...hero, roleLabel: event.target.value })} /></Field>
           <Field label="Subtitle">
             <RichTextField value={hero.subtitle} onChange={v => setHero({ ...hero, subtitle: v })} placeholder="Hero subtitle…" minHeight={100} />
           </Field>
@@ -129,7 +142,7 @@ export default function AdminPages() {
                 onImageChange={v => setHero({ ...hero, bottomImage: v })} onFocusChange={v => setHero({ ...hero, bottomImageFocus: v })} />
             </div>
           </div>
-          <SaveBtn page="hero" label="Save Hero" />
+          {saveButton('hero', 'Save Hero')}
         </Section>
 
         {/* About */}
@@ -144,7 +157,7 @@ export default function AdminPages() {
             <input className={inputCls} value={about.photo} onChange={e => setAbout({ ...about, photo: e.target.value })} />
           </Field>
           {about.photo && <img src={about.photo} alt="preview" className="h-40 w-32 rounded-xl object-cover" />}
-          <SaveBtn page="about" label="Save About" />
+          {saveButton('about', 'Save About')}
         </Section>
 
         {/* Beyond the Pixels */}
@@ -176,7 +189,7 @@ export default function AdminPages() {
               </div>
             ))}
           </div>
-          <SaveBtn page="beyond" label="Save Beyond Pixels" />
+          {saveButton('beyond', 'Save Beyond Pixels')}
         </Section>
 
         {/* Contact */}
@@ -193,7 +206,7 @@ export default function AdminPages() {
             <Field label="Twitter URL"><input className={inputCls} value={contact.twitter} onChange={e => setContact({ ...contact, twitter: e.target.value })} /></Field>
             <Field label="Dribbble URL"><input className={inputCls} value={contact.dribbble} onChange={e => setContact({ ...contact, dribbble: e.target.value })} /></Field>
           </div>
-          <SaveBtn page="contact" label="Save Contact" />
+          {saveButton('contact', 'Save Contact')}
         </Section>
 
         {/* Other Designs */}
@@ -247,7 +260,7 @@ export default function AdminPages() {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
             Add Design
           </button>
-          <SaveBtn page="otherDesigns" label="Save Other Designs" />
+          {saveButton('otherDesigns', 'Save Other Designs')}
         </Section>
 
         {/* Gallery */}
@@ -304,7 +317,7 @@ export default function AdminPages() {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
             Add Item
           </button>
-          <SaveBtn page="gallery" label="Save Gallery" />
+          {saveButton('gallery', 'Save Gallery')}
         </Section>
       </div>
     </div>
