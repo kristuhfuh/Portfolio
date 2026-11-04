@@ -2,7 +2,7 @@
 // evidence; no production adoption, task-time, or business-impact claims are made.
 export const lemaProject = {
   slug: 'lema',
-  number: '06',
+  number: '02',
   title: 'LEMA /admin',
   tagline: 'Redesigning — and building — the everyday tools behind Landmark Africa.',
   tags: ['Enterprise UX', 'AI-assisted building', 'Workflow design', 'Web App'],

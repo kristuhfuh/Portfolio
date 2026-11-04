@@ -267,7 +267,7 @@ export async function deleteContact(id) {
 const defaultPages = {
   hero: {
     headline: 'Christopher\nAkpoguma',
-    subtitle: 'I turn complex ideas into intuitive products. A little bold. A little unexpected. Always made for the person on the other side.',
+    subtitle: "I’m a product designer connecting customer experiences with the operational tools behind them — from consumer apps and booking journeys to enterprise systems.",
     focus: 'Product design · Framer development',
     openTo: 'Full-time · Contract · Select freelance',
     cvUrl: '',

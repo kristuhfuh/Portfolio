@@ -1,9 +1,11 @@
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useEffect } from 'react'
-import { getProjectBySlug as getProject, getProjects } from '../lib/cms.js'
+import { getProjectBySlug as getProject } from '../lib/cms.js'
+import { getSelectedProjects } from '../lib/projectLibrary.js'
 import AnimatedCounter from '../components/AnimatedCounter.jsx'
 import CaseStudyOverview from '../components/CaseStudyOverview.jsx'
+import CaseStudyEvidence from '../components/CaseStudyEvidence.jsx'
 import { getCaseStudyNotes, hasDraftText } from '../data/caseStudyNotes.js'
 import { formatCaseStudyText } from '../lib/caseStudyText.js'
 import { lemaProject } from '../data/lema.js'
@@ -21,7 +23,7 @@ import '../styles/case-studies.css'
 const richHtml = formatCaseStudyText
 
 function getNextProject(slug) {
-  const projects = getProjects().filter(project => !project.hidden)
+  const projects = getSelectedProjects()
   const idx = projects.findIndex((p) => p.slug === slug)
   if (idx === -1) return projects[0]
   return projects[(idx + 1) % projects.length]
@@ -142,10 +144,10 @@ function Deliverables({ items, accent }) {
     Deliverables
               </div>
               <h2 className="display-lg text-[clamp(2rem,4vw,3.5rem)] text-ink dark:text-dark-ink">
-                What shipped.
+                What I delivered.
               </h2>
               <p className="mt-6 text-muted dark:text-dark-muted">
-                Every output from the project — design artefacts, systems, and production-ready assets.
+                Design flows, systems, and handoff assets. Release status and measured results are described separately.
               </p>
             </div>
           </div>
@@ -179,8 +181,8 @@ function Deliverables({ items, accent }) {
 }
 
 // ─── Reception callout — small but punchy ───
-function Reception({ quote, accent }) {
-  if (!quote || hasDraftText(quote)) return null
+function Reception({ quote, accent, attribution, requireAttribution }) {
+  if (!quote || hasDraftText(quote) || (requireAttribution && !(attribution?.role && attribution?.context && attribution?.approved === true))) return null
   return (
     <section className="border-t border-line py-20 dark:border-dark-line">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
@@ -199,6 +201,7 @@ function Reception({ quote, accent }) {
           <p className="font-display text-xl italic leading-relaxed tracking-tighter2 text-ink dark:text-dark-ink md:text-2xl">
             {quote}
           </p>
+          {attribution?.role && attribution?.context && <p className="mt-5 text-sm text-muted dark:text-dark-muted">{attribution.role} · {attribution.context}</p>}
         </motion.div>
       </div>
     </section>
@@ -313,7 +316,7 @@ function DecisionsTable({ decisions, accent }) {
 export default function CaseStudy() {
   const { user, loading: authLoading } = useAuth()
   const { slug } = useParams()
-  const project = getProject(slug) || (slug === lemaProject.slug ? lemaProject : null)
+  const project = getSelectedProjects().find(project => project.slug === slug) || getProject(slug) || (slug === lemaProject.slug ? lemaProject : null)
 
   useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [slug])
 
@@ -387,6 +390,7 @@ export default function CaseStudy() {
       )}
 
       <DecisionsTable decisions={decisions} accent={accent} />
+      <CaseStudyEvidence slug={slug} />
 
       {/* ─── Outcome prose (legacy projects only) ─── */}
       {project.outcome && (
@@ -414,7 +418,7 @@ export default function CaseStudy() {
       />
 
       {/* ─── Reception callout (legacy projects only) ─── */}
-      <Reception quote={project.reception} accent={accent} />
+      <Reception quote={project.reception} accent={accent} attribution={project.receptionAttribution} requireAttribution={slug === 'landmark-events'} />
 
       {/* ─── Reflection ─── */}
       {project.reflection && (

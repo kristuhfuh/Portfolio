@@ -407,7 +407,9 @@ html.dark .statement-heading span:nth-child(n+7), html.dark .statement-burst { c
 .poet-project-0 { grid-column: span 12; }
 .poet-project-1 { grid-column: span 7; }
 .poet-project-2 { grid-column: span 5; margin-top: 130px; }
-.project-link { display: block; }
+.poet-project-featured { grid-column: 1 / -1; margin-top: 0; }
+.project-link { display: block; border-radius: 5px; }
+.project-link:focus-visible { outline: 2px solid var(--poet-ink); outline-offset: 8px; }
 .project-image { position: relative; overflow: hidden; aspect-ratio: 1.25; background: color-mix(in srgb, var(--project-accent) 18%, var(--poet-paper)); border-radius: 5px; }
 .poet-project-0 .project-image { aspect-ratio: 1.7; }
 .project-image > img, .project-image > video { width: 100%; height: 100%; object-fit: contain; transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s; }
@@ -418,10 +420,14 @@ html.dark .statement-heading span:nth-child(n+7), html.dark .statement-burst { c
 .project-open { position: absolute; bottom: 25px; right: 25px; display: flex; align-items: center; gap: 20px; background: var(--poet-lime); color: #291c35; border-radius: 50px; padding: 15px 21px; font-size: 12px; opacity: 0; transform: translateY(15px); transition: transform 0.3s, opacity 0.3s; }
 .project-open svg { width: 18px; }
 .project-link:is(:hover, :focus-visible) .project-open { opacity: 1; transform: none; }
+.project-caption > div { min-width: 0; }
+.project-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 12px; }
+.project-meta .project-tags { margin: 0; font-size: 11px; }
+.project-status { max-width: 100%; border: 1px solid var(--poet-line); border-radius: 30px; padding: 5px 10px; font-size: 12px; line-height: 1.4; color: var(--poet-muted); }
 .project-caption { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 25px 0 0; }
 .project-tags { font-size: 10px; text-transform: uppercase; letter-spacing: 0.075em; color: var(--poet-muted); margin-bottom: 10px; }
 .project-caption h3 { font: 600 clamp(26px, 3.3vw, 48px)/1.05 'Bricolage Grotesque', sans-serif; letter-spacing: -0.045em; }
-.project-tagline { margin-top: 12px; font-size: 13px; line-height: 1.65; max-width: 540px; color: var(--poet-muted); }
+.project-tagline { margin-top: 12px; font-size: 14px; line-height: 1.65; max-width: 540px; color: var(--poet-muted); }
 .project-arrow { flex-shrink: 0; width: 50px; height: 50px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--poet-line); transition: background 0.25s, color 0.25s, transform 0.35s; }
 .project-link:is(:hover, :focus-visible) .project-arrow { background: var(--poet-purple); color: #f5f1e9; transform: rotate(45deg); border-color: transparent; }
 .project-placeholder { display: grid; height: 100%; place-items: center; padding: 24px; font: 600 48px/1 'Bricolage Grotesque', sans-serif; }
@@ -585,9 +591,9 @@ html.dark .statement-heading span:nth-child(n+7), html.dark .statement-burst { c
   .project-open > span { display: none; }
   .project-caption { padding-top: 19px; gap: 12px; }
   .project-caption h3 { font-size: 28px; }
-  .project-arrow { width: 40px; height: 40px; }
+  .project-arrow { width: 44px; height: 44px; }
   .project-arrow svg { width: 18px; }
-  .project-tagline { font-size: 12px; }
+  .project-tagline { font-size: 14px; }
   .poet-about-photo { max-width: 380px; margin: 0 auto 20px; }
   .poet-about .display-lg { font-size: clamp(40px, 9vw, 65px); }
   .poet-beyond .pixel-box:nth-child(even) { margin-top: 20px; }

@@ -94,3 +94,9 @@ html.dark .case-story-nav a[aria-current] { color: #c7a5fa; border-color: #c7a5f
   .case-visuals-thumbnails button { height: 58px; width: 72px; }
 }
 @media (prefers-reduced-motion: reduce) { .case-media-open:is(:hover, :focus-visible) .case-media-zoom { transform: none; } }
+
+.case-evidence-steps { display: grid; gap: 24px; min-width: 0; max-width: 72ch; }
+.case-evidence-steps dt { margin-bottom: 8px; color: var(--poet-muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.case-evidence-steps dd { margin: 0; font-size: 16px; line-height: 1.85; overflow-wrap: anywhere; }
+.case-evidence-steps > div:last-child { padding: 20px; border-radius: 4px; background: color-mix(in srgb, var(--case-accent) 6%, var(--poet-paper)); }
+@media (max-width: 767px) { .case-evidence-steps { gap: 20px; } .case-evidence-steps dd { font-size: 15px; } }

@@ -84,7 +84,7 @@ export default function Experience() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="mt-6 max-w-sm text-muted dark:text-dark-muted"
                 >
-                  Four years of professional design work across real estate, SaaS,
+                  Product design across real estate, SaaS,
                   consumer apps, and government-facing platforms.
                 </motion.p>
 
@@ -146,7 +146,7 @@ export default function Experience() {
                             {job.location}
                           </span>
                         </div>
-                        <div className="mt-1 text-accent">{job.role}</div>
+                        <div className="mt-1 text-accent">{job.role}{job.employmentType && <span className="text-muted dark:text-dark-muted"> · {job.employmentType}</span>}</div>
                         <p className="mt-3 max-w-xl text-muted dark:text-dark-muted">
                           {job.description}
                         </p>

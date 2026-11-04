@@ -14,8 +14,8 @@ export const caseStudyNotes = {
     audience: 'Guests buying tickets, organizers managing events, and staff handling admission.',
     problem: 'Ticket purchases, approvals, check-in, and reporting were fragmented across partially automated tools and manual work. The system supported transactions without supporting the whole event.',
     contribution: 'I designed the guest purchase experience, organizer onboarding and dashboard, event creation, ticket rules, access control, and event-day check-in flows.',
-    result: 'The design connects the event lifecycle: discovery and checkout for guests, publishing and monitoring for organizers, and QR validation for staff.',
-    evidence: 'The documented evidence is the designed workflows, dashboard structure, and handoff scope. Verified changes to attendance, revenue, and task completion are not included in this case study.',
+    result: 'All parts of Landmark Events launched: discovery and checkout for guests, publishing and monitoring for organizers, and QR validation for staff.',
+    evidence: 'The platform launched across the documented workflows. The case shows the dashboard structure and delivery scope; verified changes to attendance, revenue, and task completion are not included.',
     constraint: 'Support distinct guest and organizer needs while making event-day admission and financial visibility clear.',
     strengths: ['B2B and B2C workflows', 'Operational product design', 'Iteration and handoff'],
     decisions: [

@@ -11,10 +11,10 @@ export const projects = [
     tagline: `Turning a payments app into the way Nigerian families plan a day out at Landmark.`,
     tags: ['Mobile App', 'Product Design', 'Design System', 'Hospitality', 'Lifestyle'],
     client: 'Landmark Africa',
-    year: '2024–2026',
+    year: '2025–2026',
     location: 'Victoria Island, Lagos',
     role: 'Lead product designer',
-    timeline: 'v2 redesign (2024), LCA 3.0 (2026)',
+    timeline: 'v2 redesign (2025), LCA 3.0 (2026)',
     team: 'PM, developer, 2 data analysts (v2)',
     status: 'v3 in stakeholder review',
     cover: 'https://zwqtnogwthrporhihast.supabase.co/storage/v1/object/public/media/1793263076712-xgrsv-lca-poster.png',
@@ -25,7 +25,7 @@ export const projects = [
 
     overview: `Landmark is a leisure destination in Victoria Island, Lagos: the beach, Pop Landmark, Upside Down House, Kids Club, hotels, retail and dozens of food stalls. The Citizen App is how guests pay, book and earn points across all of it.
 
-In 2024 I redesigned the first version. Working from surveys, post-booking forms and customer service reports, we shortened registration, rebuilt the booking flow, added event search and introduced the first rewards system Landmark had shipped.
+In 2025 I redesigned the first version. Working from surveys, post-booking forms and customer service reports, we shortened registration, rebuilt the booking flow, added event search and introduced the first rewards system Landmark had shipped.
 
 It worked as a payments tool. It did not yet work as a reason to visit.`,
 
@@ -108,7 +108,7 @@ The question for 3.0: what would it take for a mum in Lekki to open this app on 
     ],
 
     decisions: [
-      { chose: 'Photos of the real places',             over: 'Illustrations everywhere (our own 2024 call)', because: 'Families decide on what the place looks like. The 2024 choice was made for image-rights reasons, and Landmark now has its own photo library.' },
+      { chose: 'Photos of the real places',             over: 'Illustrations everywhere (our own 2025 call)', because: 'Families decide on what the place looks like. The 2025 choice was made for image-rights reasons, and Landmark now has its own photo library.' },
       { chose: 'An "Order received" button',            over: 'Pickup codes',                                  because: 'Codes added a step at a busy counter and confused guests. Staff already see the order on their screen.' },
       { chose: 'Typing the table number as a fallback', over: 'QR only',                                       because: 'QR stickers peel, get wet and fail in low light. A dead end at the table is the worst moment to have one.' },
       { chose: 'Support-only contact',                  over: 'Calling the vendor',                            because: 'Landmark keeps the complaint, the refund and the data. Vendors stay focused on cooking.' },
@@ -127,7 +127,7 @@ The question for 3.0: what would it take for a mum in Lekki to open this app on 
       { value: '7',   label: 'Onboarding directions, plus a 59-second launch video' },
     ],
 
-    reflection: `The 2024 redesign taught me to treat user feedback as a blueprint. The 2026 one taught me that a good decision can expire. Swapping photos for illustrations was right when image rights were the risk. Once the goal became selling a family day out, it was the wrong call, and I reversed it.
+    reflection: `The 2025 redesign taught me to treat user feedback as a blueprint. The 2026 one taught me that a good decision can expire. Swapping photos for illustrations was right when image rights were the risk. Once the goal became selling a family day out, it was the wrong call, and I reversed it.
 
 Next time I would put the food flow in front of stall staff and real guests before polishing anything else. It is the flow with the most moving parts, and the one where a wrong assumption costs a real queue.`,
 
@@ -143,7 +143,7 @@ Next time I would put the food flow in front of stall staff and real guests befo
     tagline: `A complete event ecosystem — designed for energy, built for experiences`,
     tags: ['Web App', 'B2B/B2C', 'Ticketing', 'Dashboard', 'Event Management'],
     client: 'Landmark Africa',
-    year: '2024',
+    year: '2025',
     location: 'Victoria Island, Lagos',
     role: 'Product Designer',
     timeline: '6-8 Weeks',

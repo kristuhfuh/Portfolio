@@ -1,6 +1,7 @@
 export const experience = [
   {
     company: 'Landmark Africa Group',
+    employmentType: 'Staff role',
     role: 'UI/UX Executive',
     location: 'Victoria Island, Lagos',
     start: 'Jul 2025',
@@ -10,6 +11,7 @@ export const experience = [
   },
   {
     company: 'Eden Cloudwave',
+    employmentType: 'Contract',
     role: 'Product Designer',
     location: 'Remote · Lagos',
     start: 'Sept 2024',
@@ -19,15 +21,17 @@ export const experience = [
   },
   {
     company: 'Kari Africa',
+    employmentType: '6-month contract',
     role: 'Product Designer',
     location: 'Remote · Port Harcourt',
     start: 'Jan 2025',
-    end: 'Jul 2025',
+    end: 'Jun 2025',
     description:
       'Designed customer-facing flows for a growth-stage African consumer product.',
   },
   {
     company: 'Sidmach Technologies',
+    employmentType: 'Full-time',
     role: 'UI/UX Designer',
     location: 'Ikeja, Lagos',
     start: 'Jul 2024',
