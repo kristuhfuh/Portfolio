@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
-import { normalizeDriveUrl } from '../lib/cms.js'
+import { getPageContent, normalizeDriveUrl } from '../lib/cms.js'
 import { getSelectedProjects } from '../lib/projectLibrary.js'
 import { projects as staticProjects } from '../data/projects.js'
 import { lemaProject } from '../data/lema.js'
@@ -10,7 +10,7 @@ import ProjectLink from './ProjectLink.jsx'
 
 const majorProjects = new Set(['landmark-citizen-app', 'lema'])
 
-function Project({ project, layoutIndex, featured }) {
+function Project({ project, layoutIndex, featured, projectCta }) {
   const [active, setActive] = useState(false)
   const [playing, setPlaying] = useState(false)
   const videoRef = useRef(null)
@@ -41,7 +41,7 @@ function Project({ project, layoutIndex, featured }) {
           {cover ? <img src={normalizeDriveUrl(cover)} alt={`${project.title} — project preview`} loading="lazy" style={{ viewTransitionName: `project-${project.slug}` }} onError={e => { if (fallback && e.currentTarget.src !== new URL(fallback, window.location.href).href) e.currentTarget.src = fallback }} /> : <span className="project-placeholder">{project.title}</span>}
           {project.hoverVideo && <video ref={videoRef} src={normalizeDriveUrl(project.hoverVideo)} muted loop playsInline preload="none" aria-hidden="true" onPlaying={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setPlaying(false)} className={active && playing ? 'is-playing' : ''} />}
           <span className="project-index">{project.number} / {project.year}</span>
-          <span className="project-open"><span>Enter the project</span><Arrow /></span>
+          <span className="project-open"><span>{projectCta}</span><Arrow /></span>
         </div>
         <div className="project-caption">
           <div>
@@ -58,15 +58,16 @@ function Project({ project, layoutIndex, featured }) {
 
 export default function Work() {
   const projects = getSelectedProjects()
+  const content = getPageContent('work')
   let supportingIndex = 0
 
   return (
     <section id="work" className="poet-work" aria-labelledby="work-heading">
-      <div className="work-header"><div><p className="eyebrow">01 / Selected work</p><h2 id="work-heading">Thoughtfully made.<br /><span>Impossible to ignore.</span></h2></div><p>A few things I put my head,<br />heart, and a lot of pixels into.<br /><span>({String(projects.length).padStart(2, '0')} selected projects)</span></p></div>
+      <div className="work-header"><div><p className="eyebrow">{content.eyebrow}</p><h2 id="work-heading">{content.heading}<br /><span>{content.headingAccent}</span></h2></div><p><span style={{ whiteSpace: 'pre-line' }}>{content.description}</span><br /><span>({String(projects.length).padStart(2, '0')} {content.countLabel})</span></p></div>
       <div className="poet-projects">{projects.map(project => {
         const featured = majorProjects.has(project.slug)
         const layoutIndex = featured ? 0 : (supportingIndex++ + 1) % 3
-        return <Project project={project} key={project.slug} layoutIndex={layoutIndex} featured={featured} />
+        return <Project project={project} key={project.slug} layoutIndex={layoutIndex} featured={featured} projectCta={content.projectCta} />
       })}</div>
     </section>
   )

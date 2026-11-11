@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
-import { getContactGallery, normalizeDriveUrl } from '../lib/cms.js'
+import { getContactGallery, getPageContent, normalizeDriveUrl } from '../lib/cms.js'
 import { Arrow, Burst } from './DesignMarks.jsx'
 import Modal from './Modal.jsx'
 
-function GalleryCard({ item, index, onSelect }) {
+function GalleryCard({ item, index, onSelect, fallbackCaption }) {
   const videoRef = useRef(null)
   const reduced = useReducedMotion()
   const [playing, setPlaying] = useState(false)
@@ -24,13 +24,14 @@ function GalleryCard({ item, index, onSelect }) {
         {!image && <span className="gallery-video-placeholder">{video ? 'Play film ↗' : 'Open image ↗'}</span>}
         <span className="gallery-expand"><Arrow /></span>
       </span>
-      <span className="gallery-card-caption"><span>{item.caption || 'A moment in the collection'}</span><span>{String(index + 1).padStart(2, '0')}</span></span>
+      <span className="gallery-card-caption"><span>{item.caption || fallbackCaption}</span><span>{String(index + 1).padStart(2, '0')}</span></span>
     </button>
   )
 }
 
 export default function WorkGallery() {
   const items = getContactGallery()
+  const content = getPageContent('galleryIntro')
   const reduced = useReducedMotion()
   const trackRef = useRef(null)
   const interacting = useRef(false)
@@ -75,11 +76,11 @@ export default function WorkGallery() {
   if (!items.length) return null
   return (
     <section className="poet-gallery" aria-labelledby="gallery-heading">
-      <div className="gallery-heading-row"><div><p className="eyebrow">The visual notebook</p><h2 id="gallery-heading">A wandering <em>eye.</em><Burst /></h2></div><p>Things I've made. Things I love.<br />A little glimpse inside my head.</p></div>
+      <div className="gallery-heading-row"><div><p className="eyebrow">{content.eyebrow}</p><h2 id="gallery-heading">{content.heading} <em>{content.headingAccent}</em><Burst /></h2></div><p style={{ whiteSpace: 'pre-line' }}>{content.description}</p></div>
       <div className="gallery-track" ref={trackRef} onPointerEnter={() => { interacting.current = true }} onPointerLeave={resume} onPointerDown={() => { interacting.current = true }} onPointerUp={resume} onPointerCancel={resume} onFocusCapture={() => { interacting.current = true }} onBlurCapture={e => { if (!e.currentTarget.contains(e.relatedTarget)) resume() }} onWheel={() => setPaused(true)}>
-        {items.map((item, index) => <GalleryCard key={item.id} item={item} index={index} onSelect={() => setSelected(index)} />)}
+        {items.map((item, index) => <GalleryCard key={item.id} item={item} index={index} fallbackCaption={content.fallbackCaption} onSelect={() => setSelected(index)} />)}
       </div>
-      <div className="gallery-controls"><span>Made to be explored. Pick a frame.</span><div>{!reduced && <button type="button" onClick={() => setPaused(!paused)} aria-pressed={paused}>{paused ? 'Play gallery' : 'Pause gallery'} <span aria-hidden="true">{paused ? '▶' : 'Ⅱ'}</span></button>}<button type="button" aria-label="Scroll gallery left" onClick={() => step(-1)}>←</button><button type="button" aria-label="Scroll gallery right" onClick={() => step(1)}>→</button></div></div>
+      <div className="gallery-controls"><span>{content.controlsLabel}</span><div>{!reduced && <button type="button" onClick={() => setPaused(!paused)} aria-pressed={paused}>{paused ? 'Play gallery' : 'Pause gallery'} <span aria-hidden="true">{paused ? '▶' : 'Ⅱ'}</span></button>}<button type="button" aria-label="Scroll gallery left" onClick={() => step(-1)}>←</button><button type="button" aria-label="Scroll gallery right" onClick={() => step(1)}>→</button></div></div>
       {selectedItem && <Modal onClose={() => setSelected(null)} label={selectedItem.caption || 'Gallery preview'} className="gallery-dialog">
         <figure>{selectedItem.type === 'video' ? <video src={normalizeDriveUrl(selectedItem.src)} poster={normalizeDriveUrl(selectedItem.poster)} controls autoPlay={!reduced} muted playsInline /> : <img src={normalizeDriveUrl(selectedItem.src)} alt={selectedItem.caption || 'Selected gallery image'} />}{selectedItem.caption && <figcaption>{selectedItem.caption}</figcaption>}</figure>
         <div className="gallery-dialog-navigation"><button type="button" aria-label="Previous gallery item" onClick={() => setSelected((selected - 1 + items.length) % items.length)}>← Previous</button><span>{selected + 1} / {items.length}</span><button type="button" aria-label="Next gallery item" onClick={() => setSelected((selected + 1) % items.length)}>Next →</button></div>

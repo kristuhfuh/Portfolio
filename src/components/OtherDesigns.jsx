@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { getOtherDesigns, normalizeDriveUrl } from '../lib/cms.js'
+import { getOtherDesigns, getPageContent, normalizeDriveUrl } from '../lib/cms.js'
 import { safeLink } from '../lib/richText.js'
 
 function DesignCard({ item, index }) {
+  const content = getPageContent('otherDesignsIntro')
   const [hovered, setHovered] = useState(false)
   const src = normalizeDriveUrl(item.image)
   const link = safeLink(item.link)
@@ -67,7 +68,7 @@ function DesignCard({ item, index }) {
               transition: 'transform 0.3s 0.04s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s 0.04s cubic-bezier(0.22, 1, 0.36, 1)',
             }}
           >
-            View design
+            {content.cardCta}
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
               style={{
                 transform: hovered ? 'rotate(-45deg)' : 'rotate(0deg)',
@@ -108,6 +109,7 @@ function DesignCard({ item, index }) {
 
 export default function OtherDesigns() {
   const items = getOtherDesigns()
+  const content = getPageContent('otherDesignsIntro')
   if (!items || items.length === 0) return null
 
   return (
@@ -121,14 +123,14 @@ export default function OtherDesigns() {
             viewport={{ once: true }} transition={{ duration: 0.45 }}
             className="label mb-3 text-muted dark:text-dark-muted"
           >
-            ✦ More Work
+            {content.eyebrow}
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
           >
-            Other Designs.
+            {content.heading}
           </motion.h2>
         </div>
 

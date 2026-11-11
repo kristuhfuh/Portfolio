@@ -1,9 +1,12 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useMotionPreference } from '../lib/motion.js'
-import { experience } from '../data/experience.js'
+import { getPageContent } from '../lib/cms.js'
 
 export default function Experience() {
+  const content = getPageContent('experience')
+  const headingWords = String(content.heading || '').trim().split(/\s+/).filter(Boolean)
+  const accentWord = headingWords.pop() || ''
   const reduced = useMotionPreference()
   const sectionRef = useRef(null)
   const listRef = useRef(null)
@@ -42,11 +45,11 @@ export default function Experience() {
                   transition={{ duration: 0.5 }}
                   className="label mb-5 text-muted dark:text-dark-muted"
                 >
-                  ✦ Experience
+                  {content.eyebrow}
                 </motion.div>
 
-                <h2 className="display-lg text-[clamp(2.25rem,5vw,4rem)] text-ink dark:text-dark-ink">
-                  {['Where', "I've", 'shown'].map((word, i) => (
+                <h2 aria-label={content.heading} className="display-lg text-[clamp(2.25rem,5vw,4rem)] text-ink dark:text-dark-ink">
+                  {headingWords.map((word, i) => (
                     <span
                       key={i}
                       className="inline-block overflow-hidden"
@@ -63,7 +66,7 @@ export default function Experience() {
                       </motion.span>
                     </span>
                   ))}
-                  <br />
+                  {headingWords.length > 0 && <br />}
                   <span className="inline-block overflow-hidden" style={{ verticalAlign: 'bottom' }}>
                     <motion.span
                       className="inline-block text-accent"
@@ -72,7 +75,7 @@ export default function Experience() {
                       viewport={{ once: true }}
                       transition={{ delay: 0.28, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      up.
+                      {accentWord}
                     </motion.span>
                   </span>
                 </h2>
@@ -84,8 +87,7 @@ export default function Experience() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="mt-6 max-w-sm text-muted dark:text-dark-muted"
                 >
-                  Product design across real estate, SaaS,
-                  consumer apps, and government-facing platforms.
+                  {content.description}
                 </motion.p>
 
               </motion.div>
@@ -104,9 +106,9 @@ export default function Experience() {
               </div>
 
               <ol>
-                {experience.map((job, i) => (
+                {(content.jobs || []).map((job, i) => (
                   <motion.li
-                    key={job.company + job.start}
+                    key={`${job.company}-${job.start}-${i}`}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: '-8%' }}

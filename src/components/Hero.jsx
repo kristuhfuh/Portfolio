@@ -25,18 +25,18 @@ function HeroCollage({ hero }) {
   return (
     <div className="hero-collage" onPointerMove={move} onPointerLeave={() => { mx.set(0); my.set(0) }}>
       <motion.div className="collage-art" style={reduced ? undefined : { x, y, rotate }} aria-hidden="true">
-        <img src="/images/design-poet-art.svg" alt="" fetchPriority="high" />
-        <span className="collage-art-caption">A little outside the lines.</span>
+        <img src={hero.artImage} alt="" fetchPriority="high" />
+        <span className="collage-art-caption">{hero.artCaption}</span>
       </motion.div>
       <motion.figure className="collage-portrait" style={reduced ? undefined : { x, y }}>
-        <div className="collage-portrait-image"><img src={casual ? hero.bottomImage || '/images/hero-bottom.jpg' : hero.topImage || '/images/hero-top.jpg'} alt={casual ? 'Another side of Christopher Akpoguma' : 'Christopher Akpoguma'} style={{ objectPosition: `${(casual ? hero.bottomImageFocus : hero.topImageFocus)?.x ?? 50}% ${(casual ? hero.bottomImageFocus : hero.topImageFocus)?.y ?? 40}%` }} fetchPriority="high" /></div>
-        <figcaption><button type="button" onClick={() => setCasual(!casual)} aria-pressed={casual} aria-label="Show Christopher's other portrait"><span>{casual ? 'A little less buttoned up.' : 'Christopher, in real life.'}</span><span aria-hidden="true">↻</span></button></figcaption>
+        <div className="collage-portrait-image"><img src={casual ? hero.bottomImage || '/images/hero-bottom.jpg' : hero.topImage || '/images/hero-top.jpg'} alt={casual ? `Another side of ${hero.headline}` : hero.headline} style={{ objectPosition: `${(casual ? hero.bottomImageFocus : hero.topImageFocus)?.x ?? 50}% ${(casual ? hero.bottomImageFocus : hero.topImageFocus)?.y ?? 40}%` }} fetchPriority="high" /></div>
+        <figcaption><button type="button" onClick={() => setCasual(!casual)} aria-pressed={casual} aria-label={hero.portraitButtonLabel}><span>{casual ? hero.portraitAlternate : hero.portraitDefault}</span><span aria-hidden="true">↻</span></button></figcaption>
       </motion.figure>
       <motion.div className="collage-note" style={reduced ? undefined : { rotate }} aria-hidden="true">
-        <span>Made of</span><strong>curiosity<br />& a little<br /><em>chaos.</em></strong>
+        <span>{hero.noteIntro}</span><strong>{hero.noteLineOne}<br />{hero.noteLineTwo}<br /><em>{hero.noteLineThree}</em></strong>
         <svg viewBox="0 0 100 38" fill="none"><path d="M5 25C30-5 75 0 84 13c11 18-52 26-51 10C35 2 91 6 96 10" stroke="currentColor" strokeWidth="2" /></svg>
       </motion.div>
-      <div className="collage-sticker" aria-hidden="true"><Burst /><span>100%<br />myself.</span></div>
+      <div className="collage-sticker" aria-hidden="true"><Burst /><span style={{ whiteSpace: 'pre-line' }}>{hero.sticker}</span></div>
     </div>
   )
 }
@@ -47,11 +47,10 @@ export default function Hero() {
   const hero = getPageContent('hero')
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const artY = useTransform(scrollYProgress, [0, 1], [0, -65])
-  const headline = 'Christopher Akpoguma'
+  const headline = String(hero.headline || 'Christopher Akpoguma').replace(/\s+/g, ' ').trim()
   const expression = String(hero.expression || '').replace(/<[^>]*>/g, '').trim() || 'Design you\ncan feel.'
   const headingLines = expression.split('\n').map(line => line.trim()).filter(Boolean)
-  const defaultIntro = "I’m a product designer connecting customer experiences with the operational tools behind them — from consumer apps and booking journeys to enterprise systems."
-  const intro = !hero.subtitle || hero.subtitle === 'I turn complex ideas into intuitive products. A little bold. A little unexpected. Always made for the person on the other side.' || hero.subtitle.startsWith('Product Designer turning complex ideas into interfaces people actually finish using.') ? defaultIntro : hero.subtitle.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&')
+  const intro = String(hero.subtitle || '').replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&')
   const cvMatch = hero.cvUrl?.match(/\/file\/d\/([^/?#]+)/)
   const cvUrl = cvMatch ? `https://drive.google.com/uc?export=download&id=${cvMatch[1]}` : hero.cvUrl
 
@@ -59,19 +58,19 @@ export default function Hero() {
     <section ref={ref} className="poet-hero" aria-labelledby="hero-heading">
       <div className="hero-topline">
         <span><span className="availability-dot" />{hero.openTo || 'Open for a good collaboration'}</span>
-        <span>Lagos, NG <span className="hero-timezone">↗ Working everywhere</span></span>
+        <span>{hero.location} <span className="hero-timezone">↗ {hero.timezoneLabel}</span></span>
       </div>
       <div className="hero-composition">
         <div className="hero-copy">
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="hero-intro">
-            {headline}.<br /><span>{hero.roleLabel || 'Product designer.'}</span>
+            {headline.replace(/\.$/, '')}.<br /><span>{hero.roleLabel}</span>
           </motion.p>
           <h1 id="hero-heading" className="hero-title" aria-label={headingLines.join(' ')}>{headingLines.map((line, index) => { const words = line.split(' '); const last = index === headingLines.length - 1; return <span className="hero-line" key={index}><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: 0.95, delay: 0.1 + index * 0.12, ease }}>{last ? <>{words.slice(0, -1).join(' ')}<em>{words[words.length - 1]}</em><Burst className="hero-title-burst" /></> : line}</motion.span></span> })}</h1>
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45, ease }} className="hero-bottom-copy">
             <p>{intro}</p>
             <div className="hero-actions">
-              <a href="#work" className="poet-button poet-button-lime" data-track="hero-view-work">Explore my work <Arrow /></a>
-              {cvUrl && <a href={cvUrl} target="_blank" rel="noreferrer" className="hero-cv" data-track="hero-download-cv">Get my CV ↗</a>}
+              <a href="#work" className="poet-button poet-button-lime" data-track="hero-view-work">{hero.workCta} <Arrow /></a>
+              {cvUrl && <a href={cvUrl} target="_blank" rel="noreferrer" className="hero-cv" data-track="hero-download-cv">{hero.cvLabel} ↗</a>}
             </div>
           </motion.div>
         </div>
@@ -79,7 +78,7 @@ export default function Hero() {
           <HeroCollage hero={hero} />
         </motion.div>
       </div>
-      <div className="hero-footnote"><span>{!hero.focus || hero.focus === 'Product design · Framer development' ? 'Also building with Framer and AI.' : hero.focus}</span><a href="#work">Take a little scroll <span>↓</span></a></div>
+      <div className="hero-footnote"><span>{hero.focus}</span><a href="#work">{hero.scrollLabel} <span>↓</span></a></div>
     </section>
   )
 }

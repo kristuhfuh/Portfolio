@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
-import { tools, recognition } from '../data/experience.js'
 import { getPageContent } from '../lib/cms.js'
 import { sanitizeRichText } from '../lib/richText.js'
 
@@ -26,6 +25,7 @@ export default function About() {
   const photoScale = useTransform(scrollYProgress, [0, 0.4], [1.05, 1])
 
   const content = getPageContent('about')
+  const extras = getPageContent('aboutExtras')
   const photo = content.photo?.includes('JHDEnCL7px098imQz7F1WCGe8') ? (getPageContent('hero').topImage || '/images/hero-top.jpg') : content.photo
 
   return (
@@ -43,7 +43,7 @@ export default function About() {
           transition={{ duration: 0.45 }}
           className="label mb-5 text-muted dark:text-dark-muted"
         >
-          ✦ About
+          {extras.eyebrow}
         </motion.p>
 
         {/* Headline */}
@@ -74,7 +74,7 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
                 src={photo}
-                alt="Christopher Akpoguma"
+                alt={content.photoAlt}
                 loading="lazy"
                 className="h-auto max-h-[580px] w-full object-cover object-top"
               />
@@ -92,7 +92,7 @@ export default function About() {
               className="text-lg leading-relaxed text-ink/82 dark:text-dark-ink/82 [&>p]:mb-5 [&>p:last-child]:mb-0"
               dangerouslySetInnerHTML={{ __html: richHtml(content.bio) }}
             />
-            <p className="mt-6 text-lg leading-relaxed">My practice also goes from design into making. I use AI to prototype ideas and build websites and web apps — including while redesigning LEMA, Landmark's Enterprise Management System.</p>
+            {extras.making && <p className="mt-6 text-lg leading-relaxed">{extras.making}</p>}
 
             {/* Tools */}
             <motion.div
@@ -103,8 +103,8 @@ export default function About() {
               className="mt-10"
             >
               <p className="text-sm text-ink/60 dark:text-dark-ink/60">
-                <span className="label mr-2 text-muted dark:text-dark-muted">The kit —</span>
-                {tools.join(' · ')}
+                <span className="label mr-2 text-muted dark:text-dark-muted">{extras.kitLabel}</span>
+                {(extras.tools || []).join(' · ')}
               </p>
             </motion.div>
 
@@ -116,9 +116,9 @@ export default function About() {
               transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className="mt-8"
             >
-              <div className="label mb-4 text-muted dark:text-dark-muted">Track record</div>
+              <div className="label mb-4 text-muted dark:text-dark-muted">{extras.recordLabel}</div>
               <ul className="space-y-3">
-                {recognition.map((r, i) => (
+                {(extras.recognition || []).map((r, i) => (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, x: -12 }}

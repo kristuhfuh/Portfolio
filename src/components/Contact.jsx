@@ -123,7 +123,7 @@ export default function Contact() {
           transition={{ duration: 0.5 }}
           className="label mb-4 text-cream/55 dark:text-ink/55"
         >
-          ✦ Contact
+          {content.eyebrow}
         </motion.div>
 
         {/* Headline — line curtain reveal, driven by CMS */}
@@ -159,7 +159,7 @@ export default function Contact() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <AvailabilityBadge className="!text-cream/65 dark:!text-ink/65" />
+              <AvailabilityBadge className="!text-cream/65 dark:!text-ink/65" label={content.availabilityLabel} />
               <p
                 className="mt-6 max-w-sm text-cream/75 dark:text-ink/75"
                 dangerouslySetInnerHTML={{ __html: richHtml(content.description) }}
@@ -181,17 +181,17 @@ export default function Contact() {
                     </svg>
                   </div>
                   <h3 className="font-display text-2xl text-cream dark:text-ink">
-                    Got it, {sentName}.
+                    {content.successHeading}, {sentName}.
                   </h3>
                   <p className="mt-3 text-cream/65 dark:text-ink/65 leading-relaxed">
-                    Message received. I reply to every enquiry within 24 hours on weekdays — usually faster.
+                    {content.successDescription}
                   </p>
                   <div className="mt-8 flex flex-wrap items-center gap-4">
                     <a
                       href="#work"
                       className="label inline-flex items-center gap-2 rounded-full border border-cream/20 px-5 py-3 text-cream transition-colors hover:border-cream/50 dark:border-ink/20 dark:text-ink dark:hover:border-ink/50"
                     >
-                      View my work
+                      {content.workLinkLabel}
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                         <path d="M5 12h14M13 5l7 7-7 7" />
                       </svg>
@@ -200,7 +200,7 @@ export default function Contact() {
                       onClick={() => setStatus('')}
                       className="label text-cream/35 transition-colors hover:text-cream/65 dark:text-ink/35 dark:hover:text-ink/65"
                     >
-                      Send another message →
+                      {content.anotherMessageLabel} →
                     </button>
                   </div>
                 </div>
@@ -214,11 +214,11 @@ export default function Contact() {
                 onSubmit={handleSubmit}
                 className="mt-10 space-y-4"
               >
-                {status === 'error' && <p className="contact-form-error" role="alert">Your message couldn’t be delivered. Your text is still here — try again, or <a className="underline" href={`mailto:${content.email}`}>email me directly</a>.</p>}
+                {status === 'error' && <p className="contact-form-error" role="alert">{content.errorText} <a className="underline" href={`mailto:${content.email}`}>{content.emailFallbackLabel}</a>.</p>}
                 <input
                   className={inputCls}
-                  placeholder="Your name"
-                  aria-label="Your name"
+                  placeholder={content.namePlaceholder}
+                  aria-label={content.namePlaceholder}
                   name="name"
                   autoComplete="name"
                   value={form.name}
@@ -228,8 +228,8 @@ export default function Contact() {
                 <input
                   className={inputCls}
                   type="email"
-                  placeholder="Your email"
-                  aria-label="Your email"
+                  placeholder={content.emailPlaceholder}
+                  aria-label={content.emailPlaceholder}
                   name="email"
                   autoComplete="email"
                   value={form.email}
@@ -238,8 +238,8 @@ export default function Contact() {
                 />
                 <textarea
                   className={inputCls + ' min-h-[130px] resize-y'}
-                  placeholder="Your message"
-                  aria-label="Your message"
+                  placeholder={content.messagePlaceholder}
+                  aria-label={content.messagePlaceholder}
                   name="message"
                   value={form.message}
                   onChange={e => setForm({ ...form, message: e.target.value })}
@@ -254,7 +254,7 @@ export default function Contact() {
                   {status === 'sending' && (
                     <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-cream/30 border-t-cream" />
                   )}
-                  {status === 'sending' ? 'Sending...' : 'Send Message'}
+                  {status === 'sending' ? content.sendingLabel : content.submitLabel}
                   {status !== 'sending' && (
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M5 12h14M13 5l7 7-7 7" />
@@ -325,7 +325,7 @@ export default function Contact() {
                 href={`mailto:${content.email || ''}`}
                 className="group inline-flex items-center gap-4 rounded-full border border-cream/20 px-8 py-5 text-cream transition-[background-color,border-color] duration-200 hover:border-accent hover:bg-accent dark:border-ink/20 dark:text-ink dark:hover:border-accent dark:hover:bg-accent dark:hover:text-cream"
               >
-                <span className="label tracking-widest">Open to new work</span>
+                <span className="label tracking-widest">{content.emailCta}</span>
                 <span className="animate-nudge-x inline-block">
                   <svg
                     width="18"

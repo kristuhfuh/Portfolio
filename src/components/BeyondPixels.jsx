@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useMotionPreference } from '../lib/motion.js'
-import { getBeyondPixels } from '../lib/cms.js'
+import { getBeyondPixels, getPageContent } from '../lib/cms.js'
 
 function PixelBox({ item, index }) {
   const reduced = useMotionPreference()
@@ -107,6 +107,7 @@ function PixelBox({ item, index }) {
 
 export default function BeyondPixels() {
   const items = getBeyondPixels()
+  const content = getPageContent('beyondIntro')
 
   return (
     <section className="poet-beyond py-24 md:py-32">
@@ -119,22 +120,21 @@ export default function BeyondPixels() {
               initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.45 }}
               className="label mb-3 text-muted dark:text-dark-muted">
-              ✦ Beyond the Pixels
+              {content.eyebrow}
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
               className="display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink">
-              Outside the work.
+              {content.heading}
             </motion.h2>
           </div>
           <motion.p
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
             className="label text-muted dark:text-dark-muted">
-            <span className="hidden md:inline">Hover</span>
-            <span className="md:hidden">Tap</span>
-            {' '}to play
+            <span className="hidden md:inline">{content.hoverHint}</span>
+            <span className="md:hidden">{content.tapHint}</span>
           </motion.p>
         </div>
 

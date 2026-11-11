@@ -1,27 +1,9 @@
 import { motion } from 'framer-motion'
-
-const steps = [
-  {
-    number: '01',
-    title: 'Listen first.',
-    description:
-      "Before a single wireframe, I need to understand what problem we're actually solving. I interview, push back on assumptions, and sit with the data until the real question emerges — because building the wrong thing beautifully is still failure.",
-  },
-  {
-    number: '02',
-    title: 'Make it real, fast.',
-    description:
-      "I move from rough concepts to interactive Framer prototypes faster than most designers get to wireframes. You'll see something you can click and test — not a slide deck full of boxes — so we catch wrong turns early.",
-  },
-  {
-    number: '03',
-    title: 'Ship, then watch.',
-    description:
-      "Handoff is not the finish line. I stay close through engineering, care about what actually ships, and track how real people use it. The most useful design insight usually comes the week after launch.",
-  },
-]
+import { getPageContent } from '../lib/cms.js'
 
 export default function Process() {
+  const content = getPageContent('process')
+  const steps = content.steps || []
   return (
     <section className="poet-process py-24 md:py-32">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
@@ -34,7 +16,7 @@ export default function Process() {
             transition={{ duration: 0.45 }}
             className="label mb-3 text-muted dark:text-dark-muted"
           >
-            ✦ Process
+            {content.eyebrow}
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 18 }}
@@ -43,7 +25,7 @@ export default function Process() {
             transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
           >
-            Feeling, meet thinking.
+            {content.heading}
           </motion.h2>
         </div>
 
@@ -51,7 +33,7 @@ export default function Process() {
         <div className="grid gap-12 md:grid-cols-3 md:gap-10">
           {steps.map((step, i) => (
             <motion.div
-              key={step.number}
+              key={`${step.title}-${i}`}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-5%' }}
@@ -66,7 +48,7 @@ export default function Process() {
                 transition={{ duration: 0.5, delay: i * 0.1 + 0.1 }}
                 className="process-number"
               >
-                {step.number}
+                {String(i + 1).padStart(2, '0')}
               </motion.div>
 
               <h3 className="display-lg text-[clamp(1.6rem,2.5vw,2.2rem)] text-ink dark:text-dark-ink">
