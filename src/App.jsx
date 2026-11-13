@@ -5,7 +5,6 @@ import { AuthProvider, useAuth } from './lib/auth.jsx'
 import { trackPageView, trackClick } from './lib/analytics.js'
 import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
-import PageLoader from './components/PageLoader.jsx'
 import CustomCursor from './components/CustomCursor.jsx'
 import { MotionConfig } from 'framer-motion'
 import { useMotionPreference } from './lib/motion.js'
@@ -24,8 +23,9 @@ const AdminContacts   = lazy(() => import('./pages/AdminContacts.jsx'))
 
 function Spin() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream dark:bg-dark-bg">
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-accent dark:border-dark-line dark:border-t-accent" />
+    <div role="status" className="flex min-h-screen items-center justify-center gap-3 bg-cream dark:bg-dark-bg">
+      <div aria-hidden="true" className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-accent dark:border-dark-line dark:border-t-accent" />
+      <span>Loading page...</span>
     </div>
   )
 }
@@ -84,7 +84,6 @@ function AppRoutes() {
 
   return (
     <div className={`public-portfolio grain min-h-screen bg-cream text-ink transition-colors dark:bg-dark-bg dark:text-dark-ink ${pathname === '/' ? 'is-home' : ''}`}>
-      <PageLoader />
       <CustomCursor />
       <Nav />
       <a className="skip-link" href="#main-content">Skip to content</a>

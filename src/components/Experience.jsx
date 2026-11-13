@@ -48,10 +48,10 @@ export default function Experience() {
                     >
                       <motion.span
                         className="inline-block"
-                        initial={{ y: '106%' }}
+                        initial={false}
                         whileInView={{ y: '0%' }}
                         viewport={{ once: true }}
-                        transition={{ delay: i * 0.08, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ delay: i * 0.08, duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                       >
                         {word}
                       </motion.span>
@@ -61,10 +61,10 @@ export default function Experience() {
                   <span className="inline-block overflow-hidden" style={{ verticalAlign: 'bottom' }}>
                     <motion.span
                       className="inline-block text-accent"
-                      initial={{ y: '106%' }}
+                      initial={false}
                       whileInView={{ y: '0%' }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.28, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ delay: 0, duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                     >
                       {accentWord}
                     </motion.span>
@@ -72,10 +72,10 @@ export default function Experience() {
                 </h2>
 
                 <motion.p
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
+                  transition={{ duration: 0.28, delay: 0 }}
                   className="mt-6 max-w-sm text-muted dark:text-dark-muted"
                 >
                   {content.description}
@@ -100,11 +100,11 @@ export default function Experience() {
                 {(content.jobs || []).map((job, i) => (
                   <motion.li
                     key={`${job.company}-${job.start}-${i}`}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={false}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: '-8%' }}
                     transition={{
-                      duration: 0.6,
+                      duration: 0.28,
                       delay: i * 0.06,
                       ease: [0.22, 1, 0.36, 1],
                     }}
@@ -112,10 +112,10 @@ export default function Experience() {
                   >
                     {/* Timeline dot */}
                     <motion.div
-                      initial={{ scale: 0 }}
+                      initial={false}
                       whileInView={{ scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: i * 0.06 + 0.15, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ delay: i * 0.06 + 0.15, duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                       className="absolute left-0 top-9 flex h-[22px] w-[22px] items-center justify-center rounded-full border-2 border-accent bg-cream dark:bg-dark-bg"
                     >
                       <div className="h-2 w-2 rounded-full bg-accent" />

@@ -30,8 +30,8 @@ function getNextProject(slug) {
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 1, y: 0 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } },
 }
 
 // ─── Story section (sticky heading + rich body) ───
@@ -61,10 +61,10 @@ function PullQuote({ quote, accent }) {
     <section className="border-t border-line dark:border-dark-line">
       <div className="relative mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-36">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-15%' }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           className="relative mx-auto max-w-4xl"
         >
           <span className="absolute -top-8 left-0 font-display text-[10rem] leading-none md:-left-16 md:-top-16 md:text-[16rem]"
@@ -110,10 +110,10 @@ function OutcomeStats({ stats, accent, intro, label, heading }) {
           {publishedStats.map((stat, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.6, delay: i * 0.06 }}
+              transition={{ duration: 0.28, delay: i * 0.06 }}
               className="group relative flex flex-col gap-3 bg-ink p-8 transition-colors hover:bg-ink/80 dark:bg-cream dark:hover:bg-cream/80 md:p-10"
             >
               <div className="font-display text-[clamp(3rem,6vw,5rem)] leading-none tracking-tightest"
@@ -156,10 +156,10 @@ function Deliverables({ items, accent }) {
               {items.map((item, i) => (
                 <motion.li
                   key={i}
-                  initial={{ opacity: 0, x: -16 }}
+                  initial={false}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: '-5%' }}
-                  transition={{ duration: 0.5, delay: i * 0.04 }}
+                  transition={{ duration: 0.28, delay: i * 0.04 }}
                   className="group flex items-center gap-4 rounded-xl border border-line bg-white/40 px-5 py-4 transition-all hover:border-transparent hover:bg-white/80 dark:border-dark-line dark:bg-white/[0.02] dark:hover:bg-white/[0.05]"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-xs transition-all group-hover:border-transparent group-hover:text-cream dark:border-dark-line"
@@ -187,10 +187,10 @@ function Reception({ quote, accent, attribution, requireAttribution }) {
     <section className="border-t border-line py-20 dark:border-dark-line">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.28 }}
           className="relative mx-auto max-w-3xl rounded-3xl border p-8 md:p-12"
           style={{ borderColor: `${accent}40`, background: `${accent}08` }}
         >
@@ -224,10 +224,10 @@ function Principles({ principles, accent }) {
           {principles.map((p, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
+              transition={{ duration: 0.28, delay: i * 0.05 }}
               className="group relative overflow-hidden rounded-3xl border border-line p-6 transition-colors duration-300 dark:border-dark-line md:p-8"
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${accent}80` }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = '' }}
@@ -275,10 +275,10 @@ function DecisionsTable({ decisions, accent }) {
           {decisions.map((d, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0 }}
+              initial={false}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: '-5%' }}
-              transition={{ duration: 0.4, delay: i * 0.04 }}
+              transition={{ duration: 0.28, delay: i * 0.04 }}
               className={`grid grid-cols-1 gap-3 border-b border-line px-6 py-6 transition-colors last:border-b-0 hover:bg-ink/[0.03] dark:border-dark-line dark:hover:bg-cream/[0.03] md:grid-cols-12 md:gap-6 ${
                 i % 2 === 1 ? 'bg-ink/[0.015] dark:bg-cream/[0.015]' : ''
               }`}
@@ -370,10 +370,10 @@ export default function CaseStudy() {
             {project.approach.map((step, i) => (
               <motion.li
                 key={i}
-                initial={{ opacity: 0, y: 16 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-5%' }}
-                transition={{ duration: 0.5, delay: i * 0.04 }}
+                transition={{ duration: 0.28, delay: i * 0.04 }}
                 className="flex gap-5 border-b border-line py-6 dark:border-dark-line"
               >
                 <span className="label shrink-0 pt-1 tabular-nums" style={{ color: accent }}>

@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useMotionPreference } from '../lib/motion.js'
 import { getOtherDesigns, getPageContent, normalizeDriveUrl } from '../lib/cms.js'
 import { safeLink } from '../lib/richText.js'
 
 function DesignCard({ item, index }) {
+  const reduced = useMotionPreference()
   const content = getPageContent('otherDesignsIntro')
   const [hovered, setHovered] = useState(false)
   const src = normalizeDriveUrl(item.image)
@@ -23,8 +25,8 @@ function DesignCard({ item, index }) {
           alt={item.title || 'Design'}
           className="h-full w-full object-cover"
           style={{
-            transform: hovered ? 'scale(1.05)' : 'scale(1)',
-            transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+            transform: hovered && !reduced ? 'scale(1.05)' : 'scale(1)',
+            transition: 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         />
       ) : (
@@ -85,18 +87,18 @@ function DesignCard({ item, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={reduced ? false : { opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-5%' }}
-      transition={{ duration: 0.6, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: reduced ? 0 : 0.24, delay: 0, ease: [0.22, 1, 0.36, 1] }}
     >
       {link ? (
         isExternal ? (
-          <a href={link} target="_blank" rel="noopener noreferrer">
+          <a href={link} target="_blank" rel="noopener noreferrer" onFocus={() => setHovered(true)} onBlur={() => setHovered(false)}>
             {cardContent}
           </a>
         ) : (
-          <a href={link}>
+          <a href={link} onFocus={() => setHovered(true)} onBlur={() => setHovered(false)}>
             {cardContent}
           </a>
         )
@@ -119,7 +121,7 @@ export default function OtherDesigns() {
         {/* Header */}
         <div className="mb-14">
           <motion.h2
-            initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+            initial={false} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
           >

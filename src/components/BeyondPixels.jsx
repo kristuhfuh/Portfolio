@@ -37,10 +37,10 @@ function PixelBox({ item, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={reduced ? false : { opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-5%' }}
-      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: reduced ? 0 : 0.24, delay: 0, ease: [0.22, 1, 0.36, 1] }}
       className="pixel-box group relative aspect-[3/4] cursor-pointer overflow-hidden"
       onMouseEnter={() => handleEnter(false)}
       onMouseLeave={handleLeave}
@@ -49,7 +49,7 @@ function PixelBox({ item, index }) {
         src={item.image}
         alt={item.label}
         loading="lazy"
-        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-700 ${
+        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-200 ${
           hovering && hasVideo ? 'scale-110 opacity-0' : 'scale-100 opacity-100'
         }`}
       />
@@ -62,7 +62,7 @@ function PixelBox({ item, index }) {
           loop
           playsInline
           preload="metadata"
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${
             hovering ? 'opacity-100' : 'opacity-0'
           }`}
         />
@@ -117,14 +117,14 @@ export default function BeyondPixels() {
         <div className="mb-14 flex items-end justify-between">
           <div>
             <motion.h2
-              initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+              initial={false} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
               className="display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink">
               {content.heading}
             </motion.h2>
           </div>
           <motion.p
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+            initial={false} whileInView={{ opacity: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
             className="label text-muted dark:text-dark-muted">
             <span className="hidden md:inline">{content.hoverHint}</span>

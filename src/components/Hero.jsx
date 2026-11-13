@@ -62,11 +62,11 @@ export default function Hero() {
       </div>
       <div className="hero-composition">
         <div className="hero-copy">
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="hero-intro">
+          <motion.p initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="hero-intro">
             {headline.replace(/\.$/, '')}.<br /><span>{hero.roleLabel}</span>
           </motion.p>
-          <h1 id="hero-heading" className="hero-title" aria-label={headingLines.join(' ')}>{headingLines.map((line, index) => { const words = line.split(' '); const last = index === headingLines.length - 1; return <span className="hero-line" key={index}><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: 0.95, delay: 0.1 + index * 0.12, ease }}>{last ? <>{words.slice(0, -1).join(' ')}<em>{words[words.length - 1]}</em><Burst className="hero-title-burst" /></> : line}</motion.span></span> })}</h1>
-          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45, ease }} className="hero-bottom-copy">
+          <h1 id="hero-heading" className="hero-title" aria-label={headingLines.join(' ')}>{headingLines.map((line, index) => { const words = line.split(' '); const last = index === headingLines.length - 1; return <span className="hero-line" key={index}><motion.span initial={{ y: reduced ? 0 : '110%' }} animate={{ y: 0 }} transition={{ duration: reduced ? 0 : 0.48, delay: reduced ? 0 : 0.04 + index * 0.06, ease }}>{last ? <>{words.slice(0, -1).join(' ')}<em>{words[words.length - 1]}</em><Burst className="hero-title-burst" /></> : line}</motion.span></span> })}</h1>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45, ease }} className="hero-bottom-copy">
             <p>{intro}</p>
             <div className="hero-actions">
               <a href="#work" className="poet-button poet-button-lime" data-track="hero-view-work">{hero.workCta} <Arrow /></a>
@@ -74,7 +74,7 @@ export default function Hero() {
             </div>
           </motion.div>
         </div>
-        <motion.div className="hero-art-stage" initial={{ opacity: 0, scale: 0.9, rotate: reduced ? 0 : 5 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 1.1, delay: 0.2, ease }} style={reduced ? undefined : { y: artY }}>
+        <motion.div className="hero-art-stage" initial={reduced ? false : { scale: 0.98, rotate: 1 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: reduced ? 0 : 0.5, ease }} style={reduced ? undefined : { y: artY }}>
           <HeroCollage hero={hero} />
         </motion.div>
       </div>

@@ -1,6 +1,7 @@
 import { projects as staticProjects } from '../data/projects.js'
 import { homepageDefaults } from '../data/homepageContent.js'
 import { supabase } from './supabase.js'
+import { normalizeContact } from './contact.js'
 
 // ─── Google Drive URL normaliser ───────────────────────────────────────────────
 export function normalizeDriveUrl(url) {
@@ -220,7 +221,9 @@ export function reorderProjects(projects) {
 export function getContacts() { return lsGet(CONTACTS_KEY, []) }
 
 export async function addContact(contact) {
-  const entry = { ...contact, date: new Date().toISOString(), read: false }
+  const cleaned = normalizeContact(contact)
+  if (!cleaned.name || !cleaned.email || !cleaned.message) throw new Error('Please add your name, email, and message.')
+  const entry = { ...cleaned, date: new Date().toISOString(), read: false }
   // Write to Supabase contacts table
   const { error } = await supabase.from('contacts').insert({
     name:    entry.name,

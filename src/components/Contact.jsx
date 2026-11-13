@@ -4,6 +4,7 @@ import { useMotionPreference as useReducedMotion } from '../lib/motion.js'
 import AvailabilityBadge from './AvailabilityBadge.jsx'
 import { addContact, getPageContent } from '../lib/cms.js'
 import { sanitizeRichText, safeLink } from '../lib/richText.js'
+import { normalizeContact } from '../lib/contact.js'
 
 function richHtml(content = '') {
   if (/<[a-z][\s\S]*>/i.test(content)) return sanitizeRichText(content)
@@ -19,12 +20,13 @@ const links = [
 
 // Line-curtain reveal - line of text slides up from below its own clip
 function LineReveal({ children, delay = 0, className = '' }) {
+  const reduced = useReducedMotion()
   return (
-    <motion.span className={`block overflow-hidden ${className}`} style={{ lineHeight: 1.1 }} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-5%' }}>
+    <motion.span className={`block overflow-hidden ${className}`} style={{ lineHeight: 1.1 }} initial={reduced ? false : 'hidden'} whileInView="visible" viewport={{ once: true, margin: '-5%' }}>
       <motion.span
         className="block"
         variants={{ hidden: { y: '106%' }, visible: { y: '0%' } }}
-        transition={{ delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ delay: reduced ? 0 : delay, duration: reduced ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
       </motion.span>
@@ -82,19 +84,36 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('')
   const [sentName, setSentName] = useState('')
+  const sending = useRef(false)
+
+  const updateField = event => {
+    event.currentTarget.setCustomValidity('')
+    const { name, value } = event.target
+    setForm(current => ({ ...current, [name]: value }))
+  }
+  const cleanField = event => {
+    const field = event.target.name
+    setForm(current => ({ ...current, [field]: normalizeContact(current)[field] }))
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.name || !form.email || !form.message) return
+    if (sending.current) return
+    const cleaned = normalizeContact(form)
+    setForm(cleaned)
+    e.currentTarget.elements.namedItem('name').setCustomValidity(cleaned.name ? '' : 'Please enter your name.')
+    e.currentTarget.elements.namedItem('message').setCustomValidity(cleaned.message ? '' : 'Please write a message.')
+    if (!e.currentTarget.reportValidity()) return
+    sending.current = true
     setStatus('sending')
-    setSentName(form.name.split(' ')[0])
+    setSentName(cleaned.name.split(' ')[0])
     try {
-      await addContact(form)
+      await addContact(cleaned)
       setStatus('sent')
       setForm({ name: '', email: '', message: '' })
     } catch {
       setStatus('error')
-    }
+    } finally { sending.current = false }
   }
 
   const inputCls =
@@ -120,7 +139,7 @@ export default function Contact() {
           {headingLines.map((line, i) => (
             <LineReveal
               key={i}
-              delay={i * 0.14}
+              delay={i * 0.05}
               className={i === 1 && headingLines.length >= 3 ? 'text-accentSoft' : ''}
             >
               {line}
@@ -130,10 +149,10 @@ export default function Contact() {
 
         {/* Decorative horizontal rule */}
         <motion.div
-          initial={{ scaleX: 0 }}
+          initial={false}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.28, delay: 0, ease: [0.22, 1, 0.36, 1] }}
           className="mt-16 h-px bg-gradient-to-r from-cream/20 via-accentSoft/40 to-transparent"
           style={{ transformOrigin: 'left center' }}
         />
@@ -143,10 +162,10 @@ export default function Contact() {
           {/* Left - form + availability */}
           <div className="md:col-span-5">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              transition={{ duration: 0.28, delay: 0.1 }}
             >
               <AvailabilityBadge className="!text-cream/65 dark:!text-ink/65" label={content.availabilityLabel} />
               <p
@@ -158,10 +177,11 @@ export default function Contact() {
             {/* Contact form / Success state */}
             {status === 'sent' ? (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-10"
+                role="status"
               >
                 <div className="rounded-2xl border border-cream/15 p-8 dark:border-ink/15">
                   <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/20">
@@ -196,13 +216,15 @@ export default function Contact() {
               </motion.div>
             ) : (
               <motion.form
-                initial={{ opacity: 0, y: 24 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.18 }}
+                transition={{ duration: 0.28, delay: 0 }}
                 onSubmit={handleSubmit}
+                aria-busy={status === 'sending'}
                 className="mt-10 space-y-4"
               >
+                <p className="sr-only" role="status">{status === 'sending' ? content.sendingLabel : ''}</p>
                 {status === 'error' && <p className="contact-form-error" role="alert">{content.errorText} <a className="underline" href={`mailto:${content.email}`}>{content.emailFallbackLabel}</a>.</p>}
                 <input
                   className={inputCls}
@@ -211,7 +233,8 @@ export default function Contact() {
                   name="name"
                   autoComplete="name"
                   value={form.name}
-                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  onChange={updateField}
+                  onBlur={cleanField}
                   required
                 />
                 <input
@@ -222,7 +245,8 @@ export default function Contact() {
                   name="email"
                   autoComplete="email"
                   value={form.email}
-                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  onChange={updateField}
+                  onBlur={cleanField}
                   required
                 />
                 <textarea
@@ -231,7 +255,8 @@ export default function Contact() {
                   aria-label={content.messagePlaceholder}
                   name="message"
                   value={form.message}
-                  onChange={e => setForm({ ...form, message: e.target.value })}
+                  onChange={updateField}
+                  onBlur={cleanField}
                   required
                 />
                 <button
@@ -256,10 +281,10 @@ export default function Contact() {
 
           {/* Right - social links */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.22 }}
+            transition={{ duration: 0.28, delay: 0 }}
             className="md:col-span-6 md:col-start-7"
           >
             <ul className="contact-links border-t border-cream/10 dark:border-ink/10">
@@ -269,10 +294,10 @@ export default function Contact() {
                 return (
                   <motion.li
                     key={l.label}
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={false}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.28 + idx * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.28, delay: 0 + idx * 0.07, ease: [0.22, 1, 0.36, 1] }}
                     className="border-b border-cream/10 dark:border-ink/10"
                   >
                     <a
@@ -304,10 +329,10 @@ export default function Contact() {
 
             {/* Magnetic CTA email button */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.55 }}
+              transition={{ duration: 0.28, delay: 0 }}
               className="mt-12 flex justify-start"
             >
               <MagneticButton

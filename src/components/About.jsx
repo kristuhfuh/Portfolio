@@ -37,10 +37,10 @@ export default function About() {
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         {/* Headline */}
         <motion.h2
-          initial={{ opacity: 0, y: 18 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.28, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 display-lg text-[clamp(2.5rem,6vw,5rem)] text-ink dark:text-dark-ink"
         >
           {content.heading
@@ -58,10 +58,10 @@ export default function About() {
             >
               <motion.img
                 style={reduced ? undefined : { scale: photoScale }}
-                initial={{ opacity: 0 }}
+                initial={false}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                 src={photo}
                 alt={content.photoAlt}
                 loading="lazy"
@@ -74,10 +74,10 @@ export default function About() {
           <div className="md:col-span-7">
             {/* Bio - dangerouslySetInnerHTML so RichTextField HTML renders correctly */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-5%' }}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
               className="text-lg leading-relaxed text-ink/82 dark:text-dark-ink/82 [&>p]:mb-5 [&>p:last-child]:mb-0"
               dangerouslySetInnerHTML={{ __html: richHtml(content.bio) }}
             />
@@ -85,10 +85,10 @@ export default function About() {
 
             {/* Tools */}
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.28, delay: 0, ease: [0.22, 1, 0.36, 1] }}
               className="mt-10"
             >
               <p className="text-sm text-ink/60 dark:text-dark-ink/60">
@@ -99,10 +99,10 @@ export default function About() {
 
             {/* Track record */}
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.28, delay: 0, ease: [0.22, 1, 0.36, 1] }}
               className="mt-8"
             >
               <div className="label mb-4 text-muted dark:text-dark-muted">{extras.recordLabel}</div>
@@ -110,10 +110,10 @@ export default function About() {
                 {(extras.recognition || []).map((r, i) => (
                   <motion.li
                     key={i}
-                    initial={{ opacity: 0, x: -12 }}
+                    initial={false}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: i * 0.08 }}
+                    transition={{ duration: 0.28, delay: i * 0.08 }}
                     className="flex gap-3 text-ink dark:text-dark-ink"
                   >
                     <span className="mt-2.5 inline-block h-1 w-5 shrink-0 bg-accent" />
