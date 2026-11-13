@@ -38,7 +38,7 @@ export default function AnimatedCounter({ value, duration = 1.4, suffix = '' }) 
 
   // Safety net: useInView sometimes misses elements that are already in the viewport
   // at mount (hydration race / IntersectionObserver timing). After a short grace period,
-  // check the real bounding rect — only animate if the element truly is visible, so we
+  // check the real bounding rect - only animate if the element truly is visible, so we
   // don't kill the scroll-in animation for counters below the fold.
   useEffect(() => {
     if (!isPureNumeric) return

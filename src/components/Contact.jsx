@@ -17,7 +17,7 @@ const links = [
   { label: 'Dribbble', key: 'dribbble', prefix: '' },
 ]
 
-// Line-curtain reveal — line of text slides up from below its own clip
+// Line-curtain reveal - line of text slides up from below its own clip
 function LineReveal({ children, delay = 0, className = '' }) {
   return (
     <motion.span className={`block overflow-hidden ${className}`} style={{ lineHeight: 1.1 }} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-5%' }}>
@@ -32,7 +32,7 @@ function LineReveal({ children, delay = 0, className = '' }) {
   )
 }
 
-// Magnetic CTA button — follows cursor within hover zone
+// Magnetic CTA button - follows cursor within hover zone
 function MagneticButton({ children, href, className = '' }) {
   const reduced = useReducedMotion()
   const btnRef = useRef(null)
@@ -115,18 +115,7 @@ export default function Contact() {
 
       <div className="relative mx-auto max-w-[1400px] px-6 py-6 md:px-10 md:py-8">
 
-        {/* Label */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="label mb-4 text-cream/55 dark:text-ink/55"
-        >
-          {content.eyebrow}
-        </motion.div>
-
-        {/* Headline — line curtain reveal, driven by CMS */}
+        {/* Headline - line curtain reveal, driven by CMS */}
         <h2 className="display-hero text-[clamp(3rem,9.5vw,9rem)] leading-[0.9]">
           {headingLines.map((line, i) => (
             <LineReveal
@@ -151,7 +140,7 @@ export default function Contact() {
 
         <div className="mt-16 grid gap-16 md:grid-cols-12">
 
-          {/* Left — form + availability */}
+          {/* Left - form + availability */}
           <div className="md:col-span-5">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -265,7 +254,7 @@ export default function Contact() {
             )}
           </div>
 
-          {/* Right — social links */}
+          {/* Right - social links */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}

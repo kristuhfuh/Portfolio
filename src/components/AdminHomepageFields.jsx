@@ -6,41 +6,41 @@ const textClass = `${inputClass} min-h-[110px] resize-y`
 export const homepageSections = [
   { key: 'site', title: 'Navigation & footer', fields: [
     ['brand', 'Logo text'], ['workNav', 'Work menu label'], ['personNav', 'About menu label'], ['experienceNav', 'Experience menu label'], ['contactNav', 'Contact menu label'],
-    ['backNav', 'Back link'], ['talkLabel', 'Email action'], ['menuGreeting', 'Mobile menu greeting'],
+    ['backNav', 'Back link'], ['talkLabel', 'Email action'],
     ['copyrightName', 'Copyright name'], ['footerNote', 'Footer note'], ['footerWordmark', 'Large footer wordmark'], ['backToTop', 'Back to top label'],
     ['timeCity', 'Clock city'], ['timeZone', 'Clock time zone (IANA name)'],
   ] },
   { key: 'work', title: 'Selected work introduction', fields: [
-    ['eyebrow', 'Section label'], ['heading', 'Heading first line'], ['headingAccent', 'Heading accent line'],
+    ['heading', 'Heading first line'], ['headingAccent', 'Heading accent line'],
     ['description', 'Description', true], ['countLabel', 'Project count label'], ['projectCta', 'Project card action'],
   ] },
   { key: 'marquee', title: 'Moving text', fields: [['playLabel', 'Play button label'], ['pauseLabel', 'Pause button label']], lists: [{ key: 'words', label: 'Phrases', itemLabel: 'Phrase', fields: [['value', 'Text']] }] },
   { key: 'statement', title: 'Point of view', fields: [
-    ['eyebrow', 'Section label'], ['heading', 'Main statement', true], ['signoff', 'Short signoff (one line per row)', true], ['description', 'Supporting text', true],
+    ['heading', 'Main statement', true], ['signoff', 'Short signoff (one line per row)', true], ['description', 'Supporting text', true],
   ] },
   { key: 'otherDesignsIntro', title: 'Other designs introduction', fields: [
-    ['eyebrow', 'Section label'], ['heading', 'Heading'], ['cardCta', 'Design card action'],
+    ['heading', 'Heading'], ['cardCta', 'Design card action'],
   ] },
-  { key: 'process', title: 'Process', fields: [['eyebrow', 'Section label'], ['heading', 'Heading']], lists: [
+  { key: 'process', title: 'Process', fields: [['heading', 'Heading']], lists: [
     { key: 'steps', label: 'Process steps', itemLabel: 'Step', fields: [['title', 'Title'], ['description', 'Description', true]] },
   ] },
-  { key: 'experience', title: 'Experience', fields: [['eyebrow', 'Section label'], ['heading', 'Heading'], ['description', 'Introduction', true]], lists: [
+  { key: 'experience', title: 'Experience', fields: [['heading', 'Heading'], ['description', 'Introduction', true]], lists: [
     { key: 'jobs', label: 'Roles', itemLabel: 'Role', fields: [
       ['company', 'Company'], ['role', 'Job title'], ['employmentType', 'Employment type'], ['location', 'Location'],
       ['start', 'Start'], ['end', 'End'], ['description', 'Description', true],
     ] },
   ] },
   { key: 'aboutExtras', title: 'About details', fields: [
-    ['eyebrow', 'Section label'], ['making', 'Design and AI paragraph', true], ['kitLabel', 'Tools label'], ['recordLabel', 'Track record label'],
+    ['making', 'Design and AI paragraph', true], ['kitLabel', 'Tools label'], ['recordLabel', 'Track record label'],
   ], lists: [
     { key: 'tools', label: 'Tools', itemLabel: 'Tool', fields: [['value', 'Name']] },
     { key: 'recognition', label: 'Track record points', itemLabel: 'Point', fields: [['value', 'Text', true]] },
   ] },
   { key: 'beyondIntro', title: 'Beyond the Pixels introduction', fields: [
-    ['eyebrow', 'Section label'], ['heading', 'Heading'], ['hoverHint', 'Desktop hint'], ['tapHint', 'Mobile hint'],
+    ['heading', 'Heading'], ['hoverHint', 'Desktop hint'], ['tapHint', 'Mobile hint'],
   ] },
   { key: 'galleryIntro', title: 'Visual gallery introduction', fields: [
-    ['eyebrow', 'Section label'], ['heading', 'Heading'], ['headingAccent', 'Heading accent'],
+    ['heading', 'Heading'], ['headingAccent', 'Heading accent'],
     ['description', 'Description', true], ['controlsLabel', 'Gallery instruction'], ['fallbackCaption', 'Caption when an image has none'],
   ] },
 ]

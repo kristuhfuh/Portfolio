@@ -120,7 +120,7 @@ export default function AdminPages() {
 
       {syncFailed === page && (
         <p className="text-xs text-amber-600" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-          Cloud sync failed — data saved in this browser only. Check your Supabase settings table permissions.
+          Cloud sync failed - data saved in this browser only. Check your Supabase settings table permissions.
         </p>
       )}
     </div>
@@ -128,7 +128,7 @@ export default function AdminPages() {
 
   return (
     <div className="admin-pages">
-      <div className="admin-page-heading"><div><p className="eyebrow">The words, the pictures, the personality</p><h1>Make it yours<span>.</span></h1><p>{draft.dirty ? 'You have unsaved changes. Save each section when it’s ready.' : 'Edit a section, then save it to update your portfolio.'}</p></div><a className="admin-button" href="/" target="_blank" rel="noreferrer">View portfolio ↗</a></div>
+      <div className="admin-page-heading"><div><h1>Make it yours<span>.</span></h1><p>{draft.dirty ? 'You have unsaved changes. Save each section when it’s ready.' : 'Edit a section, then save it to update your portfolio.'}</p></div><a className="admin-button" href="/" target="_blank" rel="noreferrer">View portfolio ↗</a></div>
       <DraftRecovery draft={draft} onRestore={restoreDraft} />
       {saveError && <p className="admin-notice error" role="alert">{saveError}</p>}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
@@ -172,7 +172,7 @@ export default function AdminPages() {
           </Field>
           <div className="border-t border-black/6 pt-4">
             <p className="mb-4 text-[10px] font-medium uppercase tracking-widest text-[#141414]/40" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-              Hero Images — click to set crop focus
+              Hero Images - click to set crop focus
             </p>
             <Field label="Abstract artwork"><MediaUpload accept="image/*" value={hero.artImage || ''} onChange={value => setHero({ ...hero, artImage: value })} /></Field>
             <div className="grid gap-6 md:grid-cols-2">
@@ -227,7 +227,7 @@ export default function AdminPages() {
                       onChange={v => updateBeyondItem(i, 'image', v)}
                     />
                   </Field>
-                  <Field label="Video (optional — plays on hover)">
+                  <Field label="Video (optional - plays on hover)">
                     <MediaUpload
                       accept="video/*"
                       value={item.video || ''}
@@ -244,7 +244,7 @@ export default function AdminPages() {
 
         {/* Contact */}
         <Section title="Contact" name="contact">
-          <Field label="Section label"><input className={inputCls} value={contact.eyebrow || ''} onChange={event => setContact({ ...contact, eyebrow: event.target.value })} /></Field>
+
           <Field label="Heading">
             <RichTextField value={contact.heading} onChange={v => setContact({ ...contact, heading: v })} placeholder="Contact heading…" minHeight={80} />
           </Field>
@@ -362,7 +362,7 @@ export default function AdminPages() {
                     </Field>
                   )}
                   {item.type === 'image' && (
-                    <Field label="Hover Video (optional — plays on hover)">
+                    <Field label="Hover Video (optional - plays on hover)">
                       <MediaUpload
                         accept="video/*"
                         value={item.hoverVideo || ''}

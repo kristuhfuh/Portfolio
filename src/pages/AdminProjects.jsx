@@ -233,7 +233,7 @@ export function AdminProjectEdit() {
       {/* ── Form panel ── */}
       <div className="admin-editor-form" inert={saving ? '' : undefined} aria-busy={saving}>
         <div className="mx-auto max-w-2xl">
-          <div className="admin-page-heading"><div><p className="eyebrow">Tell the story behind the screens</p><h1>{isNew ? 'A new story.' : project.title || 'Case study'}</h1><p>Clear decisions. Honest evidence. Your contribution.</p></div></div>
+          <div className="admin-page-heading"><div><h1>{isNew ? 'A new story.' : project.title || 'Case study'}</h1><p>Clear decisions. Honest evidence. Your contribution.</p></div></div>
           <nav className="admin-editor-section-links" aria-label="Editor sections">{[['summary','Summary'],['details','Details'],['media','Media'],['evidence','Evidence'],['story','Story'],['chapters','Chapters'],['decisions','Decisions']].map(([id,label])=><a href={`#editor-${id}`} key={id}>{label}</a>)}</nav>
           <div className="space-y-6 rounded-2xl border border-line bg-white/60 p-6 backdrop-blur md:p-8">
             <fieldset id="editor-summary" className="space-y-4 rounded-xl border border-line p-4">
@@ -265,7 +265,7 @@ export function AdminProjectEdit() {
               <Field label="Timeline"><input className={inputCls} value={project.timeline} onChange={e => update('timeline', e.target.value)} /></Field>
               <Field label="Team"><input className={inputCls} value={project.team} onChange={e => update('team', e.target.value)} /></Field>
               <Field label="Location"><input className={inputCls} value={project.location} onChange={e => update('location', e.target.value)} /></Field>
-              <Field label="Status (optional — shown in hero meta row)">
+              <Field label="Status (optional - shown in hero meta row)">
                 <input className={inputCls} value={project.status || ''} onChange={e => update('status', e.target.value)} placeholder="e.g. v3 in stakeholder review" />
               </Field>
               <Field label="Tags (comma-separated)"><input className={inputCls} value={tagsStr} onChange={e => setTagsStr(e.target.value)} placeholder="Mobile App, Design System" /></Field>
@@ -350,21 +350,21 @@ export function AdminProjectEdit() {
             <div className="grid gap-6 md:grid-cols-2">
               {project.metrics.map((m, i) => (
                 <div key={i} className="space-y-3 rounded-xl border border-line p-4">
-                  <Field label={`Metric ${i + 1} — Value`}><input className={inputCls} value={m.value} onChange={e => updateMetric(i, 'value', e.target.value)} placeholder="94+" /></Field>
-                  <Field label={`Metric ${i + 1} — Label`}><input className={inputCls} value={m.label} onChange={e => updateMetric(i, 'label', e.target.value)} placeholder="Screens designed" /></Field>
+                  <Field label={`Metric ${i + 1} - Value`}><input className={inputCls} value={m.value} onChange={e => updateMetric(i, 'value', e.target.value)} placeholder="94+" /></Field>
+                  <Field label={`Metric ${i + 1} - Label`}><input className={inputCls} value={m.label} onChange={e => updateMetric(i, 'label', e.target.value)} placeholder="Screens designed" /></Field>
                 </div>
               ))}
             </div>
 
             <h2 className="pt-4 font-display text-xl text-ink">Story Elements</h2>
-            <Field label="Hook (big opening statement — one line, dramatic)">
+            <Field label="Hook (big opening statement - one line, dramatic)">
               <RichTextField value={project.hook || ''} onChange={v => update('hook', v)} placeholder="e.g. Design 94 screens. Make them feel like one product." singleLine />
             </Field>
             <Field label="Pull Quote (mid-story editorial callout)">
               <RichTextField value={project.pullQuote || ''} onChange={v => update('pullQuote', v)} placeholder="The lesson you want readers to walk away with." minHeight={100} />
             </Field>
             <Field label="Reception (short quote about how the work was received)">
-              <RichTextField value={project.reception || ''} onChange={v => update('reception', v)} placeholder="e.g. Adopted unchanged — in a project this size, that's the clearest signal the architecture worked." minHeight={100} />
+              <RichTextField value={project.reception || ''} onChange={v => update('reception', v)} placeholder="e.g. Adopted unchanged - in a project this size, that's the clearest signal the architecture worked." minHeight={100} />
             </Field>
 
             <h2 id="editor-evidence" className="pt-4 font-display text-xl text-ink">Delivery and evidence</h2>
@@ -396,7 +396,7 @@ export function AdminProjectEdit() {
               </button>
             </div>
 
-            <Field label="Deliverables (one per line — shown as a checklist)">
+            <Field label="Deliverables (one per line - shown as a checklist)">
               <textarea className={textareaCls + ' !min-h-[200px]'} value={deliverablesStr} onChange={e => setDeliverablesStr(e.target.value)} placeholder="iOS + Android mobile applications&#10;Wallet top-up & transaction history flows&#10;Loyalty system" />
             </Field>
 
@@ -407,7 +407,7 @@ export function AdminProjectEdit() {
                 <span className="label text-accent">Generate with Claude</span>
               </div>
               <p className="mb-3 text-xs text-muted">
-                Describe the project in plain language — what was built, for whom, the problem, and the results. Claude will draft all narrative fields.
+                Describe the project in plain language - what was built, for whom, the problem, and the results. Claude will draft all narrative fields.
               </p>
               <textarea
                 className={textareaCls + ' !min-h-[100px]'}
@@ -521,7 +521,7 @@ export function AdminProjectEdit() {
                         className={textareaCls + ' !min-h-[140px]'}
                         value={c.body || ''}
                         onChange={e => updateChapter(i, 'body', e.target.value)}
-                        placeholder="Describe the chapter — what changed and why…"
+                        placeholder="Describe the chapter - what changed and why…"
                       />
                     </Field>
                   </div>
@@ -540,7 +540,7 @@ export function AdminProjectEdit() {
                     </Field>
                   </div>
                   <div className="mt-3 grid gap-3 md:grid-cols-2">
-                    <Field label="Video URL (optional — overrides image when set)">
+                    <Field label="Video URL (optional - overrides image when set)">
                       <input className={inputCls} value={c.video || ''} onChange={e => updateChapter(i, 'video', e.target.value)} placeholder="https://…mp4" />
                     </Field>
                     <Field label="Caption (optional)">
@@ -622,7 +622,7 @@ export function AdminProjectEdit() {
                 <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${project.accent}33, transparent)` }} />
               )}
               <div className="absolute top-3 left-3">
-                <span className="font-mono text-xs text-white/80 bg-black/30 rounded px-2 py-1">{project.number || '—'}</span>
+                <span className="font-mono text-xs text-white/80 bg-black/30 rounded px-2 py-1">{project.number || ' - '}</span>
               </div>
             </div>
             <div className="p-4">

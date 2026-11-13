@@ -116,12 +116,6 @@ export default function BeyondPixels() {
         {/* Header */}
         <div className="mb-14 flex items-end justify-between">
           <div>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.45 }}
-              className="label mb-3 text-muted dark:text-dark-muted">
-              {content.eyebrow}
-            </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}

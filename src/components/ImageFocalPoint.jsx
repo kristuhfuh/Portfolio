@@ -26,7 +26,7 @@ export default function ImageFocalPoint({ label, imageValue, focusValue, onImage
       const { data } = supabase.storage.from('media').getPublicUrl(filename);
       onImageChange(data.publicUrl);
     } catch {
-      setUploadError('Upload failed — check that your Supabase "media" bucket exists and is public.');
+      setUploadError('Upload failed - check that your Supabase "media" bucket exists and is public.');
     } finally {
       setUploading(false);
     }

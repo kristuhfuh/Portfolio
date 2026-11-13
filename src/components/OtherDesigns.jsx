@@ -118,13 +118,6 @@ export default function OtherDesigns() {
 
         {/* Header */}
         <div className="mb-14">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.45 }}
-            className="label mb-3 text-muted dark:text-dark-muted"
-          >
-            {content.eyebrow}
-          </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
@@ -134,7 +127,7 @@ export default function OtherDesigns() {
           </motion.h2>
         </div>
 
-        {/* Grid — 3 cols on desktop, 2 on tablet, 1 on mobile */}
+        {/* Grid - 3 cols on desktop, 2 on tablet, 1 on mobile */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
           {items.map((item, i) => (
             <DesignCard key={item.id} item={item} index={i} />

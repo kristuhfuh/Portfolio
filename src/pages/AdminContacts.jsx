@@ -69,7 +69,7 @@ export default function AdminContacts() {
 
   return (
     <div className="max-w-4xl">
-      <div className="admin-page-heading"><div><p className="eyebrow">Good conversations start here</p><h1>Your inbox<span>.</span></h1><p>Read enquiries and reply directly by email.</p></div><button type="button" className="admin-button" disabled={!!busy} onClick={reload}>Refresh messages</button></div>
+      <div className="admin-page-heading"><div><h1>Your inbox<span>.</span></h1><p>Read enquiries and reply directly by email.</p></div><button type="button" className="admin-button" disabled={!!busy} onClick={reload}>Refresh messages</button></div>
       {error && <p className="admin-notice error" role="alert">{error} <button type="button" className="underline ml-2" onClick={reload}>Try again</button></p>}
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

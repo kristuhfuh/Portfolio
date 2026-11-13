@@ -31,7 +31,7 @@ export default function AdminProjectList() {
   }
 
   return <div className="admin-project-library">
-    <div className="admin-page-heading"><div><p className="eyebrow">The work, in one place</p><h1>Case studies<span>.</span></h1><p>{projects.length} stories. {projects.filter(project => !project.hidden).length} shown on your portfolio.</p></div><Link className="admin-button primary" to="/admin/projects/new">New case study <span aria-hidden="true">＋</span></Link></div>
+    <div className="admin-page-heading"><div><h1>Case studies<span>.</span></h1><p>{projects.length} stories. {projects.filter(project => !project.hidden).length} shown on your portfolio.</p></div><Link className="admin-button primary" to="/admin/projects/new">New case study <span aria-hidden="true">＋</span></Link></div>
     <div className="admin-project-tools"><div className="admin-tabs" role="group" aria-label="Filter case studies">{[['all', 'All projects'], ['visible', 'Shown'], ['hidden', 'Hidden']].map(([value, label]) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{label}<span>{projects.filter(project => value === 'all' || (value === 'visible' ? !project.hidden : project.hidden)).length}</span></button>)}</div><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search projects, clients, or skills" aria-label="Search case studies" /></div>
     {notice && <p className={`admin-notice ${notice.type}`} role="status">{notice.text}</p>}
     <div className="admin-project-list">{shown.map((project, index) => {

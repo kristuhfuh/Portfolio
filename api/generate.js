@@ -3,7 +3,7 @@ const formatPrompts = {
 Structure: punchy hook → clear overview → honest challenge → methodical approach → tangible outcome → thoughtful reflection.
 Tone: confident, clear, professional but human.`,
 
-  narrative: `You are a world-class product design writer. Write a story-arc case study — emotional, human, cinematic.
+  narrative: `You are a world-class product design writer. Write a story-arc case study - emotional, human, cinematic.
 Structure: a "before" that shows the pain → a turning point moment → the transformation → what changed.
 Tone: warm, storytelling, personal. The reader should feel the journey.`,
 
@@ -11,7 +11,7 @@ Tone: warm, storytelling, personal. The reader should feel the journey.`,
 Structure: open with the numbers that matter → then explain the process that made them possible → close with what was learned.
 Tone: sharp, evidence-driven, credible. Numbers should feel earned, not boasted.`,
 
-  sprint: `You are a world-class product design writer. Write a design sprint case study — fast, decisive, pressure-tested.
+  sprint: `You are a world-class product design writer. Write a design sprint case study - fast, decisive, pressure-tested.
 Structure: the constraint → the decisions made under pressure → what shipped → what survived vs what didn't.
 Tone: punchy, energetic, honest about trade-offs. This is about speed and judgment.`,
 

@@ -14,7 +14,7 @@ export default function NotFound() {
           Lost.
         </h1>
         <p className="mt-6 text-muted dark:text-dark-muted">
-          This page doesn't exist — but the work does.
+          This page doesn't exist - but the work does.
         </p>
         <Link
           to="/"

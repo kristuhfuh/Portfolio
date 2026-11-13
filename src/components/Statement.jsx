@@ -17,7 +17,7 @@ export default function Statement() {
   const words = String(content.heading || '').trim().split(/\s+/).filter(Boolean)
   return (
     <section ref={ref} className="poet-statement">
-      <div className="statement-aside"><span className="eyebrow">{content.eyebrow}</span><Burst className="statement-burst" /></div>
+      <div className="statement-aside"><Burst className="statement-burst" /></div>
       <div>
         <h2 className="statement-heading">{words.map((word, i) => <Word key={i} index={i} total={words.length} progress={scrollYProgress} reduced={reduced}>{word}</Word>)}</h2>
         <div className="statement-bottom"><span style={{ whiteSpace: 'pre-line' }}>{content.signoff}</span><p>{content.description}</p></div>

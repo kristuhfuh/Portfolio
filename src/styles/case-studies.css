@@ -4,8 +4,6 @@
 .case-hero-copy, .case-hero-visual { min-width: 0; }
 .case-hero-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 24px; }
 .case-hero-links a { display: inline-flex; align-items: center; gap: 16px; padding: 10px 0; font-size: 14px; font-weight: 500; border-bottom: 1px solid currentColor; }
-.case-hero-copy .eyebrow { color: #6b5477; font-size: 10px; }
-.case-hero-copy .eyebrow > span { margin: 0 8px; color: #a995b2; }
 .case-hero-copy h1 { font: 600 clamp(48px, 6.3vw, 98px)/1.02 'Bricolage Grotesque', sans-serif; letter-spacing: -0.05em; text-wrap: balance; overflow-wrap: anywhere; }
 .case-hero-tagline { font-size: clamp(16px, 1.6vw, 23px); line-height: 1.5; max-width: 550px; margin-top: 25px; color: #5e4b68; }
 .case-hero-disciplines { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
@@ -48,7 +46,6 @@ html.dark .case-story-nav a[aria-current] { color: #c7a5fa; border-color: #c7a5f
 .case-visuals { max-width: 1520px; margin: auto; padding: 70px clamp(24px, 4vw, 64px) 90px; }
 .case-visuals-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 25px; margin-bottom: 30px; }
 .case-visuals-heading h2 { font: 500 clamp(33px, 4vw, 58px)/1.1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.04em; }
-.case-visuals-heading .eyebrow { margin-bottom: 12px; }
 .case-visuals-controls { display: flex; align-items: center; gap: 10px; }
 .case-visuals-controls > span { font-size: 11px; margin-right: 8px; color: var(--poet-muted); }
 .case-visuals-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--poet-line); border-radius: 50%; transition: background 0.2s, color 0.2s; }
@@ -73,7 +70,6 @@ html.dark .case-story-nav a[aria-current] { color: #c7a5fa; border-color: #c7a5f
   .case-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
   .case-hero-copy h1 { font-size: clamp(43px, 11vw, 72px); max-width: 14ch; }
   .case-hero-tagline { font-size: 16px; margin-top: 20px; }
-  .case-hero-copy .eyebrow { font-size: 10px; }
   .case-hero-visual .case-media-open, .case-hero-visual .case-media-surface { min-height: 220px; }
   .case-hero-visual .case-media-open > img { max-height: 380px; }
   .case-hero-details { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 23px; margin-top: 30px; }

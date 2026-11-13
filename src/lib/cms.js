@@ -131,7 +131,7 @@ const SCHEMA_VERSION = 'v6'
 // Any migration that is about to mutate cms_projects first snapshots the current
 // state to both localStorage and Supabase under a timestamped key. If a migration
 // goes wrong (eg a force-reset wipes admin edits), restoreProjectBackup(key) can
-// put it back. Snapshots are not auto-pruned — they are small and recovery matters
+// put it back. Snapshots are not auto-pruned - they are small and recovery matters
 // more than storage neatness.
 function snapshotProjectsBeforeMigration(saved) {
   if (!saved || !saved.length) return
@@ -139,7 +139,7 @@ function snapshotProjectsBeforeMigration(saved) {
   const backupKey = `cms_projects_backup_${timestamp}`
   try {
     lsSet(backupKey, saved)
-    // Fire-and-forget — if Supabase sync fails the localStorage copy still exists.
+    // Fire-and-forget - if Supabase sync fails the localStorage copy still exists.
     dbSet(backupKey, saved)
     // Append to the local index so listProjectBackups can enumerate them.
     const index = lsGet('cms_projects_backup_index', [])
@@ -271,7 +271,7 @@ const defaultPages = {
     headline: 'Christopher Akpoguma',
     expression: 'Design you\ncan feel.',
     roleLabel: 'Product designer.',
-    subtitle: "I’m a product designer connecting customer experiences with the operational tools behind them — from consumer apps and booking journeys to enterprise systems.",
+    subtitle: "I’m a product designer connecting customer experiences with the operational tools behind them - from consumer apps and booking journeys to enterprise systems.",
     focus: 'Also building with Framer and AI.',
     openTo: 'Full-time · Contract · Select freelance',
     location: 'Lagos, NG', timezoneLabel: 'Working everywhere',
@@ -287,23 +287,22 @@ const defaultPages = {
     bottomImageFocus: { x: 50, y: 50 },
   },
   about: {
-    heading: 'The Design Poet — with a straight job.',
-    bio: `I am Christopher /kris+tuh+fuh/ — a Product Designer with a hunger for turning simple and complex ideas into engaging experiences.\n\nMy journey was set on the grounds of curiosity and a drive to modernise digital products. Along the way I have contributed my skills to over 15 projects across real estate, fintech, events, fashion, and travel.\n\nBeyond the pixels, I see design as a means of communicating what my mind dreams into what the user requires. I care how a button feels, but I care more about why someone needs the button at all.`,
+    heading: 'The Design Poet - with a straight job.',
+    bio: `I am Christopher /kris+tuh+fuh/ - a Product Designer with a hunger for turning simple and complex ideas into engaging experiences.\n\nMy journey was set on the grounds of curiosity and a drive to modernise digital products. Along the way I have contributed my skills to over 15 projects across real estate, fintech, events, fashion, and travel.\n\nBeyond the pixels, I see design as a means of communicating what my mind dreams into what the user requires. I care how a button feels, but I care more about why someone needs the button at all.`,
     photo: '/images/hero-top.jpg',
     photoAlt: 'Christopher Akpoguma',
   },
   contact: {
-    eyebrow: '✦ Contact',
     heading: `Let's build\nsomething worth\nthe pixels.`,
-    description: 'Working from Lagos with teams globally. Responses within 24 hours on weekdays. If you need a quick brief or a long collaboration — either door is open.',
+    description: 'Working from Lagos with teams globally. Responses within 24 hours on weekdays. If you need a quick brief or a long collaboration - either door is open.',
     email: 'akpogumachristopher@gmail.com',
     linkedin: 'https://linkedin.com/in/christopher-akpoguma',
     twitter: 'https://twitter.com/',
     dribbble: 'https://dribbble.com/',
     availabilityLabel: 'Available for work', submitLabel: 'Send Message',
     namePlaceholder: 'Your name', emailPlaceholder: 'Your email', messagePlaceholder: 'Your message',
-    sendingLabel: 'Sending...', errorText: 'Your message couldn’t be delivered. Your text is still here — try again, or', emailFallbackLabel: 'email me directly',
-    successHeading: 'Got it', successDescription: 'Message received. I reply to every enquiry within 24 hours on weekdays — usually faster.',
+    sendingLabel: 'Sending...', errorText: 'Your message couldn’t be delivered. Your text is still here - try again, or', emailFallbackLabel: 'email me directly',
+    successHeading: 'Got it', successDescription: 'Message received. I reply to every enquiry within 24 hours on weekdays - usually faster.',
     workLinkLabel: 'View my work', anotherMessageLabel: 'Send another message',
     emailCta: 'Open to new work',
   },

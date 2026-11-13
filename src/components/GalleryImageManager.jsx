@@ -67,7 +67,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
       onChange([...images, ...items]);
       setMethod(null);
     } catch {
-      setUploadError('Upload failed — check that your Supabase "media" bucket exists and is public.');
+      setUploadError('Upload failed - check that your Supabase "media" bucket exists and is public.');
     } finally {
       setUploading(false);
     }
@@ -224,7 +224,7 @@ export default function GalleryImageManager({ images = [], onChange }) {
             placeholder={"https://drive.google.com/file/d/ABC123/view\nhttps://drive.google.com/file/d/DEF456/view\nhttps://drive.google.com/file/d/GHI789/view"}
             className={inputCls + ' resize-none'} />
           <div className="flex items-center justify-between">
-            <p className="text-[11px] text-muted">Paste one link per line — each link becomes one image. Set files to "Anyone with the link".</p>
+            <p className="text-[11px] text-muted">Paste one link per line - each link becomes one image. Set files to "Anyone with the link".</p>
             <button type="button" onClick={handleAdd} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-cream hover:opacity-90">Add All</button>
           </div>
         </div>

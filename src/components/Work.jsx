@@ -38,7 +38,7 @@ function Project({ project, layoutIndex, featured, projectCta }) {
     >
       <ProjectLink to={`/work/${project.slug}`} className={`project-link ${active ? 'is-active' : ''}`} data-track={`project-${project.slug}`} onMouseEnter={play} onMouseLeave={pause} onFocus={play} onBlur={pause}>
         <div className="project-image" style={{ '--project-accent': project.accent || '#6D28D9' }}>
-          {cover ? <img src={normalizeDriveUrl(cover)} alt={`${project.title} — project preview`} loading="lazy" style={{ viewTransitionName: `project-${project.slug}` }} onError={e => { if (fallback && e.currentTarget.src !== new URL(fallback, window.location.href).href) e.currentTarget.src = fallback }} /> : <span className="project-placeholder">{project.title}</span>}
+          {cover ? <img src={normalizeDriveUrl(cover)} alt={`${project.title} - project preview`} loading="lazy" style={{ viewTransitionName: `project-${project.slug}` }} onError={e => { if (fallback && e.currentTarget.src !== new URL(fallback, window.location.href).href) e.currentTarget.src = fallback }} /> : <span className="project-placeholder">{project.title}</span>}
           {project.hoverVideo && <video ref={videoRef} src={normalizeDriveUrl(project.hoverVideo)} muted loop playsInline preload="none" aria-hidden="true" onPlaying={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setPlaying(false)} className={active && playing ? 'is-playing' : ''} />}
           <span className="project-index">{project.number} / {project.year}</span>
           <span className="project-open"><span>{projectCta}</span><Arrow /></span>
@@ -63,7 +63,7 @@ export default function Work() {
 
   return (
     <section id="work" className="poet-work" aria-labelledby="work-heading">
-      <div className="work-header"><div><p className="eyebrow">{content.eyebrow}</p><h2 id="work-heading">{content.heading}<br /><span>{content.headingAccent}</span></h2></div><p><span style={{ whiteSpace: 'pre-line' }}>{content.description}</span><br /><span>({String(projects.length).padStart(2, '0')} {content.countLabel})</span></p></div>
+      <div className="work-header"><div><h2 id="work-heading">{content.heading}<br /><span>{content.headingAccent}</span></h2></div><p><span style={{ whiteSpace: 'pre-line' }}>{content.description}</span><br /><span>({String(projects.length).padStart(2, '0')} {content.countLabel})</span></p></div>
       <div className="poet-projects">{projects.map(project => {
         const featured = majorProjects.has(project.slug)
         const layoutIndex = featured ? 0 : (supportingIndex++ + 1) % 3

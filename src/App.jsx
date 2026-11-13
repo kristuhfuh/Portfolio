@@ -12,7 +12,7 @@ import { useMotionPreference } from './lib/motion.js'
 import Home from './pages/Home.jsx'
 import NotFound from './pages/NotFound.jsx'
 
-// Lazy-loaded — reduces initial bundle by ~40%
+// Lazy-loaded - reduces initial bundle by ~40%
 const CaseStudy    = lazy(() => import('./pages/CaseStudy.jsx'))
 const AdminLogin   = lazy(() => import('./pages/AdminLogin.jsx'))
 const AdminLayout  = lazy(() => import('./pages/AdminLayout.jsx'))

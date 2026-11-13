@@ -6,7 +6,7 @@ export default function CaseStudyEvidence({ slug }) {
   return (
     <section className="case-chapters case-evidence-trail" aria-labelledby="evidence-heading">
       <div className="case-section-intro">
-        <p className="eyebrow">Decisions and validation</p>
+
         <h2 id="evidence-heading">From evidence<br /><em>to a design decision.</em></h2>
       </div>
       {items.map((item, index) => (

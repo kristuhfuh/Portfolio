@@ -9,15 +9,6 @@ export default function Process() {
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         {/* Header */}
         <div className="mb-16 md:mb-20">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-            className="label mb-3 text-muted dark:text-dark-muted"
-          >
-            {content.eyebrow}
-          </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}

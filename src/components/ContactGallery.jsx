@@ -76,7 +76,7 @@ export default function WorkGallery() {
   if (!items.length) return null
   return (
     <section className="poet-gallery" aria-labelledby="gallery-heading">
-      <div className="gallery-heading-row"><div><p className="eyebrow">{content.eyebrow}</p><h2 id="gallery-heading">{content.heading} <em>{content.headingAccent}</em><Burst /></h2></div><p style={{ whiteSpace: 'pre-line' }}>{content.description}</p></div>
+      <div className="gallery-heading-row"><div><h2 id="gallery-heading">{content.heading} <em>{content.headingAccent}</em><Burst /></h2></div><p style={{ whiteSpace: 'pre-line' }}>{content.description}</p></div>
       <div className="gallery-track" ref={trackRef} onPointerEnter={() => { interacting.current = true }} onPointerLeave={resume} onPointerDown={() => { interacting.current = true }} onPointerUp={resume} onPointerCancel={resume} onFocusCapture={() => { interacting.current = true }} onBlurCapture={e => { if (!e.currentTarget.contains(e.relatedTarget)) resume() }} onWheel={() => setPaused(true)}>
         {items.map((item, index) => <GalleryCard key={item.id} item={item} index={index} fallbackCaption={content.fallbackCaption} onSelect={() => setSelected(index)} />)}
       </div>

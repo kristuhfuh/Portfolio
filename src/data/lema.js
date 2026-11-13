@@ -4,7 +4,7 @@ export const lemaProject = {
   slug: 'lema',
   number: '02',
   title: 'LEMA /admin',
-  tagline: 'Redesigning — and building — the everyday tools behind Landmark Africa.',
+  tagline: 'Redesigning - and building - the everyday tools behind Landmark Africa.',
   tags: ['Enterprise UX', 'AI-assisted building', 'Workflow design', 'Web App'],
   client: 'Landmark Africa',
   year: 'In development',
@@ -28,7 +28,7 @@ export const lemaProject = {
   },
   overview: `LEMA is Landmark Africa's Enterprise Management System. Its /admin panel supported a broad set of internal operations, but the interface largely reflected the defaults of its Filament framework: dense tables, flat detail pages, framework language, and little containment on large screens.
 
-I redesigned that experience and built my redesign with AI over twelve weeks of iteration. This gave me ownership of both the design decisions and their implementation — including what happens when a form binding fails or a loading state never appears.
+I redesigned that experience and built my redesign with AI over twelve weeks of iteration. This gave me ownership of both the design decisions and their implementation - including what happens when a form binding fails or a loading state never appears.
 
 The brief had a clear boundary: preserve the existing data model, authentication, and permissions. The work is currently in development and testing.`,
   challenge: `The recurring problem was the distance between what the system could store and what people could actually do with it.
@@ -75,9 +75,9 @@ IT support reporting became four numbered sections with urgency choices and a se
       number: '03', title: 'Put shift decisions with the people who know the work.',
       body: `The existing HrShift and HrShiftRoster models could represent variable shifts. The interface had never exposed that capability properly. I designed and built three connected surfaces:
 
-• **HR — Shift library:** reusable, department-scoped shift templates.
-• **Manager — Team shifts:** a weekly grid of direct reports. Rotating staff receive per-day shift choices; standard-hours staff retain their normal pattern. Past dates are locked.
-• **Employee — My schedule:** a read-only view of today and the next seven days, with the source of each shift explained in plain English.
+• **HR - Shift library:** reusable, department-scoped shift templates.
+• **Manager - Team shifts:** a weekly grid of direct reports. Rotating staff receive per-day shift choices; standard-hours staff retain their normal pattern. Past dates are locked.
+• **Employee - My schedule:** a read-only view of today and the next seven days, with the source of each shift explained in plain English.
 
 HR and Super Admin can view the broader staff list with search, department filters, and a rotating-staff toggle. The manager makes the operational scheduling decision, while the employee can see where it came from.`,
       image: '/images/lema/shifts.svg',
@@ -89,7 +89,7 @@ HR and Super Admin can view the broader staff list with search, department filte
 
 The employee picker now matches substrings in names and email addresses, with a 300ms debounce. Its results render outside clipped parent containers, so a menu can remain visible inside the new content frames.
 
-Critical forms — leave requests, IT support, and point logs — have native CSRF-protected POST fallbacks when Livewire does not bind in a user's browser. Notifications read real records, “Mark all read” performs the action, and shared skeletons and progress feedback acknowledge loading.
+Critical forms - leave requests, IT support, and point logs - have native CSRF-protected POST fallbacks when Livewire does not bind in a user's browser. Notifications read real records, “Mark all read” performs the action, and shared skeletons and progress feedback acknowledge loading.
 
 I also standardized pagination and corrected sticky detail rails so they clear the topbar. These are part of the same design responsibility: make the interaction work beyond the ideal path.`,
       image: '/images/lema/reliability.svg',

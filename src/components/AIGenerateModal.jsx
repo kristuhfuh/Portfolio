@@ -137,8 +137,8 @@ export default function AIGenerateModal({ onClose }) {
             <div>
               <div className="font-semibold text-ink">Generate with Claude</div>
               <div className="text-xs text-muted">
-                {step === STEP_FORMAT && 'Step 1 of 2 — Choose a format'}
-                {step === STEP_BRIEF && 'Step 2 of 2 — Describe your project'}
+                {step === STEP_FORMAT && 'Step 1 of 2 - Choose a format'}
+                {step === STEP_BRIEF && 'Step 2 of 2 - Describe your project'}
                 {step === STEP_RESULT && 'Review your generated case study'}
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function AIGenerateModal({ onClose }) {
                     disabled={!selectedFormat}
                     className="label inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-cream transition-all hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    Next — Write Brief
+                    Next - Write Brief
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </button>
                 </div>
@@ -242,7 +242,7 @@ export default function AIGenerateModal({ onClose }) {
             {step === STEP_RESULT && generated && (
               <motion.div key="result" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <p className="mb-5 text-sm text-muted">
-                  Claude has drafted your case study. Review it below, then create the project — you can edit everything in the full editor.
+                  Claude has drafted your case study. Review it below, then create the project - you can edit everything in the full editor.
                 </p>
                 <div className="space-y-4">
                   {[

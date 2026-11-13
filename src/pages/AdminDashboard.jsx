@@ -201,7 +201,7 @@ export default function AdminDashboard() {
       {/* ── Two-column body ───────────────────────────────────────────────── */}
       <div className="admin-dashboard-layout grid gap-6 items-start">
 
-        {/* Left column — actions + messages */}
+        {/* Left column - actions + messages */}
         <div className="col-span-7 space-y-6">
 
           {/* AI Generate */}
@@ -288,7 +288,7 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Right column — analytics */}
+        {/* Right column - analytics */}
         <motion.div {...fadeUp(3)} className="col-span-5">
           <AnalyticsPanel data={analytics} />
         </motion.div>

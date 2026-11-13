@@ -35,17 +35,6 @@ export default function About() {
       className="poet-about py-24 md:py-32"
     >
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-        {/* Section label */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45 }}
-          className="label mb-5 text-muted dark:text-dark-muted"
-        >
-          {extras.eyebrow}
-        </motion.p>
-
         {/* Headline */}
         <motion.h2
           initial={{ opacity: 0, y: 18 }}
@@ -83,7 +72,7 @@ export default function About() {
 
           {/* Right: bio + tools + recognition */}
           <div className="md:col-span-7">
-            {/* Bio — dangerouslySetInnerHTML so RichTextField HTML renders correctly */}
+            {/* Bio - dangerouslySetInnerHTML so RichTextField HTML renders correctly */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}

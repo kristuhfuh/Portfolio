@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* The Design Poet — public portfolio foundations. Admin styling stays scoped. */
+/* The Design Poet - public portfolio foundations. Admin styling stays scoped. */
 :root {
   --poet-paper: #f5f1e9;
   --poet-ink: #291c35;
@@ -285,7 +285,7 @@ html.dark .dotted {
 
 /* Public surfaces */
 .public-portfolio { background: var(--poet-paper); color: var(--poet-ink); }
-.public-portfolio .label, .eyebrow { font-family: 'Geist Sans', sans-serif; font-size: 11px; font-weight: 500; line-height: 1.5; letter-spacing: 0.1em; text-transform: uppercase; }
+.public-portfolio .label { font-family: 'Geist Sans', sans-serif; font-size: 11px; font-weight: 500; line-height: 1.5; letter-spacing: 0.1em; text-transform: uppercase; }
 .public-portfolio .display-hero, .public-portfolio .display-lg { font-weight: 700; letter-spacing: -0.055em; }
 .public-portfolio .grain::before { opacity: 0.025; }
 .public-portfolio main:focus { outline: none; }
@@ -300,7 +300,6 @@ html:has(dialog[open]) .poet-cursor { display: none; }
 .hero-title-burst { display: inline-block; vertical-align: middle; }
 .contact-form-error { padding: 16px; border: 1px solid #e7bfd8; border-radius: 5px; font-size: 14px; line-height: 1.7; background: #ffffff0a; }
 .public-portfolio ::selection, .poet-dialog ::selection { background: var(--poet-lime); color: #291c35; }
-.eyebrow { margin-bottom: 26px; }
 .skip-link { position: fixed; top: 12px; left: 12px; z-index: 11000; background: var(--poet-lime); color: #291c35; padding: 14px 20px; transform: translateY(-160%); }
 .skip-link:focus { transform: translateY(0); }
 .poet-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; min-height: 56px; padding: 17px 24px; border-radius: 100px; font-size: 14px; font-weight: 500; transition: background 0.2s, transform 0.25s; }
@@ -572,7 +571,6 @@ html.dark .statement-heading span:nth-child(n+7), html.dark .statement-burst { c
   .poet-marquee-copy > span { gap: 27px; padding-right: 27px; }
   .poet-statement { grid-template-columns: 1fr; gap: 28px; padding: 75px 24px; }
   .statement-aside { flex-direction: row; align-items: center; }
-  .statement-aside .eyebrow { margin-bottom: 0; }
   .statement-burst { width: 48px; }
   .statement-heading { font-size: clamp(34px, 7.9vw, 56px); }
   .statement-bottom { grid-template-columns: 1fr; gap: 20px; margin-top: 30px; }
@@ -642,7 +640,7 @@ html.dark .statement-heading span:nth-child(n+7), html.dark .statement-burst { c
 .poet-build-lab { display: grid; grid-template-columns: 1.15fr 1fr; gap: 8vw; align-items: center; background: #251635; color: #f5f1e9; padding: 110px max(clamp(24px, 4vw, 64px), calc((100vw - 1392px) / 2)); overflow: clip; }
 .build-lab-copy h2 { font: 600 clamp(40px, 5.2vw, 78px)/1.04 'Bricolage Grotesque', sans-serif; letter-spacing: -0.045em; }
 .build-lab-copy h2 em { font-style: normal; color: #d8c2f7; }
-.build-lab-copy > p:not(.eyebrow) { max-width: 445px; font-size: 14px; line-height: 1.8; color: #d8c2f7; margin-top: 28px; }
+.build-lab-copy > p { max-width: 445px; font-size: 14px; line-height: 1.8; color: #d8c2f7; margin-top: 28px; }
 .build-lab-copy > a { margin-top: 30px; }
 .build-lab-art { min-width: 0; position: relative; }
 .build-lab-window { display: block; background: #e7d9f4; color: #291c35; rotate: 4deg; border: 1px solid #d8c2f7; box-shadow: 15px 15px 0 #6535c5; transition: rotate 0.4s, transform 0.4s; }
@@ -650,7 +648,6 @@ html.dark .statement-heading span:nth-child(n+7), html.dark .statement-burst { c
 .build-window-bar { display: flex; justify-content: space-between; border-bottom: 1px solid #291c3540; padding: 15px 22px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
 .build-window-body { padding: clamp(25px, 3vw, 48px); }
 .build-window-body > svg { width: 70px; height: 70px; color: #6535c5; margin-bottom: 35px; }
-.build-window-body .eyebrow { font-size: 10px; }
 .build-window-body h3 { font: 600 clamp(60px, 7vw, 100px)/0.9 'Bricolage Grotesque', sans-serif; letter-spacing: -0.06em; }
 .build-window-body h3 > span { display: block; font: 500 15px/1.4 'Geist Sans', sans-serif; letter-spacing: 0; margin-top: 20px; }
 .build-window-body > p { max-width: 290px; font-size: 12px; line-height: 1.7; margin-top: 20px; }
@@ -697,7 +694,7 @@ html.dark .case-snapshot-header h2 em, html.dark .case-story-nav a:hover { color
 @media (max-width: 767px) {
   .poet-build-lab { grid-template-columns: minmax(0, 1fr); gap: 55px; padding: 70px 24px 80px; }
   .build-lab-copy h2 { font-size: clamp(36px, 8.6vw, 60px); }
-  .build-lab-copy > p:not(.eyebrow) { font-size: 13px; }
+  .build-lab-copy > p { font-size: 13px; }
   .build-lab-art { max-width: 460px; width: calc(100% - 10px); }
   .build-window-body { padding: 27px; }
   .build-window-body > svg { width: 50px; height: 50px; margin-bottom: 27px; }

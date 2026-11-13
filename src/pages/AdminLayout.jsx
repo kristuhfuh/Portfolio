@@ -32,6 +32,6 @@ export default function AdminLayout() {
   return <div className="admin-shell">
     <aside className="admin-sidebar"><NavLink to="/admin" className="admin-brand"><Burst /><span>christopher.<small>The portfolio studio</small></span></NavLink>{navigation()}<div className="admin-sidebar-bottom"><a href="/" target="_blank" rel="noreferrer">View portfolio <Arrow /></a><div className="admin-account"><span>{user?.email}</span><button type="button" onClick={() => { logout(); navigate('/admin/login') }}>Sign out</button></div></div></aside>
     <div className="admin-workspace"><header className="admin-topbar"><div><button className="admin-menu-trigger" aria-label="Open admin navigation" aria-expanded={menu} onClick={() => setMenu(true)}>☰</button><span className="admin-breadcrumb">Studio <span>/</span> <strong>{title}</strong></span></div><AdminSyncStatus /></header><main className="admin-main"><Outlet /></main><footer className="admin-workspace-footer"><span>A little care behind every pixel.</span><a href="/" target="_blank" rel="noreferrer">View portfolio ↗</a></footer></div>
-    {menu && <Modal className="admin-navigation-dialog" label="Admin navigation" onClose={() => setMenu(false)}><p className="eyebrow">Your portfolio studio</p>{navigation()}<a href="/" target="_blank" rel="noreferrer">View portfolio ↗</a></Modal>}
+    {menu && <Modal className="admin-navigation-dialog" label="Admin navigation" onClose={() => setMenu(false)}>{navigation()}<a href="/" target="_blank" rel="noreferrer">View portfolio ↗</a></Modal>}
   </div>
 }

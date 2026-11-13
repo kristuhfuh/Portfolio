@@ -55,7 +55,7 @@ function StoryBlock({ label, heading, accent, children, id }) {
   )
 }
 
-// ─── Pull quote — dramatic editorial callout ───
+// ─── Pull quote - dramatic editorial callout ───
 function PullQuote({ quote, accent }) {
   return (
     <section className="border-t border-line dark:border-dark-line">
@@ -84,7 +84,7 @@ function PullQuote({ quote, accent }) {
   )
 }
 
-// ─── Outcome stats grid — animated counters ───
+// ─── Outcome stats grid - animated counters ───
 function OutcomeStats({ stats, accent, intro, label, heading }) {
   const publishedStats = (stats || []).filter(stat => !hasDraftText(stat.value) && !hasDraftText(stat.label))
   if (!publishedStats.length) return null
@@ -131,7 +131,7 @@ function OutcomeStats({ stats, accent, intro, label, heading }) {
   )
 }
 
-// ─── Deliverables — list of what shipped ───
+// ─── Deliverables - list of what shipped ───
 function Deliverables({ items, accent }) {
   if (!items?.length) return null
   return (
@@ -180,7 +180,7 @@ function Deliverables({ items, accent }) {
   )
 }
 
-// ─── Reception callout — small but punchy ───
+// ─── Reception callout - small but punchy ───
 function Reception({ quote, accent, attribution, requireAttribution }) {
   if (!quote || hasDraftText(quote) || (requireAttribution && !(attribution?.role && attribution?.context && attribution?.approved === true))) return null
   return (
@@ -208,7 +208,7 @@ function Reception({ quote, accent, attribution, requireAttribution }) {
   )
 }
 
-// ─── Principles — four-up grid of the rules behind the work ───
+// ─── Principles - four-up grid of the rules behind the work ───
 function Principles({ principles, accent }) {
   if (!principles?.length) return null
   return (
@@ -254,7 +254,7 @@ function Principles({ principles, accent }) {
   )
 }
 
-// ─── Decisions and trade-offs — three-column table ───
+// ─── Decisions and trade-offs - three-column table ───
 function DecisionsTable({ decisions, accent }) {
   if (!decisions?.length) return null
   return (
@@ -407,7 +407,7 @@ export default function CaseStudy() {
       {/* ─── Deliverables list (legacy projects only) ─── */}
       <Deliverables items={project.deliverables} accent={accent} />
 
-      {/* ─── Outcome stats grid — honest status framing when project.statusNote is set ─── */}
+      {/* ─── Outcome stats grid - honest status framing when project.statusNote is set ─── */}
       <div id={project.outcome ? undefined : 'results'} className="case-results-anchor" />
       <OutcomeStats
         stats={project.outcomeStats}

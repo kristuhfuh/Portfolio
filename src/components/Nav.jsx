@@ -27,12 +27,12 @@ export default function Nav() {
   return (
     <>
       <header className={`poet-nav ${home && !scrolled ? 'on-purple' : ''}`}>
-        <div className="poet-nav-inner"><Link to="/" className="poet-brand" aria-label={`${content.copyrightName} — home`}><Burst /><span>{content.brand}<span className="brand-dot">.</span></span></Link>
+        <div className="poet-nav-inner"><Link to="/" className="poet-brand" aria-label={`${content.copyrightName} - home`}><Burst /><span>{content.brand}<span className="brand-dot">.</span></span></Link>
           <nav className="desktop-navigation" aria-label="Main navigation">{home ? links.map(link => <a key={link.href} href={link.href}>{link.label}</a>) : <Link to="/">← {content.backNav}</Link>}</nav>
           <div className="nav-actions"><button type="button" className="theme-switch" onClick={toggle} aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}><span aria-hidden="true">{theme === 'light' ? '◐' : '◑'}</span></button><a className="nav-hello" href={`mailto:${email}`}>{content.talkLabel} <Arrow /></a><button type="button" className="menu-trigger" aria-label="Open navigation menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><span /><span /></button></div>
         </div><motion.div className="nav-progress" style={{ scaleX }} />
       </header>
-      {menuOpen && <Modal onClose={() => setMenuOpen(false)} label="Navigation" className="navigation-dialog"><p className="eyebrow">{content.menuGreeting}</p><nav aria-label="Mobile navigation">{links.map((link, index) => <a href={home ? link.href : `/${link.href}`} key={link.href} onClick={() => setMenuOpen(false)}><span>0{index + 1}</span>{link.label}<Arrow /></a>)}</nav><a className="menu-email" href={`mailto:${email}`}>{email}</a><Burst className="menu-burst" /></Modal>}
+      {menuOpen && <Modal onClose={() => setMenuOpen(false)} label="Navigation" className="navigation-dialog"><nav aria-label="Mobile navigation">{links.map((link, index) => <a href={home ? link.href : `/${link.href}`} key={link.href} onClick={() => setMenuOpen(false)}><span>0{index + 1}</span>{link.label}<Arrow /></a>)}</nav><a className="menu-email" href={`mailto:${email}`}>{email}</a><Burst className="menu-burst" /></Modal>}
     </>
   )
 }

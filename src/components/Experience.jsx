@@ -18,7 +18,7 @@ export default function Experience() {
   })
   const headingY = useTransform(sectionProgress, [0, 1], [24, -24])
 
-  // Timeline line scroll draw — scoped to the job list
+  // Timeline line scroll draw - scoped to the job list
   const { scrollYProgress: listProgress } = useScroll({
     target: listRef,
     offset: ['start center', 'end center'],
@@ -34,19 +34,10 @@ export default function Experience() {
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <div className="grid gap-16 md:grid-cols-12 md:gap-10">
 
-          {/* Left — sticky heading */}
+          {/* Left - sticky heading */}
           <div className="md:col-span-4">
             <div className="md:sticky md:top-32">
               <motion.div style={reduced ? undefined : { y: headingY }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="label mb-5 text-muted dark:text-dark-muted"
-                >
-                  {content.eyebrow}
-                </motion.div>
 
                 <h2 aria-label={content.heading} className="display-lg text-[clamp(2.25rem,5vw,4rem)] text-ink dark:text-dark-ink">
                   {headingWords.map((word, i) => (
@@ -94,7 +85,7 @@ export default function Experience() {
             </div>
           </div>
 
-          {/* Right — animated timeline */}
+          {/* Right - animated timeline */}
           <div className="md:col-span-8" ref={listRef}>
             <div className="relative">
               {/* Timeline track */}
@@ -134,7 +125,7 @@ export default function Experience() {
                       {/* Date */}
                       <div className="col-span-12 md:col-span-3">
                         <span className="label tabular-nums text-muted dark:text-dark-muted">
-                          {job.start} — {job.end}
+                          {job.start} - {job.end}
                         </span>
                       </div>
 

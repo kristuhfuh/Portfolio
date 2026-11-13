@@ -25,7 +25,7 @@ export default function HeroImageBox() {
       onMouseLeave={() => setIsHovering(false)}
       onClick={handleTap}
     >
-      {/* Bottom image — always visible underneath */}
+      {/* Bottom image - always visible underneath */}
       <div className="absolute inset-0">
         <img
           src={bottomSrc}
@@ -35,7 +35,7 @@ export default function HeroImageBox() {
         />
       </div>
 
-      {/* Top image — wipes upward on hover to reveal bottom */}
+      {/* Top image - wipes upward on hover to reveal bottom */}
       <motion.div
         className="absolute inset-0"
         animate={{
